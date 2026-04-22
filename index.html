@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador de Aposentadoria</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f1efe8;color:#1a1a18;padding:1.5rem;font-size:14px}
+h1{font-size:20px;font-weight:500;margin-bottom:.5rem}
+.desc{font-size:13px;color:#888780;margin-bottom:1.5rem}
+.sc{background:#fff;border:.5px solid rgba(0,0,0,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.25rem}
+.sm{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;margin-bottom:1.25rem}
+.mk{background:#f1efe8;border-radius:8px;padding:.875rem}
+.mk .lb{font-size:11px;color:#5f5e5a;margin:0 0 4px}
+.mk .vl{font-size:17px;font-weight:500;color:#1a1a18;margin:0}
+.mk .sb{font-size:11px;color:#888780;margin:3px 0 0}
+.sec{font-size:11px;font-weight:500;color:#888780;text-transform:uppercase;letter-spacing:.06em;margin:1.1rem 0 .5rem;border-bottom:.5px solid rgba(0,0,0,0.1);padding-bottom:5px}
+.sec.green{color:#0F6E56;border-color:#9FE1CB}
+.sec.blue{color:#185FA5;border-color:#B5D4F4}
+.sec.purple{color:#534AB7;border-color:#AFA9EC}
+.sec.coral{color:#993C1D;border-color:#F0997B}
+.sec.amber{color:#854F0B;border-color:#FAC775}
+.sec.imovel{color:#534AB7;border-color:#AFA9EC}
+.row{display:flex;align-items:center;gap:10px;margin:.5rem 0}
+.row .lb{font-size:13px;color:#5f5e5a;min-width:220px}
+.row .vl{font-size:13px;font-weight:500;min-width:95px;text-align:right;color:#1a1a18}
+.row input[type=range]{flex:1;accent-color:#1D9E75}
+.pr{display:flex;align-items:center;gap:10px;margin:.45rem 0}
+.pr .lb{font-size:13px;color:#5f5e5a;min-width:220px}
+.pr .sb{font-size:11px;color:#888780;flex:1}
+.pi{width:128px;padding:4px 8px;font-size:13px;border:.5px solid rgba(0,0,0,0.2);border-radius:8px;background:#fff;color:#1a1a18;text-align:right}
+.ai{width:128px;padding:4px 8px;font-size:13px;border:.5px solid #1D9E75;border-radius:8px;background:#fff;color:#1a1a18;text-align:right}
+.ai-star{width:128px;padding:4px 8px;font-size:13px;border:1.5px solid #1D9E75;border-radius:8px;background:#fff;color:#1a1a18;text-align:right;font-weight:500}
+.ni{width:128px;padding:4px 8px;font-size:13px;border:.5px solid #7F77DD;border-radius:8px;background:#fff;color:#1a1a18;text-align:right}
+.ii{width:128px;padding:4px 8px;font-size:13px;border:.5px solid #7F77DD;border-radius:8px;background:#fff;color:#1a1a18;text-align:right}
+.fi{width:90px;padding:4px 8px;font-size:13px;border:.5px solid #F0997B;border-radius:8px;background:#fff;color:#1a1a18;text-align:right}
+.fi-dur{width:90px;padding:4px 8px;font-size:13px;border:.5px solid #B5D4F4;border-radius:8px;background:#fff;color:#1a1a18;text-align:right}
+.nota{font-size:11px;color:#888780;font-style:italic;margin:-2px 0 6px;padding-left:8px;border-left:2px solid rgba(0,0,0,0.1)}
+.alerta{font-size:12px;padding:8px 10px;border-radius:8px;margin:.5rem 0;border:.5px solid;background:#FAEEDA;border-color:#EF9F27;color:#633806}
+</style>
+</head>
+<body>
+<h1>Simulador de aposentadoria</h1>
+<p class="desc">Preencha os parâmetros abaixo para simular a longevidade do seu patrimônio na aposentadoria. Todos os valores em reais de hoje — a inflação é aplicada automaticamente.</p>
+
+<div class="sm">
+  <div class="mk"><p class="lb">Saldo na aposentadoria</p><p class="vl" id="m-saldo">—</p><p class="sb" id="m-saldo-sub">—</p></div>
+  <div class="mk"><p class="lb">Sobra mensal hoje</p><p class="vl" id="m-sobra">—</p><p class="sb" id="m-sobra-sub">—</p></div>
+  <div class="mk"><p class="lb">Retirada líquida inicial</p><p class="vl" id="m-ret">—</p><p class="sb" id="m-ret-sub">—</p></div>
+  <div class="mk" id="dur-card" style="border:.5px solid #1D9E75;background:#E1F5EE">
+    <p class="lb" style="color:#0F6E56">Duração estimada</p>
+    <p class="vl" id="m-dur" style="color:#085041">—</p>
+    <p class="sb" id="m-dur-sub" style="color:#0F6E56">—</p>
+  </div>
+</div>
+
+<div id="alerta-box" class="alerta" style="display:none"></div>
+
+<div class="sc">
+  <div class="sec blue">Renda pré-aposentadoria</div>
+  <div class="row"><span class="lb">Sua idade atual</span><input type="range" id="s-idade" min="25" max="65" step="1" value="40"><span class="vl" id="v-idade">40 anos</span></div>
+  <div class="row"><span class="lb">Idade do cônjuge</span><input type="range" id="s-idade-esp" min="25" max="65" step="1" value="40"><span class="vl" id="v-idade-esp">40 anos</span></div>
+  <div class="row"><span class="lb">Idade do filho 1</span><input type="range" id="s-filho1" min="0" max="30" step="1" value="0"><span class="vl" id="v-filho1">—</span></div>
+  <div class="row"><span class="lb">Idade do filho 2</span><input type="range" id="s-filho2" min="0" max="30" step="1" value="0"><span class="vl" id="v-filho2">—</span></div>
+  <div class="row"><span class="lb">Idade do filho 3</span><input type="range" id="s-filho3" min="0" max="30" step="1" value="0"><span class="vl" id="v-filho3">—</span></div>
+  <p class="nota" id="filhos-nota">Idades dos filhos hoje — exibidas no card de duração como referência para planejamento</p>
+  <div class="row"><span class="lb">Renda mensal líquida hoje</span><input type="range" id="s-renda" min="0" max="150" step="1" value="0"><span class="vl" id="v-renda">R$ 0k/mês</span></div>
+  <div class="row"><span class="lb">Reajuste anual da renda</span><input type="range" id="s-reaj" min="0" max="10" step="0.5" value="3"><span class="vl" id="v-reaj">3,0% a.a.</span></div>
+  <p class="nota">A diferença entre o crescimento da renda e a inflação corrói a sobra ao longo do tempo</p>
+
+  <div class="sec amber">Aposentadoria INSS</div>
+  <div class="row"><span class="lb">Valor mensal do INSS</span><input type="range" id="s-inss" min="0" max="30" step="0.5" value="0"><span class="vl" id="v-inss">R$ 0k/mês</span></div>
+  <div class="row"><span class="lb">Reajuste anual do INSS</span><input type="range" id="s-inss-reaj" min="0" max="10" step="0.1" value="3.5"><span class="vl" id="v-inss-reaj">3,5% a.a.</span></div>
+  <div class="row"><span class="lb">Ano de início do INSS</span><input type="range" id="s-inss-ano" min="2025" max="2070" step="1" value="2050"><span class="vl" id="v-inss-ano">2050</span></div>
+  <p class="nota" id="inss-nota">Reduz a retirada mensal do patrimônio a partir do ano configurado</p>
+
+  <div class="sec purple">Novas rendas futuras (anos a partir de hoje)</div>
+  <div class="pr"><span class="lb">Nova renda daqui 3 anos (/mês)</span><input type="number" class="ni" id="nr3" value="0" step="1000" min="0"><span class="sb" id="ns3">—</span></div>
+  <div class="pr"><span class="lb">Nova renda daqui 5 anos (/mês)</span><input type="number" class="ni" id="nr5" value="0" step="1000" min="0"><span class="sb" id="ns5">—</span></div>
+  <div class="pr"><span class="lb">Nova renda daqui 10 anos (/mês)</span><input type="number" class="ni" id="nr10" value="0" step="1000" min="0"><span class="sb" id="ns10">—</span></div>
+  <p class="nota">Cada renda persiste indefinidamente. Antes da aposentadoria vira aporte; depois reduz a retirada mensal. Todas crescem pelo reajuste anual.</p>
+
+  <div class="sec">Parâmetros base</div>
+  <div class="row"><span class="lb">Investimento atual</span><input type="range" id="s-inv" min="0" max="50" step="0.1" value="0"><span class="vl" id="v-inv">R$ 0,0M</span></div>
+  <div class="row"><span class="lb">Rendimento líquido mensal</span><input type="range" id="s-rend" min="0.3" max="1.5" step="0.01" value="0.75"><span class="vl" id="v-rend">0,75%</span></div>
+  <div class="row"><span class="lb">Custo de vida mensal</span><input type="range" id="s-custo" min="0" max="200" step="1" value="0"><span class="vl" id="v-custo">R$ 0k/mês</span></div>
+  <p class="nota">Custo total mensal — alimentação, moradia, saúde, lazer e manutenção</p>
+  <div class="row"><span class="lb">Inflação anual</span><input type="range" id="s-inf" min="2" max="15" step="0.1" value="6"><span class="vl" id="v-inf">6,0%</span></div>
+  <div class="row"><span class="lb">Anos até aposentadoria</span><input type="range" id="s-anos" min="1" max="30" step="1" value="10"><span class="vl" id="v-anos">10 anos</span></div>
+
+  <div class="sec">Custos recorrentes anuais</div>
+  <div class="row"><span class="lb">Viagens (por ano)</span><input type="range" id="s-viag" min="0" max="300" step="5" value="0"><span class="vl" id="v-viag">R$ 0k/ano</span></div>
+  <div class="row"><span class="lb">Outros custos anuais</span><input type="range" id="s-carr" min="0" max="150" step="1" value="0"><span class="vl" id="v-carr">R$ 0k/ano</span></div>
+
+  <div class="sec coral">Fases do custo de vida (pós-aposentadoria)</div>
+  <p class="nota" style="margin-bottom:8px">Custo mensal em valores de hoje — corrigido pela inflação ao longo do tempo. Duração em anos a partir da aposentadoria.</p>
+  <div style="display:grid;grid-template-columns:1fr 100px 90px;gap:6px;margin-bottom:4px">
+    <span style="font-size:11px;color:#888780">Fase</span>
+    <span style="font-size:11px;color:#888780;text-align:right">Custo/mês</span>
+    <span style="font-size:11px;color:#888780;text-align:right">Duração (anos)</span>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 100px 90px;gap:6px;align-items:center;margin:.4rem 0">
+    <span style="font-size:13px;color:#5f5e5a" id="fase1-label">Fase 1</span>
+    <input type="number" class="fi" id="fc1" value="0" step="1000" min="0">
+    <input type="number" class="fi-dur" id="fd1" value="10" step="1" min="1" max="50">
+  </div>
+  <p class="nota">Fase inicial — custo de vida pleno</p>
+  <div style="display:grid;grid-template-columns:1fr 100px 90px;gap:6px;align-items:center;margin:.4rem 0">
+    <span style="font-size:13px;color:#5f5e5a" id="fase2-label">Fase 2</span>
+    <input type="number" class="fi" id="fc2" value="0" step="1000" min="0">
+    <input type="number" class="fi-dur" id="fd2" value="10" step="1" min="1" max="50">
+  </div>
+  <p class="nota">Fase intermediária — possível redução de custos (dependentes, moradia, etc.)</p>
+  <div style="display:grid;grid-template-columns:1fr 100px 90px;gap:6px;align-items:center;margin:.4rem 0">
+    <span style="font-size:13px;color:#5f5e5a" id="fase3-label">Fase 3</span>
+    <input type="number" class="fi" id="fc3" value="0" step="1000" min="0">
+    <span style="font-size:12px;color:#888780;text-align:right">indefinido</span>
+  </div>
+  <p class="nota">Fase final — considere possível aumento de custos de saúde com o envelhecimento</p>
+
+  <div class="sec imovel">Venda de imóvel</div>
+  <div class="pr"><span class="lb">Valor de venda do imóvel</span><input type="number" class="ii" id="iv" value="0" step="100000" min="0"><span class="sb" id="iv-sub">—</span></div>
+  <div class="row"><span class="lb">Ano da venda (a partir de hoje)</span><input type="range" id="s-ianos" min="1" max="30" step="1" value="5"><span class="vl" id="v-ianos">ano 5</span></div>
+  <div class="row"><span class="lb">Custo do novo imóvel (R$ 100k)</span><input type="range" id="s-inovo" min="0" max="50" step="1" value="0"><span class="vl" id="v-inovo">R$ 0</span></div>
+  <p class="nota" id="imovel-nota">Configure o valor de venda para ativar. O líquido (venda − novo imóvel) entra no patrimônio e rende imediatamente.</p>
+
+  <div class="sec">Custos pontuais não recorrentes</div>
+  <div class="pr"><span class="lb">Custo no ano 5 da aposentadoria</span><input type="number" class="pi" id="p5" value="0" step="50000" min="0"><span class="sb" id="ps5">—</span></div>
+  <p class="nota">Ex: apoio a filhos, reformas, emergências</p>
+  <div class="pr"><span class="lb">Custo no ano 10 da aposentadoria</span><input type="number" class="pi" id="p10" value="0" step="50000" min="0"><span class="sb" id="ps10">—</span></div>
+  <div class="pr"><span class="lb">Custo no ano 15 da aposentadoria</span><input type="number" class="pi" id="p15" value="0" step="50000" min="0"><span class="sb" id="ps15">—</span></div>
+  <p class="nota">Ex: saúde ~65 anos: procedimentos, planos premium, medicamentos</p>
+  <div class="pr"><span class="lb">Custo no ano 20 da aposentadoria</span><input type="number" class="pi" id="p20" value="0" step="50000" min="0"><span class="sb" id="ps20">—</span></div>
+  <p class="nota">Ex: cuidados de longo prazo, adaptações, cuidador</p>
+
+  <div class="sec green">Investimentos pontuais</div>
+  <div class="pr">
+    <span class="lb" style="font-weight:500">Aporte no momento da aposentadoria</span>
+    <input type="number" class="ai-star" id="a0" value="0" step="50000" min="0">
+    <span class="sb" id="as0">—</span>
+  </div>
+  <p class="nota">Entra no patrimônio no dia da aposentadoria — ex: venda de ativo, rescisão, bônus, herança</p>
+  <div class="pr"><span class="lb">Aporte no ano 5 da aposentadoria</span><input type="number" class="ai" id="a5" value="0" step="50000" min="0"><span class="sb" id="as5">—</span></div>
+  <div class="pr"><span class="lb">Aporte no ano 10 da aposentadoria</span><input type="number" class="ai" id="a10" value="0" step="50000" min="0"><span class="sb" id="as10">—</span></div>
+  <div class="pr"><span class="lb">Aporte no ano 15 da aposentadoria</span><input type="number" class="ai" id="a15" value="0" step="50000" min="0"><span class="sb" id="as15">—</span></div>
+  <div class="pr"><span class="lb">Aporte no ano 20 da aposentadoria</span><input type="number" class="ai" id="a20" value="0" step="50000" min="0"><span class="sb" id="as20">—</span></div>
+</div>
+
+<div style="display:flex;gap:12px;margin-bottom:1.25rem;align-items:center;flex-wrap:wrap">
+  <button onclick="salvarParams()" style="padding:8px 20px;font-size:13px;font-weight:500;background:#1D9E75;color:#fff;border:none;border-radius:8px;cursor:pointer">Salvar parâmetros</button>
+  <button onclick="limparParams()" style="padding:8px 16px;font-size:13px;background:transparent;color:#888780;border:.5px solid rgba(0,0,0,0.2);border-radius:8px;cursor:pointer">Limpar dados salvos</button>
+  <span id="save-msg" style="font-size:12px;color:#0F6E56;display:none">Parâmetros salvos no navegador!</span>
+</div>
+
+<div class="sc">
+  <p style="font-size:11px;font-weight:500;color:#888780;text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px">Evolução do saldo — longo prazo</p>
+  <div id="legend" style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:10px;font-size:12px;color:#5f5e5a"></div>
+  <div style="position:relative;width:100%;height:300px"><canvas id="chart"></canvas></div>
+</div>
+
+<div class="sc">
+  <p style="font-size:11px;font-weight:500;color:#888780;text-transform:uppercase;letter-spacing:.06em;margin:0 0 4px">Montante ao final de cada ano</p>
+  <p style="font-size:11px;color:#888780;margin:0 0 10px">Crescimento pré-aposentadoria e evolução pós (até 20 anos)</p>
+  <div style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:12px;font-size:12px;color:#5f5e5a">
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:28px;height:2px;background:#378ADD;border-radius:2px"></span>Pré-aposentadoria</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:28px;height:2px;background:#1D9E75;border-radius:2px"></span>Pós-aposentadoria</span>
+  </div>
+  <div style="position:relative;width:100%;height:300px"><canvas id="bar-chart"></canvas></div>
+</div>
+
+<div class="sc">
+  <p style="font-size:11px;font-weight:500;color:#888780;text-transform:uppercase;letter-spacing:.06em;margin:0 0 4px">Renda total vs custo de vida por ano</p>
+  <p style="font-size:11px;color:#888780;margin:0 0 10px">Valores mensais projetados. Zona vermelha = déficit coberto pelo patrimônio. Linha tracejada = aposentadoria.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:12px;font-size:12px;color:#5f5e5a">
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:28px;height:2px;background:#185FA5;border-radius:2px"></span>Renda total</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:28px;height:2px;background:#D85A30;border-radius:2px"></span>Custo total mensal</span>
+  </div>
+  <div style="position:relative;width:100%;height:340px"><canvas id="custo-chart"></canvas></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+let ci=null,ciBar=null,ciCusto=null;
+const ANO_ATUAL=new Date().getFullYear();
+
+function fi(n){if(n>=1e6)return'≈ R$ '+(n/1e6).toFixed(2).replace('.',',')+'M';if(n>=1e3)return'≈ R$ '+(n/1e3).toFixed(0)+'k';return n===0?'—':'≈ R$ '+n.toLocaleString('pt-BR');}
+function fm(n){const a=Math.abs(n);const s=n<0?'-':'';if(a>=1e6)return s+'R$ '+(a/1e6).toFixed(2).replace('.',',')+'M';if(a>=1e3)return s+'R$ '+(a/1e3).toFixed(1).replace('.',',')+'k';return s+'R$ '+Math.round(a).toLocaleString('pt-BR');}
+function novaRendaStatus(valor,anosDeHoje,apos){
+  if(valor<=0)return'—';
+  const ac=ANO_ATUAL+anosDeHoje;
+  if(anosDeHoje<apos)return fi(valor)+'/mês — ativa em '+ac+', persiste na aposentadoria';
+  if(anosDeHoje===apos)return fi(valor)+'/mês — inicia em '+ac+' (na aposentadoria)';
+  const d=anosDeHoje-apos;
+  return fi(valor)+'/mês — inicia em '+ac+' ('+d+' ano'+(d>1?'s':'')+' após aposentadoria)';
+}
+
+function calc(){
+  const ANO_INSS=parseInt(document.getElementById('s-inss-ano').value)||2050;
+  const idadeAtual=parseInt(document.getElementById('s-idade').value)||40;
+  const idadeEsp=parseInt(document.getElementById('s-idade-esp').value)||40;
+  const renda=parseFloat(document.getElementById('s-renda').value)*1e3;
+  const reaj=parseFloat(document.getElementById('s-reaj').value)/100;
+  const inssValor=parseFloat(document.getElementById('s-inss').value)*1e3;
+  const inssReaj=parseFloat(document.getElementById('s-inss-reaj').value)/100;
+  const inv=parseFloat(document.getElementById('s-inv').value)*1e6;
+  const rm=parseFloat(document.getElementById('s-rend').value)/100;
+  const custo=parseFloat(document.getElementById('s-custo').value)*1e3;
+  const inf=parseFloat(document.getElementById('s-inf').value)/100;
+  const apos=parseInt(document.getElementById('s-anos').value);
+  const viag=parseFloat(document.getElementById('s-viag').value)*1e3;
+  const carr=parseFloat(document.getElementById('s-carr').value)*1e3;
+  const nr3=parseFloat(document.getElementById('nr3').value)||0;
+  const nr5=parseFloat(document.getElementById('nr5').value)||0;
+  const nr10=parseFloat(document.getElementById('nr10').value)||0;
+  const imovelVenda=parseFloat(document.getElementById('iv').value)||0;
+  const imovelAno=parseInt(document.getElementById('s-ianos').value);
+  const imovelNovo=parseFloat(document.getElementById('s-inovo').value)*100000;
+  const imovelLiq=Math.max(0,imovelVenda-imovelNovo);
+  const imovelMes=imovelAno*12;
+  const a0=parseFloat(document.getElementById('a0').value)||0;
+  const p5=parseFloat(document.getElementById('p5').value)||0;
+  const p10=parseFloat(document.getElementById('p10').value)||0;
+  const p15=parseFloat(document.getElementById('p15').value)||0;
+  const p20=parseFloat(document.getElementById('p20').value)||0;
+  const a5=parseFloat(document.getElementById('a5').value)||0;
+  const a10=parseFloat(document.getElementById('a10').value)||0;
+  const a15=parseFloat(document.getElementById('a15').value)||0;
+  const a20=parseFloat(document.getElementById('a20').value)||0;
+  const fc1=parseFloat(document.getElementById('fc1').value)||0;
+  const fd1=parseInt(document.getElementById('fd1').value)||10;
+  const fc2=parseFloat(document.getElementById('fc2').value)||0;
+  const fd2=parseInt(document.getElementById('fd2').value)||10;
+  const fc3=parseFloat(document.getElementById('fc3').value)||0;
+
+  const anoApos=ANO_ATUAL+apos;
+  const anosInssDepoisApos=Math.max(0,ANO_INSS-anoApos);
+  const mesesInssDepoisApos=anosInssDepoisApos*12;
+
+  document.getElementById('v-idade').textContent=idadeAtual+' anos';
+  document.getElementById('v-idade-esp').textContent=idadeEsp+' anos';
+  // filhos
+  const f1=parseInt(document.getElementById('s-filho1').value)||0;
+  const f2=parseInt(document.getElementById('s-filho2').value)||0;
+  const f3=parseInt(document.getElementById('s-filho3').value)||0;
+  document.getElementById('v-filho1').textContent=f1>0?f1+' anos':'—';
+  document.getElementById('v-filho2').textContent=f2>0?f2+' anos':'—';
+  document.getElementById('v-filho3').textContent=f3>0?f3+' anos':'—';
+  const filhosAtivos=[f1,f2,f3].filter(f=>f>0);
+  document.getElementById('filhos-nota').textContent=filhosAtivos.length===0
+    ?"Idades dos filhos hoje — exibidas no card de duração como referência para planejamento"
+    :"Filhos hoje: "+filhosAtivos.join(', ')+" anos. Na aposentadoria ("+apos+" anos): "+filhosAtivos.map(f=>f+apos).join(', ')+" anos.";
+  document.getElementById('v-renda').textContent='R$ '+document.getElementById('s-renda').value+'k/mês';
+  document.getElementById('v-reaj').textContent=parseFloat(document.getElementById('s-reaj').value).toFixed(1).replace('.',',')+'% a.a.';
+  document.getElementById('v-inss').textContent='R$ '+parseFloat(document.getElementById('s-inss').value).toFixed(1).replace('.',',')+'k/mês';
+  document.getElementById('v-inss-reaj').textContent=parseFloat(document.getElementById('s-inss-reaj').value).toFixed(1).replace('.',',')+'% a.a.';
+  document.getElementById('v-inss-ano').textContent=ANO_INSS;
+  document.getElementById('v-inv').textContent='R$ '+parseFloat(document.getElementById('s-inv').value).toFixed(1).replace('.',',')+'M';
+  document.getElementById('v-rend').textContent=parseFloat(document.getElementById('s-rend').value).toFixed(2).replace('.',',')+'%';
+  document.getElementById('v-custo').textContent='R$ '+document.getElementById('s-custo').value+'k/mês';
+  document.getElementById('v-inf').textContent=parseFloat(document.getElementById('s-inf').value).toFixed(1).replace('.',',')+'%';
+  document.getElementById('v-anos').textContent=apos+' ano'+(apos>1?'s':'')+' ('+anoApos+')';
+  document.getElementById('v-viag').textContent='R$ '+document.getElementById('s-viag').value+'k/ano';
+  document.getElementById('v-carr').textContent='R$ '+document.getElementById('s-carr').value+'k/ano';
+  document.getElementById('fase1-label').textContent='Fase 1 — até ano '+fd1+' ('+anoApos+'–'+(anoApos+fd1)+')';
+  document.getElementById('fase2-label').textContent='Fase 2 — até ano '+(fd1+fd2)+' ('+(anoApos+fd1)+'–'+(anoApos+fd1+fd2)+')';
+  document.getElementById('fase3-label').textContent='Fase 3 — a partir de '+(anoApos+fd1+fd2);
+  document.getElementById('ns3').textContent=novaRendaStatus(nr3,3,apos);
+  document.getElementById('ns5').textContent=novaRendaStatus(nr5,5,apos);
+  document.getElementById('ns10').textContent=novaRendaStatus(nr10,10,apos);
+  document.getElementById('inss-nota').textContent=ANO_INSS<=anoApos?'Já ativo no início da aposentadoria':'Inicia em '+ANO_INSS+' ('+anosInssDepoisApos+' anos após aposentadoria)';
+
+  const anoVenda=ANO_ATUAL+imovelAno;
+  document.getElementById('v-ianos').textContent='ano '+imovelAno+' ('+anoVenda+')';
+  document.getElementById('v-inovo').textContent=parseFloat(document.getElementById('s-inovo').value)===0?'R$ 0':'R$ '+(parseFloat(document.getElementById('s-inovo').value)*100)+'k';
+  document.getElementById('iv-sub').textContent=imovelVenda>0?fi(imovelVenda)+' bruto':'—';
+  document.getElementById('imovel-nota').textContent=imovelVenda>0?'Venda em '+anoVenda+(imovelAno<apos?' (pré-aposentadoria)':' (pós-aposentadoria)')+'. Líquido: '+fm(imovelLiq)+'.':'Configure o valor de venda para ativar.';
+
+  document.getElementById('as0').textContent=a0>0?fi(a0)+' — entra em '+anoApos:'—';
+  document.getElementById('ps5').textContent=p5>0?fi(p5)+' — em '+(anoApos+5):'—';
+  document.getElementById('ps10').textContent=p10>0?fi(p10)+' — em '+(anoApos+10):'—';
+  document.getElementById('ps15').textContent=p15>0?fi(p15)+' — em '+(anoApos+15):'—';
+  document.getElementById('ps20').textContent=p20>0?fi(p20)+' — em '+(anoApos+20):'—';
+  document.getElementById('as5').textContent=a5>0?'+'+fi(a5)+' — em '+(anoApos+5):'—';
+  document.getElementById('as10').textContent=a10>0?'+'+fi(a10)+' — em '+(anoApos+10):'—';
+  document.getElementById('as15').textContent=a15>0?'+'+fi(a15)+' — em '+(anoApos+15):'—';
+  document.getElementById('as20').textContent=a20>0?'+'+fi(a20)+' — em '+(anoApos+20):'—';
+
+  const sobra0=renda-custo;
+  document.getElementById('m-sobra').textContent=fm(sobra0);
+  document.getElementById('m-sobra').style.color=sobra0>=0?'#1a1a18':'#A32D2D';
+  document.getElementById('m-sobra-sub').textContent=sobra0>=0?'aportado mensalmente':'déficit — retira do patrimônio';
+
+  const im=Math.pow(1+inf,1/12)-1;
+  const ir=Math.pow(1+reaj,1/12)-1;
+  const iInss=Math.pow(1+inssReaj,1/12)-1;
+  const novasRendas=[{inicio:3,valor:nr3},{inicio:5,valor:nr5},{inicio:10,valor:nr10}].filter(r=>r.valor>0);
+
+  // PRÉ-APOSENTADORIA
+  let pat=inv,cm=custo,rendaBase=renda;
+  const rendaAtiva=novasRendas.map(()=>0);
+  let totalAp=0,totalDef=0,primeiroDeficit=-1;
+  const barLabels=[],barPre=[],barPos=[];
+
+  for(let ano=0;ano<apos;ano++){
+    for(let m=0;m<12;m++){
+      const mes=ano*12+m;
+      novasRendas.forEach((r,i)=>{ if(rendaAtiva[i]===0&&mes===r.inicio*12) rendaAtiva[i]=r.valor; });
+      if(imovelLiq>0&&imovelAno<apos&&mes===imovelMes) pat+=imovelLiq;
+      pat*=(1+rm);
+      const rendaTotal=rendaBase+rendaAtiva.reduce((s,v)=>s+v,0);
+      const sobra=rendaTotal-cm;
+      pat+=sobra;
+      if(sobra>=0)totalAp+=sobra;else totalDef+=Math.abs(sobra);
+      if(sobra<0&&primeiroDeficit<0)primeiroDeficit=mes;
+      cm*=(1+im);rendaBase*=(1+ir);
+      rendaAtiva.forEach((_,i)=>{ if(rendaAtiva[i]>0)rendaAtiva[i]*=(1+ir); });
+    }
+    barLabels.push(''+(ANO_ATUAL+ano+1));
+    barPre.push(Math.round(pat));
+    barPos.push(null);
+  }
+
+  const sA=Math.max(0,pat)+a0;
+  const fI=Math.pow(1+inf,apos);
+  const vm=viag/12,cm2=carr/12;
+  const rendasApos=novasRendas.map(r=>r.inicio>=apos?0:r.valor*Math.pow(1+reaj,apos-r.inicio));
+  const totalRendaApos=rendasApos.reduce((s,v)=>s+v,0);
+  const inssInicio=ANO_INSS<=anoApos?inssValor:0;
+  const custoF1=(fc1+vm+cm2)*fI;
+  const retLiq=Math.max(0,custoF1-totalRendaApos-inssInicio);
+
+  document.getElementById('m-saldo').textContent=fm(sA);
+  document.getElementById('m-saldo-sub').textContent=
+    a0>0&&totalAp>0?'inclui aporte de '+fm(a0)+' + '+fm(totalAp)+' aportados':
+    a0>0?'inclui aporte de '+fm(a0)+' em '+anoApos:
+    totalAp>0&&totalDef===0?'+'+fm(totalAp)+' aportados até '+anoApos:
+    totalDef>0&&totalAp===0?'−'+fm(totalDef)+' retirados até '+anoApos:
+    totalAp>0&&totalDef>0?'+'+fm(totalAp)+' ap. / −'+fm(totalDef)+' ret.':
+    'sem aportes ou retiradas';
+  document.getElementById('m-ret').textContent=fm(retLiq);
+  document.getElementById('m-ret-sub').textContent='fase 1: '+fm(fc1)+'/mês → fase 2: '+fm(fc2)+'/mês → fase 3: '+fm(fc3)+'/mês';
+
+  const ab=document.getElementById('alerta-box');
+  if(primeiroDeficit>=0){
+    const anosDaqui=Math.floor(primeiroDeficit/12)+1;
+    const anoCalDef=ANO_ATUAL+anosDaqui;
+    const anosAntesApos=apos-anosDaqui;
+    ab.style.display='block';
+    ab.innerHTML='Atenção: daqui <strong>'+anosDaqui+' anos</strong> (em '+anoCalDef+(anosAntesApos>0?', <strong>'+anosAntesApos+' ano'+(anosAntesApos>1?'s':'')+' antes da aposentadoria</strong>':'')+') a renda fica abaixo do custo de vida. O déficit será coberto pelo patrimônio.';
+  } else {ab.style.display='none';}
+
+  barLabels.push(anoApos+' ★');
+  barPre.push(null);
+  barPos.push(Math.round(sA));
+
+  const cp={[5*12]:p5,[10*12]:p10,[15*12]:p15,[20*12]:p20};
+  const ap2={[5*12]:a5,[10*12]:a10,[15*12]:a15,[20*12]:a20};
+  const linLabels=[],dS=[],dC=[];
+  let ss=sA,sc=sA,dc=0;
+  const rendaPosAtiva=novasRendas.map((r,i)=>rendasApos[i]);
+  let inssAtivo=inssInicio;
+  const MAX=12*200;
+  const imovelMesPosApos=(imovelAno>=apos)?(imovelAno-apos)*12:-1;
+
+  // Renda vs custo
+  const cvLabels=[],cvCusto=[],cvRenda=[];
+  cvLabels.push(''+ANO_ATUAL);
+  cvCusto.push(Math.round(custo+vm+cm2));
+  cvRenda.push(Math.round(renda));
+  let cmCv=custo+vm+cm2,rbCv=renda;
+  const raCv=novasRendas.map(()=>0);
+  for(let ano=0;ano<apos;ano++){
+    for(let m=0;m<12;m++){
+      const mes=ano*12+m;
+      novasRendas.forEach((r,i)=>{ if(raCv[i]===0&&mes===r.inicio*12) raCv[i]=r.valor; });
+      cmCv*=(1+im);rbCv*=(1+ir);
+      raCv.forEach((_,i)=>{ if(raCv[i]>0)raCv[i]*=(1+ir); });
+    }
+    cvLabels.push(''+(ANO_ATUAL+ano+1));
+    cvCusto.push(Math.round(cmCv));
+    cvRenda.push(Math.round(rbCv+raCv.reduce((s,v)=>s+v,0)));
+  }
+  let inssCV=inssInicio,raPosCV=novasRendas.map((r,i)=>rendasApos[i]);
+  for(let ano=0;ano<=25;ano++){
+    const anoAbs=anoApos+ano;
+    const cfb=ano<fd1?fc1:ano<fd1+fd2?fc2:fc3;
+    const iac=Math.pow(1+inf,ano);
+    const cmt=(cfb+vm+cm2)*fI*iac;
+    if(inssCV===0&&anoAbs>=ANO_INSS) inssCV=inssValor*Math.pow(1+inssReaj,anoAbs-ANO_INSS);
+    novasRendas.forEach((r,i)=>{
+      if(raPosCV[i]===0&&r.inicio>=apos){const ad=anoAbs-(ANO_ATUAL+r.inicio);if(ad>=0)raPosCV[i]=r.valor*Math.pow(1+reaj,ad);}
+    });
+    cvLabels.push(''+anoAbs+(ano===0?' ★':''));
+    cvCusto.push(Math.round(cmt));
+    cvRenda.push(Math.round(raPosCV.reduce((s,v)=>s+v,0)+inssCV));
+    raPosCV.forEach((_,i)=>{ if(raPosCV[i]>0)raPosCV[i]*=(1+reaj); });
+    if(inssCV>0)inssCV*=(1+inssReaj);
+  }
+
+  for(let m=0;m<=MAX;m++){
+    novasRendas.forEach((r,i)=>{if(rendaPosAtiva[i]===0&&r.inicio>=apos&&m===(r.inicio-apos)*12)rendaPosAtiva[i]=r.valor;});
+    if(inssAtivo===0&&mesesInssDepoisApos>0&&m===mesesInssDepoisApos)inssAtivo=inssValor;
+    if(imovelLiq>0&&imovelMesPosApos>0&&m===imovelMesPosApos){sc+=imovelLiq;ss+=imovelLiq;}
+    if(m%12===0){
+      const al=anoApos+(m/12);
+      linLabels.push(''+al);
+      dS.push(ss>0?Math.round(ss):0);
+      dC.push(sc>0?Math.round(sc):0);
+      const ap=m/12;
+      if(ap>=1&&ap<=20){barLabels.push(''+al);barPre.push(null);barPos.push(sc>0?Math.round(sc):0);}
+    }
+    const ap=m/12;
+    const cfb=ap<fd1?fc1:ap<fd1+fd2?fc2:fc3;
+    const iac=Math.pow(1+im,m);
+    const cmt=(cfb+vm+cm2)*fI*iac;
+    const trp=rendaPosAtiva.reduce((s,v)=>s+v,0);
+    if(ss>0){ss=ss*(1+rm)-cmt;}
+    if(sc>0||(ap2[m]||0)>0){
+      sc=Math.max(0,sc)*(1+rm)-Math.max(0,cmt-trp-inssAtivo)-(cp[m]||0)+(ap2[m]||0);
+      if(sc>0)dc++;
+    }
+    rendaPosAtiva.forEach((_,i)=>{if(rendaPosAtiva[i]>0)rendaPosAtiva[i]*=(1+ir);});
+    if(inssAtivo>0)inssAtivo*=(1+iInss);
+    if(ss<=0&&sc<=0)break;
+  }
+
+  const anos=Math.floor(dc/12),mes2=dc%12,eterna=dc>=MAX-1;
+  const dEl=document.getElementById('m-dur'),sEl=document.getElementById('m-dur-sub'),cEl=document.getElementById('dur-card');
+  if(eterna){
+    dEl.textContent='∞ patrimônio perene';sEl.textContent='rendimento supera retiradas';
+    dEl.style.color='#085041';cEl.style.borderColor='#1D9E75';cEl.style.background='#E1F5EE';sEl.style.color='#0F6E56';
+  } else {
+    const anoEsgota=anoApos+anos;
+    const iE=idadeAtual+apos+anos,iEsp=idadeEsp+apos+anos;
+    const filhosStr=[f1,f2,f3].filter(f=>f>0).map(f=>f+apos+anos+' anos').join(' | ');
+    dEl.textContent=anos+' anos e '+mes2+' meses';
+    sEl.textContent='esgota em '+anoEsgota+' — você ~'+iE+' | cônjuge ~'+iEsp+(filhosStr?' | filhos: '+filhosStr:'');
+    const cor=anos>35?'#085041':anos>20?'#633806':'#791F1F';
+    const bg=anos>35?'#E1F5EE':anos>20?'#FAEEDA':'#FCEBEB';
+    const bd=anos>35?'#1D9E75':anos>20?'#EF9F27':'#E24B4A';
+    dEl.style.color=cor;cEl.style.background=bg;cEl.style.borderColor=bd;sEl.style.color=cor;
+  }
+
+  const hE=p5+p10+p15+p20+a0+a5+a10+a15+a20+nr3+nr5+nr10+inssValor+imovelVenda>0;
+  document.getElementById('legend').innerHTML=
+    '<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75"></span>Sem eventos pontuais</span>'
+    +(hE?'<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#D85A30"></span>Com todos os eventos</span>':'');
+
+  if(ci)ci.destroy();
+  const ds2=[{label:'Base',data:dS,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.07)',fill:true,tension:0.3,pointRadius:0,borderWidth:2}];
+  if(hE)ds2.push({label:'Com eventos',data:dC,borderColor:'#D85A30',backgroundColor:'rgba(216,90,48,0.07)',fill:true,tension:0.3,pointRadius:0,borderWidth:2,borderDash:[4,3]});
+  ci=new Chart(document.getElementById('chart'),{type:'line',data:{labels:linLabels,datasets:ds2},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#888',font:{size:11},maxTicksLimit:14},grid:{color:'rgba(0,0,0,0.07)'}},y:{ticks:{color:'#888',font:{size:11},callback:v=>v>=1e6?'R$ '+(v/1e6).toFixed(0)+'M':v>=1e3?'R$ '+(v/1e3).toFixed(0)+'k':v},grid:{color:'rgba(0,0,0,0.07)'}}}}});
+
+  if(ciBar)ciBar.destroy();
+  ciBar=new Chart(document.getElementById('bar-chart'),{type:'line',data:{labels:barLabels,datasets:[
+    {label:'Pré',data:barPre,borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.07)',fill:true,tension:0.3,pointRadius:2,pointBackgroundColor:'#378ADD',borderWidth:2.5,spanGaps:false},
+    {label:'Pós',data:barPos,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.07)',fill:true,tension:0.3,pointRadius:2,pointBackgroundColor:'#1D9E75',borderWidth:2.5,spanGaps:false,borderDash:[4,4]}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const v=ctx.raw;if(v===null)return'';if(v>=1e6)return ctx.dataset.label+': R$ '+(v/1e6).toFixed(2).replace('.',',')+'M';return ctx.dataset.label+': R$ '+(v/1e3).toFixed(0)+'k';}}}},scales:{x:{ticks:{color:'#888',font:{size:11},maxTicksLimit:18,maxRotation:45},grid:{color:'rgba(0,0,0,0.07)'}},y:{ticks:{color:'#888',font:{size:11},callback:v=>v>=1e6?'R$'+(v/1e6).toFixed(1)+'M':v>=1e3?'R$'+(v/1e3).toFixed(0)+'k':v},grid:{color:'rgba(0,0,0,0.07)'}}}}});
+
+  if(ciCusto)ciCusto.destroy();
+  ciCusto=new Chart(document.getElementById('custo-chart'),{type:'line',data:{labels:cvLabels,datasets:[
+    {label:'Renda total',data:cvRenda,borderColor:'#185FA5',fill:false,tension:0.3,pointRadius:2,pointBackgroundColor:'#185FA5',borderWidth:2.5},
+    {label:'Custo total mensal',data:cvCusto,borderColor:'#D85A30',fill:false,tension:0.3,pointRadius:2,pointBackgroundColor:'#D85A30',borderWidth:2.5,borderDash:[4,4]}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const v=ctx.raw;const l=ctx.dataset.label;if(v>=1e6)return l+': R$ '+(v/1e6).toFixed(2).replace('.',',')+'M/mês';return l+': R$ '+(v/1e3).toFixed(1).replace('.',',')+'k/mês';}}}},scales:{x:{ticks:{color:'#888',font:{size:11},maxTicksLimit:16,maxRotation:45},grid:{color:'rgba(0,0,0,0.07)'}},y:{ticks:{color:'#888',font:{size:11},callback:v=>v>=1e6?'R$'+(v/1e6).toFixed(1)+'M':v>=1e3?'R$'+(v/1e3).toFixed(0)+'k':v},grid:{color:'rgba(0,0,0,0.07)'}}}}});
+}
+
+['s-idade','s-idade-esp','s-filho1','s-filho2','s-filho3','s-renda','s-reaj','s-inss','s-inss-reaj','s-inss-ano','s-inv','s-rend','s-custo','s-inf','s-anos','s-viag','s-carr','s-ianos','s-inovo'].forEach(id=>document.getElementById(id).addEventListener('input',calc));
+['nr3','nr5','nr10','iv','a0','fc1','fd1','fc2','fd2','fc3','p5','p10','p15','p20','a5','a10','a15','a20'].forEach(id=>document.getElementById(id).addEventListener('input',calc));
+
+const COOKIE_KEY='sim_apos_v1';
+const SLIDER_IDS=['s-idade','s-idade-esp','s-filho1','s-filho2','s-filho3','s-renda','s-reaj','s-inss','s-inss-reaj','s-inss-ano','s-inv','s-rend','s-custo','s-inf','s-anos','s-viag','s-carr','s-ianos','s-inovo'];
+const NUMBER_IDS=['nr3','nr5','nr10','iv','a0','fc1','fd1','fc2','fd2','fc3','p5','p10','p15','p20','a5','a10','a15','a20'];
+
+function salvarParams(){
+  const vals={};
+  [...SLIDER_IDS,...NUMBER_IDS].forEach(id=>{const el=document.getElementById(id);if(el)vals[id]=el.value;});
+  try{
+    document.cookie=COOKIE_KEY+'='+encodeURIComponent(JSON.stringify(vals))+';max-age=31536000;path=/;SameSite=Lax';
+    const msg=document.getElementById('save-msg');
+    msg.style.display='inline';
+    setTimeout(()=>msg.style.display='none',3000);
+  }catch(e){alert('Não foi possível salvar os parâmetros.');}
+}
+
+function limparParams(){
+  document.cookie=COOKIE_KEY+'=;max-age=0;path=/;SameSite=Lax';
+  const msg=document.getElementById('save-msg');
+  msg.textContent='Dados salvos removidos.';
+  msg.style.display='inline';
+  setTimeout(()=>{msg.style.display='none';msg.textContent='Parâmetros salvos no navegador!';}  ,3000);
+}
+
+function carregarParams(){
+  try{
+    const c=document.cookie.split(';').map(s=>s.trim()).find(s=>s.startsWith(COOKIE_KEY+'='));
+    if(!c)return false;
+    const vals=JSON.parse(decodeURIComponent(c.slice(COOKIE_KEY.length+1)));
+    Object.entries(vals).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.value=v;});
+    return true;
+  }catch(e){return false;}
+}
+
+carregarParams();
+calc();
+</script>
+</body>
+</html>
