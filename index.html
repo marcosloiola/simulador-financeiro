@@ -56,7 +56,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:.5rem}
 </style>
 </head>
 <body>
-<h1>Simulador de aposentadoria</h1>
+<h1>Simulador de aposentadoria <span style="font-size:12px;font-weight:400;color:#888780;margin-left:8px">v1.0</span></h1>
 <p class="desc">Preencha os parâmetros abaixo para simular a longevidade do seu patrimônio na aposentadoria. Todos os valores em reais de hoje — a inflação é aplicada automaticamente.</p>
 
 <!-- CARDS RESUMO -->
@@ -789,10 +789,10 @@ function calc() {
     plPatHoje = Math.max(0, plPatHoje);
 
     // grid dinâmico de realizados
+    // mostra um campo por ano desde o início do plano até o ano atual (inclusive)
     const grid = document.getElementById('pl-realizados-grid');
     const anosPassados = [];
-    for (let a=plAnoIni; a<ANO_ATUAL; a++) anosPassados.push(a);
-    if (MES_ATUAL >= 6) anosPassados.push(ANO_ATUAL);
+    for (let a=plAnoIni; a<=ANO_ATUAL; a++) anosPassados.push(a);
     const valoresExistentes = {};
     grid.querySelectorAll('input').forEach(el => valoresExistentes[el.id]=el.value);
     grid.innerHTML = '';
@@ -806,7 +806,8 @@ function calc() {
       grid.appendChild(div);
       const inp = document.getElementById(id);
       if (valoresExistentes[id]) inp.value = valoresExistentes[id];
-      inp.addEventListener('input', calc);
+      // 'change' dispara ao sair do campo — evita recriação do grid enquanto digita
+      inp.addEventListener('change', calc);
     });
 
     // status card
