@@ -526,10 +526,10 @@ function calc() {
   document.getElementById('as10').textContent = a10>0 ? '+'+fi(a10)+' — em '+(anoApos+10) : '—';
   document.getElementById('as15').textContent = a15>0 ? '+'+fi(a15)+' — em '+(anoApos+15) : '—';
   document.getElementById('as20').textContent = a20>0 ? '+'+fi(a20)+' — em '+(anoApos+20) : '—';
-  document.getElementById('ps5').textContent  = p5>0  ? fi(p5)+' — em '+(anoApos+5)  : '—';
-  document.getElementById('ps10').textContent = p10>0 ? fi(p10)+' — em '+(anoApos+10) : '—';
-  document.getElementById('ps15').textContent = p15>0 ? fi(p15)+' — em '+(anoApos+15) : '—';
-  document.getElementById('ps20').textContent = p20>0 ? fi(p20)+' — em '+(anoApos+20) : '—';
+  document.getElementById('ps5').textContent  = p5>0  ? fi(p5)+' hoje → '+fi(p5*Math.pow(1+inf,apos+5))+' em '+(anoApos+5)   : '—';
+  document.getElementById('ps10').textContent = p10>0 ? fi(p10)+' hoje → '+fi(p10*Math.pow(1+inf,apos+10))+' em '+(anoApos+10) : '—';
+  document.getElementById('ps15').textContent = p15>0 ? fi(p15)+' hoje → '+fi(p15*Math.pow(1+inf,apos+15))+' em '+(anoApos+15) : '—';
+  document.getElementById('ps20').textContent = p20>0 ? fi(p20)+' hoje → '+fi(p20*Math.pow(1+inf,apos+20))+' em '+(anoApos+20) : '—';
 
   const sobra0 = renda - custo;
   document.getElementById('m-sobra').textContent = fm(sobra0);
@@ -607,7 +607,15 @@ function calc() {
   barLabels.push(anoApos+' ★'); barPre.push(null); barPos.push(Math.round(sATotal));
 
   // ── PÓS-APOSENTADORIA ──
-  const cp  = {[5*12]:p5, [10*12]:p10, [15*12]:p15, [20*12]:p20};
+  // custos pontuais corrigidos pela inflação (valores de hoje → nominais no ano do evento)
+  // apos+N = anos desde hoje até o evento
+  const cp = {
+    [5*12]:  p5  * Math.pow(1+inf, apos+5),
+    [10*12]: p10 * Math.pow(1+inf, apos+10),
+    [15*12]: p15 * Math.pow(1+inf, apos+15),
+    [20*12]: p20 * Math.pow(1+inf, apos+20)
+  };
+  // aportes pontuais mantidos como nominais — já estimados em valor futuro
   const ap2 = {[5*12]:a5, [10*12]:a10, [15*12]:a15, [20*12]:a20};
   const linLabels=[], dS=[], dC=[];
   // três pools: investido (rende rm), não-rendente (estático), OI (taxa própria)
