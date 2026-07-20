@@ -65,9 +65,21 @@ h1{font-size:20px;font-weight:500;margin-bottom:.5rem}
   <div class="mk"><p class="lb">Sobra mensal hoje</p><p class="vl" id="m-sobra">—</p><p class="sb" id="m-sobra-sub">—</p></div>
   <div class="mk"><p class="lb">Retirada líquida inicial</p><p class="vl" id="m-ret">—</p><p class="sb" id="m-ret-sub">—</p></div>
   <div class="mk" id="dur-card" style="border:.5px solid #1D9E75;background:#E1F5EE">
-    <p class="lb" style="color:#0F6E56">Duração estimada</p>
+    <p class="lb" style="color:#0F6E56">Duração estimada — cenário base</p>
     <p class="vl" id="m-dur" style="color:#085041">—</p>
     <p class="sb" id="m-dur-sub" style="color:#0F6E56">—</p>
+  </div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem">
+  <div class="mk" id="dur-pess-card" style="border:.5px solid #E24B4A;background:#FCEBEB">
+    <p class="lb" style="color:#791F1F">Pessimista</p>
+    <p class="vl" id="m-dur-pess" style="color:#791F1F">—</p>
+    <p class="sb" id="m-dur-pess-sub" style="color:#993C1D">—</p>
+  </div>
+  <div class="mk" id="dur-otim-card" style="border:.5px solid #1D9E75;background:#E1F5EE">
+    <p class="lb" style="color:#085041">Otimista</p>
+    <p class="vl" id="m-dur-otim" style="color:#085041">—</p>
+    <p class="sb" id="m-dur-otim-sub" style="color:#0F6E56">—</p>
   </div>
 </div>
 
@@ -111,10 +123,20 @@ h1{font-size:20px;font-weight:500;margin-bottom:.5rem}
   <div class="row"><span class="lb">Patrimônio sem rendimento</span><input type="range" id="s-pat-nr" min="0" max="20" step="0.1" value="0"><span class="vl" id="v-pat-nr">R$ 0,0M</span></div>
   <p class="nota" id="pat-nr-nota">Ex: imóvel parado, reserva em conta corrente. Entra no saldo total mas não rende.</p>
   <div class="row"><span class="lb">Rendimento líquido mensal</span><input type="range" id="s-rend" min="0.3" max="1.5" step="0.01" value="0.75"><span class="vl" id="v-rend">0,75%</span></div>
+  <div class="row"><span class="lb">Rendimento tardio (após ano N)</span><input type="range" id="s-rend-tard" min="0.3" max="1.5" step="0.01" value="0.55"><span class="vl" id="v-rend-tard">0,55%</span></div>
+  <div class="row"><span class="lb">A partir do ano da aposentadoria</span><input type="range" id="s-rend-ano" min="1" max="30" step="1" value="10"><span class="vl" id="v-rend-ano">ano 10</span></div>
+  <p class="nota" id="rend-tard-nota">Após o ano 10 da aposentadoria o rendimento cai para 0,55% — reflete a migração para ativos mais conservadores com o envelhecimento</p>
   <div class="row"><span class="lb">Custo de vida mensal</span><input type="range" id="s-custo" min="0" max="200" step="1" value="0"><span class="vl" id="v-custo">R$ 0k/mês</span></div>
   <p class="nota">Custo total mensal — alimentação, moradia, saúde, lazer e manutenção</p>
   <div class="row"><span class="lb">Inflação anual</span><input type="range" id="s-inf" min="2" max="15" step="0.1" value="6"><span class="vl" id="v-inf">6,0%</span></div>
   <div class="row"><span class="lb">Anos até aposentadoria</span><input type="range" id="s-anos" min="1" max="30" step="1" value="10"><span class="vl" id="v-anos">10 anos</span></div>
+
+  <!-- CENÁRIOS DE SENSIBILIDADE -->
+  <div class="sec">Cenários de sensibilidade</div>
+  <p class="nota" style="margin-bottom:8px">Define o intervalo pessimista/otimista em relação ao cenário base. Os três cenários aparecem nos gráficos e no card de duração.</p>
+  <div class="row"><span class="lb">Variação do rendimento</span><input type="range" id="s-var-rend" min="0.05" max="0.4" step="0.05" value="0.2"><span class="vl" id="v-var-rend">±0,20%</span></div>
+  <div class="row"><span class="lb">Variação da inflação</span><input type="range" id="s-var-inf" min="0.5" max="3" step="0.5" value="2"><span class="vl" id="v-var-inf">±2,0%</span></div>
+  <p class="nota" id="cenarios-nota">—</p>
 
   <!-- CUSTOS RECORRENTES -->
   <div class="sec">Custos recorrentes anuais</div>
@@ -285,7 +307,8 @@ h1{font-size:20px;font-weight:500;margin-bottom:.5rem}
   <p style="font-size:11px;font-weight:500;color:#888780;text-transform:uppercase;letter-spacing:.06em;margin:0 0 4px">Plano vs realidade</p>
   <p style="font-size:11px;color:#888780;margin:0 0 10px">Crescimento planejado do início do plano até a aposentadoria. Pontos = realizados. Marcador ◆ = hoje.</p>
   <div style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:12px;font-size:12px;color:#5f5e5a">
-    <span style="display:flex;align-items:center;gap:4px"><span style="width:28px;height:2px;background:#534AB7;border-radius:2px"></span>Planejado</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:28px;height:2px;background:#534AB7;border-radius:2px"></span>Planejado original</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:28px;height:2px;background:#1D9E75;border-radius:2px"></span>Projeção a partir de hoje</span>
     <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#C9A84C;display:inline-block"></span>Realizados</span>
     <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#1D9E75;display:inline-block"></span>Atual</span>
   </div>
@@ -296,7 +319,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:.5rem}
 <script>
 // ── VERSÃO ──────────────────────────────────────────────────────────
 // Atualize aqui ao gerar uma nova versão do arquivo
-const VERSION = '1.1';
+const VERSION = '1.2';
 
 // ── CONSTANTES ──────────────────────────────────────────────────────
 const ANO_ATUAL = new Date().getFullYear();
@@ -309,7 +332,8 @@ const MESES_NOMES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out'
 const SLIDER_IDS = [
   's-idade','s-idade-esp','s-filho1','s-filho2','s-filho3',
   's-renda','s-reaj','s-inss','s-inss-reaj','s-inss-ano',
-  's-inv','s-pat-nr','s-rend','s-custo','s-inf','s-anos',
+  's-inv','s-pat-nr','s-rend','s-rend-tard','s-rend-ano',
+  's-custo','s-inf','s-anos','s-var-rend','s-var-inf',
   's-viag','s-carr','s-ianos','s-inovo',
   'oi-val','oi-taxa','oi-renda'
 ];
@@ -410,9 +434,13 @@ function calc() {
   const inv        = parseFloat(document.getElementById('s-inv').value) * 1e6;
   const patNR      = parseFloat(document.getElementById('s-pat-nr').value) * 1e6;
   const rm         = parseFloat(document.getElementById('s-rend').value) / 100;
+  const rmTard     = parseFloat(document.getElementById('s-rend-tard').value) / 100;
+  const rmAnoTard  = parseInt(document.getElementById('s-rend-ano').value);
   const custo      = parseFloat(document.getElementById('s-custo').value) * 1e3;
   const inf        = parseFloat(document.getElementById('s-inf').value) / 100;
   const apos       = parseInt(document.getElementById('s-anos').value);
+  const varRend    = parseFloat(document.getElementById('s-var-rend').value) / 100;
+  const varInf     = parseFloat(document.getElementById('s-var-inf').value) / 100;
   const viag       = parseFloat(document.getElementById('s-viag').value) * 1e3;
   const carr       = parseFloat(document.getElementById('s-carr').value) * 1e3;
   const nr3        = parseFloat(document.getElementById('nr3').value) || 0;
@@ -488,6 +516,14 @@ function calc() {
     ? 'Ex: imóvel parado, reserva em conta corrente. Entra no saldo total mas não rende.'
     : fi(patNR)+' fora do mercado. Se aplicado a '+parseFloat(document.getElementById('s-rend').value).toFixed(2).replace('.',',')+' %/mês, renderia '+fi(patNR*rm)+'/mês adicionais.';
   document.getElementById('v-rend').textContent = parseFloat(document.getElementById('s-rend').value).toFixed(2).replace('.',',')+' %';
+  document.getElementById('v-rend-tard').textContent = parseFloat(document.getElementById('s-rend-tard').value).toFixed(2).replace('.',',')+' %';
+  document.getElementById('v-rend-ano').textContent = 'ano '+rmAnoTard;
+  document.getElementById('rend-tard-nota').textContent = 'Após o ano '+rmAnoTard+' da aposentadoria o rendimento cai de '+parseFloat(document.getElementById('s-rend').value).toFixed(2).replace('.',',')+' % para '+parseFloat(document.getElementById('s-rend-tard').value).toFixed(2).replace('.',',')+' % — reflete migração para ativos mais conservadores';
+  document.getElementById('v-var-rend').textContent = '±'+parseFloat(document.getElementById('s-var-rend').value).toFixed(2).replace('.',',')+' %';
+  document.getElementById('v-var-inf').textContent = '±'+parseFloat(document.getElementById('s-var-inf').value).toFixed(1).replace('.',',')+' %';
+  document.getElementById('cenarios-nota').textContent =
+    'Pessimista: rendimento '+(rm-varRend)*100 .toFixed(2).replace('.',',')+' % / inflação '+(inf+varInf)*100 .toFixed(1).replace('.',',')+' %  |  '
+   +'Otimista: rendimento '+(rm+varRend)*100 .toFixed(2).replace('.',',')+' % / inflação '+(inf-varInf)*100 .toFixed(1).replace('.',',')+' %';
   document.getElementById('v-custo').textContent = 'R$ '+document.getElementById('s-custo').value+'k/mês';
   document.getElementById('v-inf').textContent = parseFloat(document.getElementById('s-inf').value).toFixed(1).replace('.',',')+' %';
   document.getElementById('v-anos').textContent = apos+' ano'+(apos>1?'s':'')+' ('+anoApos+')';
@@ -611,29 +647,143 @@ function calc() {
   barLabels.push(anoApos+' ★'); barPre.push(null); barPos.push(Math.round(sATotal));
 
   // ── PÓS-APOSENTADORIA ──
-  // custos pontuais corrigidos pela inflação (valores de hoje → nominais no ano do evento)
-  // apos+N = anos desde hoje até o evento
-  const cp = {
+  // custos pontuais corrigidos pela inflação
+  const cp  = {
     [5*12]:  p5  * Math.pow(1+inf, apos+5),
     [10*12]: p10 * Math.pow(1+inf, apos+10),
     [15*12]: p15 * Math.pow(1+inf, apos+15),
     [20*12]: p20 * Math.pow(1+inf, apos+20)
   };
-  // aportes pontuais mantidos como nominais — já estimados em valor futuro
   const ap2 = {[5*12]:a5, [10*12]:a10, [15*12]:a15, [20*12]:a20};
-  const linLabels=[], dS=[], dC=[];
-  // três pools: investido (rende rm), não-rendente (estático), OI (taxa própria)
-  let ssInv=sA, ssNR=patNR, ssOI=oiValApos;
-  let scInv=sA, scNR=patNR, scOI=oiValApos;
-  let dc=0;
-  const rendaPosAtiva = novasRendas.map((r,i) => rendasApos[i]);
-  let inssAtivo = inssInicio;
   const MAX = 12 * 200;
   const mesAposAbs = apos * 12;
   const imovelMesPosApos = imovelAno >= apos ? (imovelAno-apos)*12 : -1;
   const oiRmMensal = Math.pow(1+OI.taxa, 1/12) - 1;
 
-  // ── dados renda vs custo ──
+  // função reutilizável: simula o loop pós-aposentadoria com rmBase e infBase configuráveis
+  // retorna dc (meses com saldo positivo) e os arrays de saldo anual
+  function simPos(rmBase, infBase) {
+    const imB  = Math.pow(1+infBase, 1/12) - 1;
+    const fIB  = Math.pow(1+infBase, apos);
+    // custos pontuais recalculados com infBase
+    const cpB = {
+      [5*12]:  p5  * Math.pow(1+infBase, apos+5),
+      [10*12]: p10 * Math.pow(1+infBase, apos+10),
+      [15*12]: p15 * Math.pow(1+infBase, apos+15),
+      [20*12]: p20 * Math.pow(1+infBase, apos+20)
+    };
+    let scInv=sA, scNR=patNR, scOI=oiValApos;
+    let dcB=0;
+    const rPA = novasRendas.map((r,i) => rendasApos[i]);
+    let inssAt = inssInicio;
+    const salAnual=[];
+
+    for (let m=0; m<=MAX; m++) {
+      novasRendas.forEach((r,i)=>{ if(rPA[i]===0&&r.inicio>=apos&&m===(r.inicio-apos)*12) rPA[i]=r.valor; });
+      if (inssAt===0 && mesesInssPosApos>0 && m===mesesInssPosApos) inssAt=inssValor;
+      if (imovelLiq>0 && imovelMesPosApos>0 && m===imovelMesPosApos) scInv+=imovelLiq;
+      const mesAbsLoop = mesAposAbs+m;
+      if (IT.val>0 && mesAbsLoop>=IT.mesIni && mesAbsLoop<IT.mesFim) scInv+=IT.val;
+
+      if (m%12===0) salAnual.push(scInv+scNR+scOI>0?Math.round(scInv+scNR+scOI):0);
+
+      const apAno = m/12;
+      // rendimento tardio: usa rmTard após o ano configurado
+      const rmEff = apAno >= rmAnoTard ? rmTard : rmBase;
+      const cfb   = apAno<fd1 ? fc1 : apAno<fd1+fd2 ? fc2 : fc3;
+      const cmt   = (cfb+vm+cm2)*fIB*Math.pow(1+imB,m);
+      const trp   = rPA.reduce((s,v)=>s+v, 0);
+      const oiRendaMes = OI.renda > 0 ? OI.renda*Math.pow(1+ir,m) : 0;
+
+      scOI *= (1+oiRmMensal);
+      scInv *= (1+rmEff);
+      scInv = Math.max(0,scInv) + (ap2[m]||0);
+      scInv = Math.max(0,scInv-(cpB[m]||0));
+      let defComp = Math.max(0, cmt-trp-inssAt-oiRendaMes);
+      const useNRc=Math.min(scNR,defComp); scNR-=useNRc; defComp-=useNRc;
+      const useOIc=Math.min(scOI,defComp); scOI-=useOIc; defComp-=useOIc;
+      scInv = Math.max(0, scInv-defComp);
+      if (scInv+scNR+scOI>0) dcB++;
+
+      rPA.forEach((_,i)=>{ if(rPA[i]>0) rPA[i]*=(1+ir); });
+      if (inssAt>0) inssAt*=(1+iInss);
+      if (scInv+scNR+scOI<=0) break;
+    }
+    return {dc:dcB, salAnual};
+  }
+
+  // simulação cenário base — também gera dS (sem rendas) para gráfico de linha
+  const linLabels=[], dS=[], dC=[], dPess=[], dOtim=[];
+  {
+    // cenário base (dC) com taxa variável
+    const resBase = simPos(rm, inf);
+    // cenário sem rendas passivas (dS) para comparação no gráfico
+    const resSemRendas = (function(){
+      let ssInv=sA, ssNR=patNR, ssOI=oiValApos;
+      const imB=Math.pow(1+inf,1/12)-1, fIB=Math.pow(1+inf,apos);
+      const salAnual=[];
+      for(let m=0;m<=MAX;m++){
+        if(imovelLiq>0&&imovelMesPosApos>0&&m===imovelMesPosApos){ssInv+=imovelLiq;}
+        const mesAbsLoop=mesAposAbs+m;
+        if(IT.val>0&&mesAbsLoop>=IT.mesIni&&mesAbsLoop<IT.mesFim) ssInv+=IT.val;
+        if(m%12===0) salAnual.push(ssInv+ssNR+ssOI>0?Math.round(ssInv+ssNR+ssOI):0);
+        const apAno=m/12, rmEff=apAno>=rmAnoTard?rmTard:rm;
+        const cfb=apAno<fd1?fc1:apAno<fd1+fd2?fc2:fc3;
+        const cmt=(cfb+vm+cm2)*fIB*Math.pow(1+imB,m);
+        ssOI*=(1+oiRmMensal); ssInv*=(1+rmEff);
+        const useNRb=Math.min(ssNR,cmt); ssNR-=useNRb;
+        const useOIb=Math.min(ssOI,cmt-useNRb); ssOI-=useOIb;
+        ssInv=Math.max(0,ssInv-(cmt-useNRb-useOIb));
+        if(ssInv+ssNR+ssOI<=0)break;
+      }
+      return salAnual;
+    })();
+    const resPess = simPos(Math.max(0.001, rm-varRend), inf+varInf);
+    const resOtim = simPos(rm+varRend, Math.max(0.001, inf-varInf));
+
+    const maxLen = Math.max(resBase.salAnual.length, resSemRendas.length, resPess.salAnual.length, resOtim.salAnual.length);
+    for (let i=0; i<maxLen; i++) {
+      linLabels.push(''+(anoApos+i));
+      dS.push(resSemRendas[i] ?? 0);
+      dC.push(resBase.salAnual[i] ?? 0);
+      dPess.push(resPess.salAnual[i] ?? 0);
+      dOtim.push(resOtim.salAnual[i] ?? 0);
+      if (i>=1 && i<=20) { barLabels.push(''+(anoApos+i)); barPre.push(null); barPos.push(resBase.salAnual[i]??0); }
+    }
+
+    // atualiza cards de duração — base
+    const dc = resBase.dc;
+    const anos=Math.floor(dc/12), mes2=dc%12, eterna=dc>=MAX-1;
+    const dEl=document.getElementById('m-dur'), sEl=document.getElementById('m-dur-sub'), cEl=document.getElementById('dur-card');
+    if (eterna) {
+      dEl.textContent='∞ patrimônio perene'; sEl.textContent='rendimento supera retiradas';
+      dEl.style.color='#085041'; cEl.style.borderColor='#1D9E75'; cEl.style.background='#E1F5EE'; sEl.style.color='#0F6E56';
+    } else {
+      const anoEsgota=anoApos+anos, iE=idadeAtual+apos+anos, iEsp=idadeEsp+apos+anos;
+      const filhosStr = filhosAtivos.map(f=>f+apos+anos+' anos').join(' | ');
+      dEl.textContent = anos+' anos e '+mes2+' meses';
+      sEl.textContent = 'esgota em '+anoEsgota+' — você ~'+iE+' | cônjuge ~'+iEsp+(filhosStr?' | filhos: '+filhosStr:'');
+      const cor=anos>35?'#085041':anos>20?'#633806':'#791F1F';
+      const bg=anos>35?'#E1F5EE':anos>20?'#FAEEDA':'#FCEBEB';
+      const bd=anos>35?'#1D9E75':anos>20?'#EF9F27':'#E24B4A';
+      dEl.style.color=cor; cEl.style.background=bg; cEl.style.borderColor=bd; sEl.style.color=cor;
+    }
+
+    // card pessimista
+    const dcP=resPess.dc, anosP=Math.floor(dcP/12), m2P=dcP%12, eterP=dcP>=MAX-1;
+    const pEl=document.getElementById('m-dur-pess'), psEl=document.getElementById('m-dur-pess-sub');
+    pEl.textContent = eterP ? '∞ perene' : anosP+' anos e '+m2P+' meses';
+    psEl.textContent = eterP ? 'rendimento supera retiradas' : 'esgota em '+(anoApos+anosP)+' | rend. '+(( rm-varRend)*100).toFixed(2).replace('.',',')+' % / inf. '+((inf+varInf)*100).toFixed(1).replace('.',',')+' %';
+
+    // card otimista
+    const dcO=resOtim.dc, anosO=Math.floor(dcO/12), m2O=dcO%12, eterO=dcO>=MAX-1;
+    const oEl=document.getElementById('m-dur-otim'), osEl=document.getElementById('m-dur-otim-sub');
+    oEl.textContent = eterO ? '∞ perene' : anosO+' anos e '+m2O+' meses';
+    osEl.textContent = eterO ? 'rendimento supera retiradas' : 'esgota em '+(anoApos+anosO)+' | rend. '+((rm+varRend)*100).toFixed(2).replace('.',',')+' % / inf. '+((inf-varInf)*100).toFixed(1).replace('.',',')+' %';
+  }
+
+  // ── GRÁFICOS ──
+  // renda vs custo (não muda com cenários — usa parâmetros base)
   const cvLabels=[], cvCusto=[], cvRenda=[];
   cvLabels.push(''+ANO_ATUAL); cvCusto.push(Math.round(custo+vm+cm2)); cvRenda.push(Math.round(renda));
   {
@@ -652,103 +802,39 @@ function calc() {
     let inssCV=inssInicio;
     const raPCV = novasRendas.map((r,i) => rendasApos[i]);
     for (let ano=0; ano<=25; ano++) {
-      const anoAbs = anoApos+ano;
-      const cfb = ano<fd1 ? fc1 : ano<fd1+fd2 ? fc2 : fc3;
-      const cmt = (cfb+vm+cm2)*fI*Math.pow(1+inf,ano);
-      if (inssCV===0 && anoAbs>=ANO_INSS) inssCV=inssValor*Math.pow(1+inssReaj,anoAbs-ANO_INSS);
+      const anoAbs=anoApos+ano, cfb=ano<fd1?fc1:ano<fd1+fd2?fc2:fc3;
+      const cmt=(cfb+vm+cm2)*fI*Math.pow(1+inf,ano);
+      if(inssCV===0&&anoAbs>=ANO_INSS) inssCV=inssValor*Math.pow(1+inssReaj,anoAbs-ANO_INSS);
       novasRendas.forEach((r,i)=>{ if(raPCV[i]===0&&r.inicio>=apos){const ad=anoAbs-(ANO_ATUAL+r.inicio);if(ad>=0)raPCV[i]=r.valor*Math.pow(1+reaj,ad);} });
       cvLabels.push(''+anoAbs+(ano===0?' ★':''));
       cvCusto.push(Math.round(cmt));
       cvRenda.push(Math.round(raPCV.reduce((s,v)=>s+v,0)+inssCV));
       raPCV.forEach((_,i)=>{ if(raPCV[i]>0) raPCV[i]*=(1+reaj); });
-      if (inssCV>0) inssCV*=(1+inssReaj);
+      if(inssCV>0) inssCV*=(1+inssReaj);
     }
   }
 
-  // loop pós-aposentadoria
-  for (let m=0; m<=MAX; m++) {
-    novasRendas.forEach((r,i)=>{ if(rendaPosAtiva[i]===0&&r.inicio>=apos&&m===(r.inicio-apos)*12) rendaPosAtiva[i]=r.valor; });
-    if (inssAtivo===0 && mesesInssPosApos>0 && m===mesesInssPosApos) inssAtivo=inssValor;
-    if (imovelLiq>0 && imovelMesPosApos>0 && m===imovelMesPosApos) { ssInv+=imovelLiq; scInv+=imovelLiq; }
-    const mesAbsLoop = mesAposAbs + m;
-    if (IT.val>0 && mesAbsLoop>=IT.mesIni && mesAbsLoop<IT.mesFim) { ssInv+=IT.val; scInv+=IT.val; }
-
-    if (m%12===0) {
-      const al = anoApos+(m/12);
-      linLabels.push(''+al);
-      dS.push(ssInv+ssNR+ssOI > 0 ? Math.round(ssInv+ssNR+ssOI) : 0);
-      dC.push(scInv+scNR+scOI > 0 ? Math.round(scInv+scNR+scOI) : 0);
-      const ap=m/12;
-      if (ap>=1 && ap<=20) { barLabels.push(''+al); barPre.push(null); barPos.push(scInv+scNR+scOI>0?Math.round(scInv+scNR+scOI):0); }
-    }
-
-    const ap    = m/12;
-    const cfb   = ap<fd1 ? fc1 : ap<fd1+fd2 ? fc2 : fc3;
-    const cmt   = (cfb+vm+cm2)*fI*Math.pow(1+im,m);
-    const trp   = rendaPosAtiva.reduce((s,v)=>s+v, 0);
-    const oiRendaMes = OI.renda > 0 ? OI.renda*Math.pow(1+ir,m) : 0;
-
-    // OI cresce pela taxa própria
-    ssOI *= (1+oiRmMensal);
-    scOI *= (1+oiRmMensal);
-
-    // cenário base (sem rendas passivas)
-    ssInv *= (1+rm);
-    let defBase = cmt;
-    const useNRb = Math.min(ssNR, defBase); ssNR-=useNRb; defBase-=useNRb;
-    const useOIb = Math.min(ssOI, defBase);  ssOI-=useOIb; defBase-=useOIb;
-    ssInv = Math.max(0, ssInv-defBase);
-
-    // cenário completo (com rendas, INSS, OI renda, eventos)
-    scInv *= (1+rm);
-    scInv = Math.max(0, scInv) + (ap2[m]||0) - (cp[m]||0);
-    let defComp = Math.max(0, cmt - trp - inssAtivo - oiRendaMes);
-    const useNRc = Math.min(scNR, defComp); scNR-=useNRc; defComp-=useNRc;
-    const useOIc = Math.min(scOI, defComp);  scOI-=useOIc; defComp-=useOIc;
-    scInv = Math.max(0, scInv-defComp);
-    if (scInv+scNR+scOI > 0) dc++;
-
-    rendaPosAtiva.forEach((_,i)=>{ if(rendaPosAtiva[i]>0) rendaPosAtiva[i]*=(1+ir); });
-    if (inssAtivo>0) inssAtivo*=(1+iInss);
-    if (ssInv+ssNR+ssOI<=0 && scInv+scNR+scOI<=0) break;
-  }
-
-  // card duração
-  const anos=Math.floor(dc/12), mes2=dc%12, eterna=dc>=MAX-1;
-  const dEl=document.getElementById('m-dur'), sEl=document.getElementById('m-dur-sub'), cEl=document.getElementById('dur-card');
-  if (eterna) {
-    dEl.textContent='∞ patrimônio perene'; sEl.textContent='rendimento supera retiradas';
-    dEl.style.color='#085041'; cEl.style.borderColor='#1D9E75'; cEl.style.background='#E1F5EE'; sEl.style.color='#0F6E56';
-  } else {
-    const anoEsgota=anoApos+anos, iE=idadeAtual+apos+anos, iEsp=idadeEsp+apos+anos;
-    const filhosStr = filhosAtivos.map(f=>f+apos+anos+' anos').join(' | ');
-    dEl.textContent = anos+' anos e '+mes2+' meses';
-    sEl.textContent = 'esgota em '+anoEsgota+' — você ~'+iE+' | cônjuge ~'+iEsp+(filhosStr?' | filhos: '+filhosStr:'');
-    const cor=anos>35?'#085041':anos>20?'#633806':'#791F1F';
-    const bg=anos>35?'#E1F5EE':anos>20?'#FAEEDA':'#FCEBEB';
-    const bd=anos>35?'#1D9E75':anos>20?'#EF9F27':'#E24B4A';
-    dEl.style.color=cor; cEl.style.background=bg; cEl.style.borderColor=bd; sEl.style.color=cor;
-  }
-
-  // ── GRÁFICOS ──
   const hE = p5+p10+p15+p20+a0+a5+a10+a15+a20+nr3+nr5+nr10+inssValor+imovelVenda+OI.val+IT.val > 0;
   document.getElementById('legend').innerHTML =
-    '<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75"></span>Sem eventos pontuais</span>'
-    + (hE ? '<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#D85A30"></span>Com todos os eventos</span>' : '');
+    '<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75"></span>Base (com eventos)</span>'
+    + '<span style="display:flex;align-items:center;gap:4px"><span style="width:28px;height:2px;background:#E24B4A;border-radius:2px;border-top:2px dashed #E24B4A"></span>Pessimista</span>'
+    + '<span style="display:flex;align-items:center;gap:4px"><span style="width:28px;height:2px;background:#185FA5;border-radius:2px;border-top:2px dashed #185FA5"></span>Otimista</span>';
 
   const chartScales = {
     x:{ticks:{color:'#888',font:{size:11},maxTicksLimit:14},grid:{color:'rgba(0,0,0,0.07)'}},
     y:{ticks:{color:'#888',font:{size:11},callback:v=>v>=1e6?'R$ '+(v/1e6).toFixed(0)+'M':v>=1e3?'R$ '+(v/1e3).toFixed(0)+'k':v},grid:{color:'rgba(0,0,0,0.07)'}}
   };
   const tooltipVal = ctx => {
-    const v=ctx.raw; if(v===null)return'';
+    const v=ctx.raw; if(v===null||v===0)return'';
     return ctx.dataset.label+': '+(v>=1e6?'R$ '+(v/1e6).toFixed(2).replace('.',',')+'M':'R$ '+(v/1e3).toFixed(1).replace('.',',')+'k');
   };
 
   if (ci) ci.destroy();
-  const ds2 = [{label:'Sem eventos',data:dS,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.07)',fill:true,tension:0.3,pointRadius:0,borderWidth:2}];
-  if (hE) ds2.push({label:'Com eventos',data:dC,borderColor:'#D85A30',backgroundColor:'rgba(216,90,48,0.07)',fill:true,tension:0.3,pointRadius:0,borderWidth:2,borderDash:[4,3]});
-  ci = new Chart(document.getElementById('chart'), {type:'line',data:{labels:linLabels,datasets:ds2},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:chartScales}});
+  ci = new Chart(document.getElementById('chart'), {type:'line',data:{labels:linLabels,datasets:[
+    {label:'Base',data:dC,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.07)',fill:true,tension:0.3,pointRadius:0,borderWidth:2.5},
+    {label:'Pessimista',data:dPess,borderColor:'#E24B4A',backgroundColor:'transparent',fill:false,tension:0.3,pointRadius:0,borderWidth:1.5,borderDash:[4,3]},
+    {label:'Otimista',data:dOtim,borderColor:'#185FA5',backgroundColor:'transparent',fill:false,tension:0.3,pointRadius:0,borderWidth:1.5,borderDash:[4,3]}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:tooltipVal}}},scales:chartScales}});
 
   if (ciBar) ciBar.destroy();
   ciBar = new Chart(document.getElementById('bar-chart'), {type:'line',data:{labels:barLabels,datasets:[
@@ -834,13 +920,14 @@ function calc() {
     }
 
     // dados do gráfico plano
-    const plGLabels=[mesIniNome+'/'+plAnoIni], plGPlan=[plPatIni], plGReal=[null], plGHoje=[null];
+    const plGLabels=[mesIniNome+'/'+plAnoIni], plGPlan=[plPatIni], plGReal=[null], plGHoje=[null], plGProj=[null];
     pontosPorAno.forEach(p => {
       plGLabels.push('Dez/'+p.ano);
       plGPlan.push(p.val);
       const realEl = document.getElementById('pl-real-'+p.ano);
       plGReal.push(realEl ? (parseFloat(realEl.value)||null) : null);
       plGHoje.push(null);
+      plGProj.push(null);
     });
     if (MES_ATUAL !== 12) {
       const hojeNome = MESES_NOMES[MES_ATUAL-1];
@@ -848,11 +935,36 @@ function calc() {
       plGPlan.push(Math.round(plPatHoje));
       plGReal.push(null);
       plGHoje.push(plPatAtual > 0 ? plPatAtual : null);
+      plGProj.push(plPatAtual > 0 ? plPatAtual : null);
+    }
+
+    // projeção a partir do realizado atual
+    // parte do patAtual (ou plPatHoje se não informado) e projeta até a aposentadoria
+    const patPartida = plPatAtual > 0 ? plPatAtual : plPatHoje;
+    const anosRestantes = anoApos - ANO_ATUAL;
+    if (anosRestantes > 0) {
+      let projPat=patPartida, projCm=custo, projR=renda;
+      // calcula quantos meses até o fim de cada ano restante
+      for (let a=1; a<=anosRestantes; a++) {
+        for (let m=0; m<12; m++) {
+          projPat*=(1+rm); projPat+=projR-projCm;
+          projCm*=(1+im); projR*=(1+ir);
+        }
+        const anoAlvo = ANO_ATUAL+a;
+        if (anoAlvo <= anoApos) {
+          plGLabels.push('Dez/'+anoAlvo+(anoAlvo===anoApos?' ★':''));
+          plGPlan.push(pontosPorAno.find(p=>p.ano===anoAlvo)?.val ?? null);
+          plGReal.push(null);
+          plGHoje.push(null);
+          plGProj.push(Math.max(0,Math.round(projPat)));
+        }
+      }
     }
 
     if (ciPlano) ciPlano.destroy();
     ciPlano = new Chart(document.getElementById('plano-chart'), {type:'line',data:{labels:plGLabels,datasets:[
       {label:'Planejado',data:plGPlan,borderColor:'#534AB7',backgroundColor:'rgba(83,74,183,0.06)',fill:true,tension:0.3,pointRadius:3,pointBackgroundColor:'#534AB7',borderWidth:2,borderDash:[5,4]},
+      {label:'Projeção atual',data:plGProj,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.06)',fill:false,tension:0.3,pointRadius:2,pointBackgroundColor:'#1D9E75',borderWidth:2,spanGaps:false},
       {label:'Realizado',data:plGReal,borderColor:'#C9A84C',backgroundColor:'transparent',fill:false,tension:0,pointRadius:7,pointBackgroundColor:'#C9A84C',pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:0,showLine:false},
       {label:'Atual',data:plGHoje,borderColor:'#1D9E75',backgroundColor:'transparent',fill:false,tension:0,pointRadius:10,pointBackgroundColor:'#1D9E75',pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:0,showLine:false}
     ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
