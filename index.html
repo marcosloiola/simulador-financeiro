@@ -319,7 +319,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:.5rem}
 <script>
 // ── VERSÃO ──────────────────────────────────────────────────────────
 // Atualize aqui ao gerar uma nova versão do arquivo
-const VERSION = '1.2';
+const VERSION = '1.3';
 
 // ── CONSTANTES ──────────────────────────────────────────────────────
 const ANO_ATUAL = new Date().getFullYear();
@@ -751,7 +751,14 @@ function calc() {
       if (i>=1 && i<=20) { barLabels.push(''+(anoApos+i)); barPre.push(null); barPos.push(resBase.salAnual[i]??0); }
     }
 
-    // atualiza cards de duração — base
+    // helper: monta texto de idades no esgotamento
+    const idadeStr = (anosPos) => {
+      const iE=idadeAtual+apos+anosPos, iEsp=idadeEsp+apos+anosPos;
+      const filhosStr = filhosAtivos.map(f=>f+apos+anosPos+' anos').join(' | ');
+      return 'você ~'+iE+' | cônjuge ~'+iEsp+(filhosStr?' | filhos: '+filhosStr:'');
+    };
+
+    // card base
     const dc = resBase.dc;
     const anos=Math.floor(dc/12), mes2=dc%12, eterna=dc>=MAX-1;
     const dEl=document.getElementById('m-dur'), sEl=document.getElementById('m-dur-sub'), cEl=document.getElementById('dur-card');
@@ -759,10 +766,9 @@ function calc() {
       dEl.textContent='∞ patrimônio perene'; sEl.textContent='rendimento supera retiradas';
       dEl.style.color='#085041'; cEl.style.borderColor='#1D9E75'; cEl.style.background='#E1F5EE'; sEl.style.color='#0F6E56';
     } else {
-      const anoEsgota=anoApos+anos, iE=idadeAtual+apos+anos, iEsp=idadeEsp+apos+anos;
-      const filhosStr = filhosAtivos.map(f=>f+apos+anos+' anos').join(' | ');
+      const anoEsgota=anoApos+anos;
       dEl.textContent = anos+' anos e '+mes2+' meses';
-      sEl.textContent = 'esgota em '+anoEsgota+' — você ~'+iE+' | cônjuge ~'+iEsp+(filhosStr?' | filhos: '+filhosStr:'');
+      sEl.textContent = 'esgota em '+anoEsgota+' — '+idadeStr(anos)+' | rend. '+(rm*100).toFixed(2).replace('.',',')+' % / inf. '+(inf*100).toFixed(1).replace('.',',')+' %';
       const cor=anos>35?'#085041':anos>20?'#633806':'#791F1F';
       const bg=anos>35?'#E1F5EE':anos>20?'#FAEEDA':'#FCEBEB';
       const bd=anos>35?'#1D9E75':anos>20?'#EF9F27':'#E24B4A';
@@ -773,13 +779,15 @@ function calc() {
     const dcP=resPess.dc, anosP=Math.floor(dcP/12), m2P=dcP%12, eterP=dcP>=MAX-1;
     const pEl=document.getElementById('m-dur-pess'), psEl=document.getElementById('m-dur-pess-sub');
     pEl.textContent = eterP ? '∞ perene' : anosP+' anos e '+m2P+' meses';
-    psEl.textContent = eterP ? 'rendimento supera retiradas' : 'esgota em '+(anoApos+anosP)+' | rend. '+(( rm-varRend)*100).toFixed(2).replace('.',',')+' % / inf. '+((inf+varInf)*100).toFixed(1).replace('.',',')+' %';
+    psEl.textContent = eterP ? 'rendimento supera retiradas'
+      : 'esgota em '+(anoApos+anosP)+' — '+idadeStr(anosP)+' | rend. '+((rm-varRend)*100).toFixed(2).replace('.',',')+' % / inf. '+((inf+varInf)*100).toFixed(1).replace('.',',')+' %';
 
     // card otimista
     const dcO=resOtim.dc, anosO=Math.floor(dcO/12), m2O=dcO%12, eterO=dcO>=MAX-1;
     const oEl=document.getElementById('m-dur-otim'), osEl=document.getElementById('m-dur-otim-sub');
     oEl.textContent = eterO ? '∞ perene' : anosO+' anos e '+m2O+' meses';
-    osEl.textContent = eterO ? 'rendimento supera retiradas' : 'esgota em '+(anoApos+anosO)+' | rend. '+((rm+varRend)*100).toFixed(2).replace('.',',')+' % / inf. '+((inf-varInf)*100).toFixed(1).replace('.',',')+' %';
+    osEl.textContent = eterO ? 'rendimento supera retiradas'
+      : 'esgota em '+(anoApos+anosO)+' — '+idadeStr(anosO)+' | rend. '+((rm+varRend)*100).toFixed(2).replace('.',',')+' % / inf. '+((inf-varInf)*100).toFixed(1).replace('.',',')+' %';
   }
 
   // ── GRÁFICOS ──
