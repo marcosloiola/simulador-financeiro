@@ -287,7 +287,8 @@ h1{font-size:20px;font-weight:500;margin-bottom:.35rem}
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
       <div class="mk"><p class="lb">Planejado para hoje</p><p class="vl" id="pl-esperado">—</p><p class="sb">sem eventos</p></div>
       <div class="mk" id="pl-real-mk"><p class="lb">Real estimado hoje</p><p class="vl" id="pl-real">—</p><p class="sb" id="pl-diff">com eventos registrados</p></div>
-      <div class="mk"><p class="lb">Impacto líquido</p><p class="vl" id="pl-impacto-val">—</p><p class="sb" id="pl-impacto-dur">—</p></div>
+      <div class="mk"><p class="lb">Impacto líquido (hoje)</p><p class="vl" id="pl-impacto-val">—</p><p class="sb">só a parcela dos eventos já ocorrida até hoje</p></div>
+      <div class="mk"><p class="lb">Impacto na aposentadoria</p><p class="vl" id="pl-impacto-final-val">—</p><p class="sb" id="pl-impacto-dur">—</p></div>
     </div>
   </div>
 
@@ -342,7 +343,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:.35rem}
 <script>
 // ── VERSÃO ───────────────────────────────────────────────────────────
 // Atualize aqui ao gerar nova versão
-const VERSION = '2.12';
+const VERSION = '2.13';
 
 // ── CONSTANTES ───────────────────────────────────────────────────────
 const ANO_ATUAL  = new Date().getFullYear();
@@ -1043,7 +1044,8 @@ function calc() {
     // evento se cancelar da comparação (um evento de R$10 mil ou R$100 mil/mês mostraria o mesmo
     // impacto, pois aumentaria os dois lados quase igualmente). Comparando contra "sem eventos",
     // o impacto na duração passa a refletir de fato o efeito dos eventos + da diferença de patrimônio.
-    const dcComPlano=simComPat(projetarSemEventos(plPatHoje),evs.map(()=>0)),dcComReal=simComPat(patRealProjetado,projReal.rendaNovaFinal);
+    const patSemEventosProjetado=projetarSemEventos(plPatHoje);
+    const dcComPlano=simComPat(patSemEventosProjetado,evs.map(()=>0)),dcComReal=simComPat(patRealProjetado,projReal.rendaNovaFinal);
     const difDur=dcComReal-dcComPlano;
     // v2.12 fix: usar o valor absoluto ANTES de floor/módulo — Math.floor(-2/12) retorna -1 (arredonda
     // para -infinito), não 0, então a versão anterior "Math.abs(Math.floor(difDur/12))" inflava em 1 ano
@@ -1052,9 +1054,19 @@ function calc() {
     const difAbs=Math.abs(difDur);
     const difAnos=Math.floor(difAbs/12), difMes=difAbs%12;
     document.getElementById('pl-impacto-val').textContent=fm(diff);
+    document.getElementById('pl-impacto-val').style.color=diff>=0?'#085041':'#A32D2D';
+    // v2.13: "Impacto líquido (hoje)" só mostra a parcela dos eventos já ocorrida (diff, acima) — a
+    // pedido do Marcos, adicionamos também o efeito final de TODOS os eventos, respeitando as datas
+    // de início/fim de cada um, projetados até a aposentadoria: patRealProjetado (real, com eventos,
+    // já projetado) vs patSemEventosProjetado (plano original, sem nenhum evento do Bloco 2, projetado
+    // pela mesma mecânica). É a mesma comparação que já alimenta "impacto na duração" — só que expressa
+    // em R$ no lugar de meses. Não inclui eventos que só ocorrem DEPOIS da aposentadoria (esses afetam
+    // a duração, calculada abaixo, mas não este valor pontual "na aposentadoria").
+    const impactoFinal=patRealProjetado-patSemEventosProjetado;
+    document.getElementById('pl-impacto-final-val').textContent=fm(impactoFinal);
+    document.getElementById('pl-impacto-final-val').style.color=impactoFinal>=0?'#085041':'#A32D2D';
     document.getElementById('pl-impacto-dur').textContent=difDur===0?'sem impacto na duração':(difDur>0?'+':'-')+difAnos+' anos e '+difMes+' meses na duração';
     document.getElementById('pl-impacto-dur').style.color=difDur>=0?'#085041':'#A32D2D';
-    document.getElementById('pl-impacto-val').style.color=diff>=0?'#085041':'#A32D2D';
 
     // gráfico plano vs realidade
     const mesIniNome=MESES[plMesIni-1];
