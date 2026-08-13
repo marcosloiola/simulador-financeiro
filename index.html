@@ -342,7 +342,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:.35rem}
 <script>
 // ── VERSÃO ───────────────────────────────────────────────────────────
 // Atualize aqui ao gerar nova versão
-const VERSION = '2.11';
+const VERSION = '2.12';
 
 // ── CONSTANTES ───────────────────────────────────────────────────────
 const ANO_ATUAL  = new Date().getFullYear();
@@ -1045,7 +1045,12 @@ function calc() {
     // o impacto na duração passa a refletir de fato o efeito dos eventos + da diferença de patrimônio.
     const dcComPlano=simComPat(projetarSemEventos(plPatHoje),evs.map(()=>0)),dcComReal=simComPat(patRealProjetado,projReal.rendaNovaFinal);
     const difDur=dcComReal-dcComPlano;
-    const difAnos=Math.abs(Math.floor(difDur/12)),difMes=Math.abs(difDur%12);
+    // v2.12 fix: usar o valor absoluto ANTES de floor/módulo — Math.floor(-2/12) retorna -1 (arredonda
+    // para -infinito), não 0, então a versão anterior "Math.abs(Math.floor(difDur/12))" inflava em 1 ano
+    // qualquer diferença negativa que não fosse múltiplo exato de 12 (ex.: difDur=-2 exibia "1 ano e 2
+    // meses" em vez de "2 meses" — bug real encontrado com dados do usuário, evento "Elevah").
+    const difAbs=Math.abs(difDur);
+    const difAnos=Math.floor(difAbs/12), difMes=difAbs%12;
     document.getElementById('pl-impacto-val').textContent=fm(diff);
     document.getElementById('pl-impacto-dur').textContent=difDur===0?'sem impacto na duração':(difDur>0?'+':'-')+difAnos+' anos e '+difMes+' meses na duração';
     document.getElementById('pl-impacto-dur').style.color=difDur>=0?'#085041':'#A32D2D';
