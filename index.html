@@ -7,328 +7,362 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,-apple-system,sans-serif;background:#f1efe8;color:#1a1a18;padding:1.5rem;font-size:14px}
-h1{font-size:20px;font-weight:500;margin-bottom:.5rem}
+h1{font-size:20px;font-weight:500;margin-bottom:.35rem}
 .desc{font-size:13px;color:#888780;margin-bottom:1.5rem}
-.sc{background:#fff;border:.5px solid rgba(0,0,0,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.25rem}
+
+/* blocos principais */
+.bloco{background:#fff;border:.5px solid rgba(0,0,0,0.12);border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+.bloco-titulo{font-size:13px;font-weight:600;color:#1a1a18;margin-bottom:.25rem;display:flex;align-items:center;gap:8px}
+.bloco-sub{font-size:12px;color:#888780;margin-bottom:1.1rem}
+
+/* seções internas */
+.sec{font-size:10px;font-weight:600;color:#888780;text-transform:uppercase;letter-spacing:.07em;margin:1.1rem 0 .5rem;border-bottom:.5px solid rgba(0,0,0,0.08);padding-bottom:4px}
+.sec.blue{color:#185FA5;border-color:#B5D4F4}
+.sec.green{color:#0F6E56;border-color:#9FE1CB}
+.sec.amber{color:#854F0B;border-color:#FAC775}
+.sec.coral{color:#993C1D;border-color:#F0997B}
+.sec.purple{color:#534AB7;border-color:#AFA9EC}
+
+/* cards resumo */
 .sm{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;margin-bottom:1.25rem}
-.mk{background:#f1efe8;border-radius:8px;padding:.875rem}
+.mk{background:#f1efe8;border-radius:8px;padding:.875rem;border:.5px solid transparent}
 .mk .lb{font-size:11px;color:#5f5e5a;margin:0 0 4px}
 .mk .vl{font-size:17px;font-weight:500;color:#1a1a18;margin:0}
 .mk .sb{font-size:11px;color:#888780;margin:3px 0 0}
-.sec{font-size:11px;font-weight:500;color:#888780;text-transform:uppercase;letter-spacing:.06em;margin:1.1rem 0 .5rem;border-bottom:.5px solid rgba(0,0,0,0.1);padding-bottom:5px}
-.sec.blue{color:#185FA5;border-color:#B5D4F4}
-.sec.green{color:#0F6E56;border-color:#9FE1CB}
-.sec.purple{color:#534AB7;border-color:#AFA9EC}
-.sec.coral{color:#993C1D;border-color:#F0997B}
-.sec.amber{color:#854F0B;border-color:#FAC775}
+.dur-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:1.25rem}
+@media(max-width:600px){.dur-grid{grid-template-columns:1fr 1fr}}
+
+/* campos */
 .row{display:flex;align-items:center;gap:10px;margin:.5rem 0}
 .row .lb{font-size:13px;color:#5f5e5a;min-width:220px}
-.row .vl{font-size:13px;font-weight:500;min-width:95px;text-align:right;color:#1a1a18}
+.row .vl{font-size:13px;font-weight:500;min-width:90px;text-align:right;color:#1a1a18}
 .row input[type=range]{flex:1;accent-color:#1D9E75}
-.pr{display:flex;align-items:center;gap:10px;margin:.45rem 0}
-.pr .lb{font-size:13px;color:#5f5e5a;min-width:220px}
-.pr .sb{font-size:11px;color:#888780;flex:1}
-.nota{font-size:11px;color:#888780;font-style:italic;margin:-2px 0 6px;padding-left:8px;border-left:2px solid rgba(0,0,0,0.1)}
-.alerta{font-size:12px;padding:8px 10px;border-radius:8px;margin:.5rem 0;border:.5px solid;background:#FAEEDA;border-color:#EF9F27;color:#633806}
+.pr{display:flex;align-items:center;gap:10px;margin:.4rem 0;flex-wrap:wrap}
+.pr .lb{font-size:13px;color:#5f5e5a;min-width:200px}
+.nota{font-size:11px;color:#888780;font-style:italic;margin:0 0 6px;padding-left:8px;border-left:2px solid rgba(0,0,0,0.08)}
+.alerta{font-size:12px;padding:8px 10px;border-radius:8px;margin:.75rem 0;background:#FAEEDA;border:.5px solid #EF9F27;color:#633806}
+
 /* inputs */
-.pi{width:128px;padding:4px 8px;font-size:13px;border:.5px solid rgba(0,0,0,0.2);border-radius:8px;background:#fff;color:#1a1a18;text-align:right}
-.ai{width:128px;padding:4px 8px;font-size:13px;border:.5px solid #1D9E75;border-radius:8px;background:#fff;color:#1a1a18;text-align:right}
-.ai-star{width:128px;padding:4px 8px;font-size:13px;border:1.5px solid #1D9E75;border-radius:8px;background:#fff;color:#1a1a18;text-align:right;font-weight:500}
-.ni{width:128px;padding:4px 8px;font-size:13px;border:.5px solid #7F77DD;border-radius:8px;background:#fff;color:#1a1a18;text-align:right}
+.pi{padding:4px 8px;font-size:13px;border:.5px solid rgba(0,0,0,0.2);border-radius:8px;background:#fff;color:#1a1a18;text-align:right;width:128px}
+.si{padding:4px 8px;font-size:13px;border:.5px solid rgba(0,0,0,0.2);border-radius:8px;background:#fff;color:#1a1a18;width:128px}
+.ni{padding:4px 8px;font-size:13px;border:.5px solid #7F77DD;border-radius:8px;background:#fff;color:#1a1a18;text-align:right;width:128px}
 .fi{width:90px;padding:4px 8px;font-size:13px;border:.5px solid #F0997B;border-radius:8px;background:#fff;color:#1a1a18;text-align:right}
 .fi-dur{width:90px;padding:4px 8px;font-size:13px;border:.5px solid #B5D4F4;border-radius:8px;background:#fff;color:#1a1a18;text-align:right}
-.txt-input{flex:1;padding:3px 8px;font-size:12px;border:.5px solid rgba(0,0,0,0.15);border-radius:6px;background:#fff;color:#1a1a18;outline:none}
-.sel-input{padding:4px 6px;font-size:13px;border:.5px solid rgba(0,0,0,0.2);border-radius:8px;background:#fff;color:#1a1a18}
+.txt-input{padding:3px 8px;font-size:12px;border:.5px solid rgba(0,0,0,0.15);border-radius:6px;background:#fff;color:#1a1a18;outline:none;flex:1;min-width:0}
+.mes-sel{padding:4px 6px;font-size:13px;border:.5px solid rgba(0,0,0,0.2);border-radius:8px;background:#fff;color:#1a1a18}
 .yr-input{width:72px;padding:4px 8px;font-size:13px;border:.5px solid rgba(0,0,0,0.2);border-radius:8px;background:#fff;color:#1a1a18;text-align:center}
-/* cards coloridos */
-.card-box{border-radius:8px;padding:.75rem 1rem;margin-bottom:8px;border:.5px solid}
-.card-green{background:#f4fbf8;border-color:rgba(15,110,86,0.2)}
-.card-amber{background:#fdf8f0;border-color:rgba(133,79,11,0.15)}
-.card-purple{background:#f6f5fd;border-color:rgba(83,74,183,0.15)}
-.card-tag{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
-/* fases grid */
+
+/* fases */
 .fases-hdr{display:grid;grid-template-columns:1fr 100px 90px;gap:6px;margin-bottom:4px}
-.fases-hdr span{font-size:11px;color:#888780;text-align:right}
+.fases-hdr span{font-size:10px;color:#888780;text-align:right}
 .fases-hdr span:first-child{text-align:left}
 .fase-row{display:grid;grid-template-columns:1fr 100px 90px;gap:6px;align-items:center;margin:.4rem 0}
-/* select de mês */
-.mes-sel{padding:4px 6px;font-size:13px;border:.5px solid rgba(0,0,0,0.2);border-radius:8px;background:#fff;color:#1a1a18}
+
+/* eventos */
+.evento-card{border:.5px solid rgba(0,0,0,0.1);border-radius:10px;margin-bottom:10px;overflow:hidden}
+.evento-header{display:flex;align-items:center;gap:8px;padding:.6rem .9rem;background:#f7f6f1;cursor:pointer;user-select:none}
+.evento-num{font-size:10px;font-weight:600;color:#888780;min-width:20px}
+.evento-tipo-sel{font-size:12px;border:.5px solid rgba(0,0,0,0.15);border-radius:6px;background:#fff;color:#1a1a18;padding:3px 6px;flex:1}
+.evento-resumo{font-size:11px;color:#888780;flex:2;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.evento-body{padding:.75rem .9rem;border-top:.5px solid rgba(0,0,0,0.07);display:none}
+.evento-body.open{display:block}
+.ev-row{display:flex;align-items:center;gap:8px;margin:.4rem 0;flex-wrap:wrap}
+.ev-label{font-size:12px;color:#5f5e5a;min-width:160px}
+
+/* botões */
+.btn-primary{padding:8px 20px;font-size:13px;font-weight:500;background:#1D9E75;color:#fff;border:none;border-radius:8px;cursor:pointer}
+.btn-secondary{padding:8px 16px;font-size:13px;background:transparent;color:#888780;border:.5px solid rgba(0,0,0,0.2);border-radius:8px;cursor:pointer}
+
+/* status plano */
+.status-diff-pos{color:#085041;font-weight:500}
+.status-diff-neg{color:#A32D2D;font-weight:500}
 </style>
 </head>
 <body>
-<h1>Simulador de aposentadoria <span id="app-version" style="font-size:12px;font-weight:400;color:#888780;margin-left:8px"></span></h1>
-<p class="desc">Preencha os parâmetros abaixo para simular a longevidade do seu patrimônio na aposentadoria. Todos os valores em reais de hoje — a inflação é aplicada automaticamente.</p>
+
+<h1>Simulador de aposentadoria <span id="app-version" style="font-size:12px;font-weight:400;color:#888780;margin-left:6px"></span></h1>
+<p class="desc">Defina o plano base uma vez. Registre eventos que afetam o plano ao longo do tempo. O simulador calcula o impacto de cada desvio.</p>
 
 <!-- CARDS RESUMO -->
 <div class="sm">
-  <div class="mk"><p class="lb">Saldo na aposentadoria</p><p class="vl" id="m-saldo">—</p><p class="sb" id="m-saldo-sub">—</p></div>
+  <div class="mk"><p class="lb">Patrimônio na aposentadoria</p><p class="vl" id="m-saldo">—</p><p class="sb" id="m-saldo-sub">—</p></div>
   <div class="mk"><p class="lb">Sobra mensal hoje</p><p class="vl" id="m-sobra">—</p><p class="sb" id="m-sobra-sub">—</p></div>
   <div class="mk"><p class="lb">Retirada líquida inicial</p><p class="vl" id="m-ret">—</p><p class="sb" id="m-ret-sub">—</p></div>
-  <div class="mk" id="dur-card" style="border:.5px solid #1D9E75;background:#E1F5EE">
-    <p class="lb" style="color:#0F6E56">Duração estimada — cenário base</p>
+</div>
+<div id="alerta-box" class="alerta" style="display:none"></div>
+
+<!-- CARDS DURAÇÃO -->
+<div class="dur-grid">
+  <div class="mk" id="dur-card" style="border-color:#1D9E75;background:#E1F5EE">
+    <p class="lb" style="color:#0F6E56">Duração — cenário base</p>
     <p class="vl" id="m-dur" style="color:#085041">—</p>
     <p class="sb" id="m-dur-sub" style="color:#0F6E56">—</p>
   </div>
-</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem">
-  <div class="mk" id="dur-pess-card" style="border:.5px solid #E24B4A;background:#FCEBEB">
+  <div class="mk" id="dur-pess-card" style="border-color:#E24B4A;background:#FCEBEB">
     <p class="lb" style="color:#791F1F">Pessimista</p>
     <p class="vl" id="m-dur-pess" style="color:#791F1F">—</p>
-    <p class="sb" id="m-dur-pess-sub" style="color:#993C1D">—</p>
+    <p class="sb" id="m-dur-pess-sub" style="color:#993C1D;font-size:10px">—</p>
   </div>
-  <div class="mk" id="dur-otim-card" style="border:.5px solid #1D9E75;background:#E1F5EE">
+  <div class="mk" id="dur-otim-card" style="border-color:#1D9E75;background:#E1F5EE">
     <p class="lb" style="color:#085041">Otimista</p>
     <p class="vl" id="m-dur-otim" style="color:#085041">—</p>
-    <p class="sb" id="m-dur-otim-sub" style="color:#0F6E56">—</p>
+    <p class="sb" id="m-dur-otim-sub" style="color:#0F6E56;font-size:10px">—</p>
   </div>
 </div>
 
-<div id="alerta-box" class="alerta" style="display:none"></div>
-
-<!-- PAINEL DE PARÂMETROS -->
-<div class="sc">
+<!-- ═══════════════════════════════════════════════════════
+     BLOCO 1 — PLANO BASE
+═══════════════════════════════════════════════════════ -->
+<div class="bloco">
+  <div class="bloco-titulo">📋 Plano base</div>
+  <div class="bloco-sub">Defina os parâmetros estruturais do seu plano. Estes valores representam a fotografia original — altere aqui apenas quando quiser redefinir o plano do zero.</div>
 
   <!-- DADOS PESSOAIS -->
   <div class="sec blue">Dados pessoais</div>
   <div class="row"><span class="lb">Sua idade atual</span><input type="range" id="s-idade" min="25" max="65" step="1" value="40"><span class="vl" id="v-idade">40 anos</span></div>
   <div class="row"><span class="lb">Idade do cônjuge</span><input type="range" id="s-idade-esp" min="25" max="65" step="1" value="40"><span class="vl" id="v-idade-esp">40 anos</span></div>
-  <div class="row"><span class="lb">Idade do filho 1</span><input type="range" id="s-filho1" min="0" max="30" step="1" value="0"><span class="vl" id="v-filho1">—</span></div>
-  <div class="row"><span class="lb">Idade do filho 2</span><input type="range" id="s-filho2" min="0" max="30" step="1" value="0"><span class="vl" id="v-filho2">—</span></div>
-  <div class="row"><span class="lb">Idade do filho 3</span><input type="range" id="s-filho3" min="0" max="30" step="1" value="0"><span class="vl" id="v-filho3">—</span></div>
-  <p class="nota" id="filhos-nota">Idades dos filhos hoje — exibidas no card de duração como referência</p>
+  <div class="row"><span class="lb">Filho 1</span><input type="range" id="s-filho1" min="0" max="30" step="1" value="0"><span class="vl" id="v-filho1">—</span></div>
+  <div class="row"><span class="lb">Filho 2</span><input type="range" id="s-filho2" min="0" max="30" step="1" value="0"><span class="vl" id="v-filho2">—</span></div>
+  <div class="row"><span class="lb">Filho 3</span><input type="range" id="s-filho3" min="0" max="30" step="1" value="0"><span class="vl" id="v-filho3">—</span></div>
+  <p class="nota" id="filhos-nota">Idades dos filhos — usadas como referência no card de duração</p>
 
-  <!-- RENDA -->
-  <div class="sec blue">Renda pré-aposentadoria</div>
-  <div class="row"><span class="lb">Renda mensal líquida hoje</span><input type="range" id="s-renda" min="0" max="150" step="1" value="0"><span class="vl" id="v-renda">R$ 0k/mês</span></div>
-  <div class="row"><span class="lb">Reajuste anual da renda</span><input type="range" id="s-reaj" min="0" max="10" step="0.5" value="3"><span class="vl" id="v-reaj">3,0% a.a.</span></div>
-  <p class="nota">A diferença entre o crescimento da renda e a inflação corrói a sobra ao longo do tempo</p>
-
-  <!-- INSS -->
-  <div class="sec amber">Aposentadoria INSS</div>
-  <div class="row"><span class="lb">Valor mensal do INSS</span><input type="range" id="s-inss" min="0" max="30" step="0.5" value="0"><span class="vl" id="v-inss">R$ 0k/mês</span></div>
-  <div class="row"><span class="lb">Reajuste anual do INSS</span><input type="range" id="s-inss-reaj" min="0" max="10" step="0.1" value="3.5"><span class="vl" id="v-inss-reaj">3,5% a.a.</span></div>
-  <div class="row"><span class="lb">Ano de início do INSS</span><input type="range" id="s-inss-ano" min="2025" max="2070" step="1" value="2050"><span class="vl" id="v-inss-ano">2050</span></div>
-  <p class="nota" id="inss-nota">Reduz a retirada mensal do patrimônio a partir do ano configurado</p>
-
-  <!-- NOVAS RENDAS -->
-  <div class="sec purple">Novas rendas futuras (anos a partir de hoje)</div>
-  <div class="pr"><span class="lb">Nova renda daqui 3 anos (/mês)</span><input type="number" class="ni" id="nr3" value="0" step="1000" min="0"><span class="sb" id="ns3">—</span></div>
-  <div class="pr"><span class="lb">Nova renda daqui 5 anos (/mês)</span><input type="number" class="ni" id="nr5" value="0" step="1000" min="0"><span class="sb" id="ns5">—</span></div>
-  <div class="pr"><span class="lb">Nova renda daqui 10 anos (/mês)</span><input type="number" class="ni" id="nr10" value="0" step="1000" min="0"><span class="sb" id="ns10">—</span></div>
-  <p class="nota">Antes da aposentadoria vira aporte; depois reduz a retirada mensal. Cresce pelo reajuste anual.</p>
-
-  <!-- PARÂMETROS BASE -->
-  <div class="sec">Parâmetros base</div>
-  <div class="row"><span class="lb">Investimento atual (rende)</span><input type="range" id="s-inv" min="0" max="50" step="0.1" value="0"><span class="vl" id="v-inv">R$ 0,0M</span></div>
+  <!-- PATRIMÔNIO -->
+  <div class="sec">Patrimônio inicial do plano</div>
+  <div class="row"><span class="lb">Investimento (rende)</span><input type="range" id="s-inv" min="0" max="50" step="0.1" value="0"><span class="vl" id="v-inv">R$ 0,0M</span></div>
   <div class="row"><span class="lb">Patrimônio sem rendimento</span><input type="range" id="s-pat-nr" min="0" max="20" step="0.1" value="0"><span class="vl" id="v-pat-nr">R$ 0,0M</span></div>
-  <p class="nota" id="pat-nr-nota">Ex: imóvel parado, reserva em conta corrente. Entra no saldo total mas não rende.</p>
+  <p class="nota" id="pat-nr-nota">Ex: imóvel parado, conta corrente. Entra no saldo mas não rende.</p>
+
+  <!-- RENDIMENTO -->
+  <div class="sec">Rendimento &amp; inflação</div>
   <div class="row"><span class="lb">Rendimento líquido mensal</span><input type="range" id="s-rend" min="0.3" max="1.5" step="0.01" value="0.75"><span class="vl" id="v-rend">0,75%</span></div>
   <div class="row"><span class="lb">Rendimento tardio (após ano N)</span><input type="range" id="s-rend-tard" min="0.3" max="1.5" step="0.01" value="0.55"><span class="vl" id="v-rend-tard">0,55%</span></div>
   <div class="row"><span class="lb">A partir do ano da aposentadoria</span><input type="range" id="s-rend-ano" min="1" max="30" step="1" value="10"><span class="vl" id="v-rend-ano">ano 10</span></div>
-  <p class="nota" id="rend-tard-nota">Após o ano 10 da aposentadoria o rendimento cai para 0,55% — reflete a migração para ativos mais conservadores com o envelhecimento</p>
-  <div class="row"><span class="lb">Custo de vida mensal</span><input type="range" id="s-custo" min="0" max="200" step="1" value="0"><span class="vl" id="v-custo">R$ 0k/mês</span></div>
-  <p class="nota">Custo total mensal — alimentação, moradia, saúde, lazer e manutenção</p>
+  <p class="nota" id="rend-tard-nota">Migração para ativos mais conservadores com o envelhecimento</p>
   <div class="row"><span class="lb">Inflação anual</span><input type="range" id="s-inf" min="2" max="15" step="0.1" value="6"><span class="vl" id="v-inf">6,0%</span></div>
   <div class="row"><span class="lb">Anos até aposentadoria</span><input type="range" id="s-anos" min="1" max="30" step="1" value="10"><span class="vl" id="v-anos">10 anos</span></div>
 
-  <!-- CENÁRIOS DE SENSIBILIDADE -->
+  <!-- CENÁRIOS -->
   <div class="sec">Cenários de sensibilidade</div>
-  <p class="nota" style="margin-bottom:8px">Define o intervalo pessimista/otimista em relação ao cenário base. Os três cenários aparecem nos gráficos e no card de duração.</p>
   <div class="row"><span class="lb">Variação do rendimento</span><input type="range" id="s-var-rend" min="0.05" max="0.4" step="0.05" value="0.2"><span class="vl" id="v-var-rend">±0,20%</span></div>
   <div class="row"><span class="lb">Variação da inflação</span><input type="range" id="s-var-inf" min="0.5" max="3" step="0.5" value="2"><span class="vl" id="v-var-inf">±2,0%</span></div>
   <p class="nota" id="cenarios-nota">—</p>
 
-  <!-- CUSTOS RECORRENTES -->
-  <div class="sec">Custos recorrentes anuais</div>
+  <!-- RENDA -->
+  <div class="sec blue">Renda mensal</div>
+  <div class="row"><span class="lb">Renda líquida hoje</span><input type="range" id="s-renda" min="0" max="150" step="1" value="0"><span class="vl" id="v-renda">R$ 0k/mês</span></div>
+  <div class="row"><span class="lb">Reajuste anual da renda</span><input type="range" id="s-reaj" min="0" max="10" step="0.5" value="3"><span class="vl" id="v-reaj">3,0% a.a.</span></div>
+
+  <!-- INSS -->
+  <div class="sec amber">INSS</div>
+  <div class="row"><span class="lb">Valor mensal do INSS</span><input type="range" id="s-inss" min="0" max="30" step="0.5" value="0"><span class="vl" id="v-inss">R$ 0k/mês</span></div>
+  <div class="row"><span class="lb">Reajuste anual do INSS</span><input type="range" id="s-inss-reaj" min="0" max="10" step="0.1" value="3.5"><span class="vl" id="v-inss-reaj">3,5% a.a.</span></div>
+  <div class="row"><span class="lb">Ano de início do INSS</span><input type="range" id="s-inss-ano" min="2025" max="2070" step="1" value="2050"><span class="vl" id="v-inss-ano">2050</span></div>
+  <p class="nota" id="inss-nota">Reduz a retirada mensal a partir do ano configurado</p>
+
+  <!-- CUSTO DE VIDA -->
+  <div class="sec coral">Custo de vida</div>
+  <div class="row"><span class="lb">Custo mensal atual</span><input type="range" id="s-custo" min="0" max="200" step="1" value="0"><span class="vl" id="v-custo">R$ 0k/mês</span></div>
+  <p class="nota">Tudo: moradia, alimentação, saúde, lazer e manutenção</p>
   <div class="row"><span class="lb">Viagens (por ano)</span><input type="range" id="s-viag" min="0" max="300" step="5" value="0"><span class="vl" id="v-viag">R$ 0k/ano</span></div>
   <div class="row"><span class="lb">Outros custos anuais</span><input type="range" id="s-carr" min="0" max="150" step="1" value="0"><span class="vl" id="v-carr">R$ 0k/ano</span></div>
 
-  <!-- FASES -->
-  <div class="sec coral">Fases do custo de vida (pós-aposentadoria)</div>
-  <p class="nota" style="margin-bottom:8px">Custo mensal em valores de hoje — corrigido pela inflação. Duração em anos a partir da aposentadoria.</p>
+  <p style="font-size:11px;color:#888780;margin:.9rem 0 .4rem">Fases do custo de vida pós-aposentadoria — valores de hoje, inflação aplicada automaticamente:</p>
   <div class="fases-hdr"><span>Fase</span><span>R$/mês</span><span>Anos</span></div>
   <div class="fase-row">
     <span style="font-size:13px;color:#5f5e5a" id="fase1-label">Fase 1</span>
     <input type="number" class="fi" id="fc1" value="0" step="1000" min="0">
     <input type="number" class="fi-dur" id="fd1" value="10" step="1" min="1" max="50">
   </div>
-  <p class="nota">Fase inicial — custo de vida pleno</p>
+  <p class="nota">Fase inicial — custo pleno</p>
   <div class="fase-row">
     <span style="font-size:13px;color:#5f5e5a" id="fase2-label">Fase 2</span>
     <input type="number" class="fi" id="fc2" value="0" step="1000" min="0">
     <input type="number" class="fi-dur" id="fd2" value="10" step="1" min="1" max="50">
   </div>
-  <p class="nota">Fase intermediária — redução de custos com saída de dependentes, mudança de moradia, etc.</p>
+  <p class="nota">Fase intermediária — redução com saída de dependentes, mudança de moradia, etc.</p>
   <div class="fase-row">
     <span style="font-size:13px;color:#5f5e5a" id="fase3-label">Fase 3</span>
     <input type="number" class="fi" id="fc3" value="0" step="1000" min="0">
     <span style="font-size:12px;color:#888780;text-align:right">indefinido</span>
   </div>
-  <p class="nota">Fase final — considere aumento de custos de saúde com o envelhecimento</p>
-
-  <!-- VENDA DE IMÓVEL -->
-  <div class="sec" style="color:#534AB7;border-color:#AFA9EC">Venda de imóvel</div>
-  <div class="pr"><span class="lb">Valor de venda</span><input type="number" style="width:128px;padding:4px 8px;font-size:13px;border:.5px solid #7F77DD;border-radius:8px;background:#fff;color:#1a1a18;text-align:right" id="iv" value="0" step="100000" min="0"><span class="sb" id="iv-sub">—</span></div>
-  <div class="row"><span class="lb">Ano da venda (a partir de hoje)</span><input type="range" id="s-ianos" min="1" max="30" step="1" value="5"><span class="vl" id="v-ianos">ano 5</span></div>
-  <div class="row"><span class="lb">Custo do novo imóvel (R$ 100k)</span><input type="range" id="s-inovo" min="0" max="50" step="1" value="0"><span class="vl" id="v-inovo">R$ 0</span></div>
-  <p class="nota" id="imovel-nota">Configure o valor de venda para ativar. O líquido entra no patrimônio e rende imediatamente.</p>
+  <p class="nota">Fase final — considere aumento de custos de saúde</p>
 
   <!-- OUTRO INVESTIMENTO -->
-  <div class="sec green">Outro investimento</div>
-  <p class="nota" style="margin-bottom:10px">Ativo com taxa de valorização e renda própria — imóvel, FII, previdência, CDB pré-fixado, etc. O valor cresce pela taxa anual. A renda gerada reduz a retirada mensal, igual ao INSS.</p>
-  <div class="card-box card-green">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:.6rem">
-      <span class="card-tag" style="color:#0F6E56">Ativo</span>
+  <div class="sec green">Outro investimento (taxa própria)</div>
+  <p class="nota" style="margin-bottom:8px">Ativo com valorização e renda própria — imóvel, FII, previdência. Cresce pela taxa anual. A renda gerada reduz a retirada mensal.</p>
+  <div style="background:#f4fbf8;border-radius:8px;padding:.75rem;border:.5px solid rgba(15,110,86,0.2)">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:.5rem">
+      <span style="font-size:10px;font-weight:600;color:#0F6E56;text-transform:uppercase;letter-spacing:.08em">Ativo</span>
       <input type="text" class="txt-input" id="oi-nome" placeholder="Ex: Apartamento, FII, Previdência" maxlength="40">
     </div>
-    <div class="row" style="margin:.3rem 0"><span class="lb">Valor atual do ativo</span><input type="range" id="oi-val" min="0" max="20" step="0.1" value="0"><span class="vl" id="v-oi-val">R$ 0,0M</span></div>
+    <div class="row" style="margin:.3rem 0"><span class="lb">Valor atual</span><input type="range" id="oi-val" min="0" max="20" step="0.1" value="0"><span class="vl" id="v-oi-val">R$ 0,0M</span></div>
     <div class="row" style="margin:.3rem 0"><span class="lb">Valorização anual</span><input type="range" id="oi-taxa" min="0" max="20" step="0.1" value="0"><span class="vl" id="v-oi-taxa">0,0% a.a.</span></div>
     <div class="row" style="margin:.3rem 0"><span class="lb">Renda mensal gerada</span><input type="range" id="oi-renda" min="0" max="30" step="0.1" value="0"><span class="vl" id="v-oi-renda">R$ 0k/mês</span></div>
     <p class="nota" id="oi-nota" style="margin:4px 0 0">—</p>
   </div>
 
-  <!-- APORTE TEMPORÁRIO -->
-  <div class="sec amber">Aporte temporário</div>
-  <p class="nota" style="margin-bottom:10px">Valor depositado todo mês no patrimônio investido durante um período. Ex: receber parcelas de um empréstimo feito a alguém. Cada parcela entra no saldo que rende pelo rendimento líquido mensal.</p>
-  <div class="card-box card-amber">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:.65rem">
-      <span class="card-tag" style="color:#854F0B">Aporte</span>
-      <input type="text" class="txt-input" id="it-nome" placeholder="Ex: Recebimento empréstimo, aluguel temporário" maxlength="40">
-    </div>
-    <div style="display:flex;gap:8px;align-items:center;margin:.45rem 0">
-      <span style="font-size:13px;color:#5f5e5a;min-width:220px">Data de início</span>
-      <select class="mes-sel" id="it-mes">
+  <!-- VENDA DE IMÓVEL -->
+  <div class="sec" style="color:#534AB7;border-color:#AFA9EC">Venda de imóvel planejada</div>
+  <div class="pr"><span class="lb">Valor de venda</span>
+    <input type="number" style="width:128px;padding:4px 8px;font-size:13px;border:.5px solid #7F77DD;border-radius:8px;background:#fff;color:#1a1a18;text-align:right" id="iv" value="0" step="100000" min="0">
+    <span style="font-size:11px;color:#888780" id="iv-sub">—</span>
+  </div>
+  <div class="row"><span class="lb">Ano da venda (a partir de hoje)</span><input type="range" id="s-ianos" min="1" max="30" step="1" value="5"><span class="vl" id="v-ianos">ano 5</span></div>
+  <div class="row"><span class="lb">Custo do novo imóvel (R$ 100k)</span><input type="range" id="s-inovo" min="0" max="50" step="1" value="0"><span class="vl" id="v-inovo">R$ 0</span></div>
+  <p class="nota" id="imovel-nota">Configure o valor de venda para ativar.</p>
+
+  <!-- CUSTOS PONTUAIS PLANEJADOS -->
+  <div class="sec coral">Custos pontuais planejados (pós-aposentadoria)</div>
+  <p class="nota" style="margin-bottom:8px">Valores em reais de hoje — corrigidos pela inflação até o ano do evento. Para gastos já previstos no plano original, como saúde.</p>
+  <div class="pr"><span class="lb">Custo no ano 15 da aposentadoria</span><input type="number" class="pi" id="p15" value="0" step="50000" min="0"><span style="font-size:11px;color:#888780" id="ps15">—</span></div>
+  <p class="nota">Ex: saúde ~65 anos — procedimentos, planos premium</p>
+  <div class="pr"><span class="lb">Custo no ano 20 da aposentadoria</span><input type="number" class="pi" id="p20" value="0" step="50000" min="0"><span style="font-size:11px;color:#888780" id="ps20">—</span></div>
+  <p class="nota">Ex: cuidados de longo prazo, adaptações, cuidador</p>
+
+  <!-- APORTES PONTUAIS PLANEJADOS -->
+  <div class="sec green">Aportes pontuais planejados (pós-aposentadoria)</div>
+  <p class="nota" style="margin-bottom:8px">Valores nominais futuros — já estimados em valor do momento do aporte. Ex: venda de ativo, herança esperada.</p>
+  <div class="pr"><span class="lb" style="font-weight:500">Aporte no momento da aposentadoria</span><input type="number" class="pi" style="border-color:#1D9E75;border-width:1.5px" id="a0" value="0" step="50000" min="0"><span style="font-size:11px;color:#888780" id="as0">—</span></div>
+  <div class="pr"><span class="lb">Aporte no ano 5 da aposentadoria</span><input type="number" class="pi" style="border-color:#1D9E75" id="a5" value="0" step="50000" min="0"><span style="font-size:11px;color:#888780" id="as5">—</span></div>
+  <div class="pr"><span class="lb">Aporte no ano 10 da aposentadoria</span><input type="number" class="pi" style="border-color:#1D9E75" id="a10" value="0" step="50000" min="0"><span style="font-size:11px;color:#888780" id="as10">—</span></div>
+  <div class="pr"><span class="lb">Aporte no ano 15 da aposentadoria</span><input type="number" class="pi" style="border-color:#1D9E75" id="a15" value="0" step="50000" min="0"><span style="font-size:11px;color:#888780" id="as15">—</span></div>
+  <div class="pr"><span class="lb">Aporte no ano 20 da aposentadoria</span><input type="number" class="pi" style="border-color:#1D9E75" id="a20" value="0" step="50000" min="0"><span style="font-size:11px;color:#888780" id="as20">—</span></div>
+
+</div><!-- fim bloco 1 -->
+
+<!-- ═══════════════════════════════════════════════════════
+     BLOCO 2 — EVENTOS DO PLANO
+═══════════════════════════════════════════════════════ -->
+<div class="bloco">
+  <div class="bloco-titulo">📅 Eventos do plano</div>
+  <div class="bloco-sub">Registre o que aconteceu ou está programado — entradas, saídas, rendas novas, saídas recorrentes. O simulador aplica cada evento na data correta e recalcula o impacto no plano.</div>
+
+  <!-- STATUS DO PLANO -->
+  <div style="background:#f7f6f1;border-radius:8px;padding:.75rem 1rem;margin-bottom:1rem;border:.5px solid rgba(0,0,0,0.08)">
+    <div style="font-size:10px;font-weight:600;color:#534AB7;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.6rem">Início do plano</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:.5rem">
+      <span style="font-size:13px;color:#5f5e5a;min-width:160px">Data de início</span>
+      <select class="mes-sel" id="pl-mes-ini">
         <option value="1">Jan</option><option value="2">Fev</option><option value="3">Mar</option>
         <option value="4">Abr</option><option value="5">Mai</option><option value="6">Jun</option>
         <option value="7">Jul</option><option value="8">Ago</option><option value="9">Set</option>
         <option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option>
       </select>
-      <input type="number" class="yr-input" id="it-ano" value="2026" min="2024" max="2060">
+      <input type="number" class="yr-input" id="pl-ano-ini" value="2026" min="2010" max="2035">
     </div>
-    <div class="pr"><span class="lb">Valor mensal aportado (R$)</span><input type="number" class="pi" id="it-val" value="0" step="500" min="0" placeholder="1000"></div>
-    <div class="pr"><span class="lb">Duração (meses)</span><input type="number" class="pi" id="it-dur" value="60" step="6" min="1" max="360" placeholder="60"></div>
-    <p class="nota" id="it-nota" style="margin:5px 0 0">—</p>
+    <div class="pr" style="margin:0">
+      <span class="lb" style="min-width:160px">Patrimônio inicial do plano</span>
+      <input type="number" class="pi" id="pl-pat-ini" value="0" step="100000" min="0" placeholder="Ex: 13700000">
+    </div>
+    <p class="nota" style="margin-top:6px" id="pl-status-texto">Preencha a data de início e o patrimônio inicial para ativar o acompanhamento.</p>
   </div>
 
-  <!-- CUSTOS PONTUAIS -->
-  <div class="sec">Custos pontuais não recorrentes</div>
-  <div class="pr"><span class="lb">Custo no ano 5 da aposentadoria</span><input type="number" class="pi" id="p5" value="0" step="50000" min="0"><span class="sb" id="ps5">—</span></div>
-  <p class="nota">Ex: apoio a filhos, reformas, emergências</p>
-  <div class="pr"><span class="lb">Custo no ano 10 da aposentadoria</span><input type="number" class="pi" id="p10" value="0" step="50000" min="0"><span class="sb" id="ps10">—</span></div>
-  <div class="pr"><span class="lb">Custo no ano 15 da aposentadoria</span><input type="number" class="pi" id="p15" value="0" step="50000" min="0"><span class="sb" id="ps15">—</span></div>
-  <p class="nota">Ex: saúde ~65 anos: procedimentos, planos premium, medicamentos</p>
-  <div class="pr"><span class="lb">Custo no ano 20 da aposentadoria</span><input type="number" class="pi" id="p20" value="0" step="50000" min="0"><span class="sb" id="ps20">—</span></div>
-  <p class="nota">Ex: cuidados de longo prazo, adaptações, cuidador</p>
-
-  <!-- INVESTIMENTOS PONTUAIS -->
-  <div class="sec green">Investimentos pontuais</div>
-  <div class="pr">
-    <span class="lb" style="font-weight:500">Aporte no momento da aposentadoria</span>
-    <input type="number" class="ai-star" id="a0" value="0" step="50000" min="0">
-    <span class="sb" id="as0">—</span>
-  </div>
-  <p class="nota">Ex: venda de ativo, rescisão, bônus, herança</p>
-  <div class="pr"><span class="lb">Aporte no ano 5 da aposentadoria</span><input type="number" class="ai" id="a5" value="0" step="50000" min="0"><span class="sb" id="as5">—</span></div>
-  <div class="pr"><span class="lb">Aporte no ano 10 da aposentadoria</span><input type="number" class="ai" id="a10" value="0" step="50000" min="0"><span class="sb" id="as10">—</span></div>
-  <div class="pr"><span class="lb">Aporte no ano 15 da aposentadoria</span><input type="number" class="ai" id="a15" value="0" step="50000" min="0"><span class="sb" id="as15">—</span></div>
-  <div class="pr"><span class="lb">Aporte no ano 20 da aposentadoria</span><input type="number" class="ai" id="a20" value="0" step="50000" min="0"><span class="sb" id="as20">—</span></div>
-
-  <!-- ACOMPANHAMENTO DO PLANO -->
-  <div class="sec purple">Acompanhamento do plano</div>
-  <p class="nota" style="margin-bottom:10px">Configure a data de início e o patrimônio inicial para gerar a curva de crescimento esperado e comparar com o realizado a cada ano.</p>
-  <div style="display:flex;gap:8px;align-items:center;margin:.5rem 0">
-    <span style="font-size:13px;color:#5f5e5a;min-width:220px">Início do plano</span>
-    <select class="mes-sel" id="pl-mes-ini">
-      <option value="1">Jan</option><option value="2">Fev</option><option value="3">Mar</option>
-      <option value="4">Abr</option><option value="5">Mai</option><option value="6">Jun</option>
-      <option value="7">Jul</option><option value="8">Ago</option><option value="9">Set</option>
-      <option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option>
-    </select>
-    <input type="number" class="yr-input" id="pl-ano-ini" value="2024" min="2010" max="2030">
-  </div>
-  <div class="pr"><span class="lb">Patrimônio inicial do plano</span><input type="number" class="pi" id="pl-pat-ini" value="0" step="100000" min="0" placeholder="Ex: 10000000"></div>
-  <div class="pr"><span class="lb">Patrimônio real atual</span><input type="number" class="pi" id="pl-pat-atual" value="0" step="100000" min="0" placeholder="Quanto você tem hoje"></div>
-  <p class="nota">Valor real que você tem hoje — comparado com o planejado para este momento</p>
-  <div id="pl-realizados-wrap" style="margin-top:.75rem">
-    <p style="font-size:11px;color:#888780;margin-bottom:.5rem">Realizados por ano — patrimônio real ao final de cada ano desde o início do plano:</p>
-    <div id="pl-realizados-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px"></div>
+  <!-- PATRIMÔNIO REAL REGISTRADO (histórico, sem limite de slots) -->
+  <div style="background:#f7f6f1;border-radius:8px;padding:.75rem 1rem;margin-bottom:1rem;border:.5px solid rgba(0,0,0,0.08)">
+    <div style="font-size:10px;font-weight:600;color:#534AB7;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.6rem">Patrimônio real registrado</div>
+    <p class="nota" style="margin:0 0 8px">Registre aqui, sempre que quiser, o patrimônio total real na data. O registro mais recente vira o "patrimônio corrente"; o histórico completo aparece no gráfico "Plano vs realidade".</p>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <span style="font-size:13px;color:#5f5e5a">Data</span>
+      <input type="number" class="yr-input" id="pr-dia" value="1" min="1" max="31" style="width:52px" title="Dia">
+      <select class="mes-sel" id="pr-mes">
+        <option value="1">Jan</option><option value="2">Fev</option><option value="3">Mar</option>
+        <option value="4">Abr</option><option value="5">Mai</option><option value="6">Jun</option>
+        <option value="7">Jul</option><option value="8">Ago</option><option value="9">Set</option>
+        <option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option>
+      </select>
+      <input type="number" class="yr-input" id="pr-ano" value="2026" min="2010" max="2060">
+      <span style="font-size:13px;color:#5f5e5a;margin-left:6px">Patrimônio total (R$)</span>
+      <input type="number" class="pi" id="pr-valor" value="" step="10000" min="0" placeholder="Ex: 13700000">
+      <button class="btn-secondary" style="padding:6px 14px" onclick="adicionarPatrimonioReal()">+ Adicionar</button>
+    </div>
+    <div id="patrimonio-real-lista" style="margin-top:.6rem"></div>
   </div>
 
-</div>
+  <!-- 10 EVENTOS -->
+  <div id="eventos-wrap"></div>
 
-<!-- BOTÕES SALVAR -->
+  <!-- PATRIMÔNIO CALCULADO HOJE -->
+  <div id="pl-impacto" style="display:none;margin-top:1rem;background:#f7f6f1;border-radius:8px;padding:.75rem 1rem;border:.5px solid rgba(0,0,0,0.08)">
+    <div style="font-size:10px;font-weight:600;color:#534AB7;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.75rem">Impacto dos eventos</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
+      <div class="mk"><p class="lb">Planejado para hoje</p><p class="vl" id="pl-esperado">—</p><p class="sb">sem eventos</p></div>
+      <div class="mk" id="pl-real-mk"><p class="lb">Real estimado hoje</p><p class="vl" id="pl-real">—</p><p class="sb" id="pl-diff">com eventos registrados</p></div>
+      <div class="mk"><p class="lb">Impacto líquido</p><p class="vl" id="pl-impacto-val">—</p><p class="sb" id="pl-impacto-dur">—</p></div>
+    </div>
+  </div>
+
+</div><!-- fim bloco 2 -->
+
+<!-- BOTÕES -->
 <div style="display:flex;gap:12px;margin-bottom:1.25rem;align-items:center;flex-wrap:wrap">
-  <button onclick="salvarParams()" style="padding:8px 20px;font-size:13px;font-weight:500;background:#1D9E75;color:#fff;border:none;border-radius:8px;cursor:pointer">Salvar parâmetros</button>
-  <button onclick="limparParams()" style="padding:8px 16px;font-size:13px;background:transparent;color:#888780;border:.5px solid rgba(0,0,0,0.2);border-radius:8px;cursor:pointer">Limpar dados salvos</button>
-  <span id="save-msg" style="font-size:12px;color:#0F6E56;display:none">Parâmetros salvos!</span>
+  <button class="btn-primary" onclick="salvarParams()">Salvar parâmetros</button>
+  <button class="btn-secondary" onclick="limparParams()">Limpar dados salvos</button>
+  <span id="save-msg" style="font-size:12px;color:#0F6E56;display:none">Salvo!</span>
 </div>
 
-<!-- GRÁFICO 1: EVOLUÇÃO DO SALDO -->
-<div class="sc">
-  <p style="font-size:11px;font-weight:500;color:#888780;text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px">Evolução do saldo — longo prazo</p>
-  <div id="legend" style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:10px;font-size:12px;color:#5f5e5a"></div>
-  <div style="position:relative;width:100%;height:300px"><canvas id="chart"></canvas></div>
+<!-- GRÁFICOS -->
+<div class="bloco">
+  <p style="font-size:11px;font-weight:500;color:#888780;text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px">Evolução do patrimônio — longo prazo</p>
+  <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;font-size:12px;color:#5f5e5a" id="legend"></div>
+  <div style="position:relative;width:100%;height:280px"><canvas id="chart"></canvas></div>
 </div>
 
-<!-- GRÁFICO 2: MONTANTE ANUAL -->
-<div class="sc">
+<div class="bloco">
   <p style="font-size:11px;font-weight:500;color:#888780;text-transform:uppercase;letter-spacing:.06em;margin:0 0 4px">Montante ao final de cada ano</p>
-  <p style="font-size:11px;color:#888780;margin:0 0 10px">Crescimento pré-aposentadoria e evolução pós (até 20 anos)</p>
-  <div style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:12px;font-size:12px;color:#5f5e5a">
-    <span style="display:flex;align-items:center;gap:4px"><span style="width:28px;height:2px;background:#378ADD;border-radius:2px"></span>Pré-aposentadoria</span>
-    <span style="display:flex;align-items:center;gap:4px"><span style="width:28px;height:2px;background:#1D9E75;border-radius:2px"></span>Pós-aposentadoria</span>
+  <p style="font-size:11px;color:#888780;margin:0 0 8px">Pré-aposentadoria e pós (até 20 anos)</p>
+  <div style="display:flex;gap:14px;margin-bottom:8px;font-size:12px;color:#5f5e5a">
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:22px;height:2px;background:#378ADD;display:inline-block"></span>Pré</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:22px;height:2px;background:#1D9E75;display:inline-block"></span>Pós</span>
   </div>
-  <div style="position:relative;width:100%;height:300px"><canvas id="bar-chart"></canvas></div>
+  <div style="position:relative;width:100%;height:280px"><canvas id="bar-chart"></canvas></div>
 </div>
 
-<!-- GRÁFICO 3: RENDA vs CUSTO -->
-<div class="sc">
-  <p style="font-size:11px;font-weight:500;color:#888780;text-transform:uppercase;letter-spacing:.06em;margin:0 0 4px">Renda total vs custo de vida por ano</p>
-  <p style="font-size:11px;color:#888780;margin:0 0 10px">Valores mensais projetados. Onde o custo supera a renda, o patrimônio cobre a diferença.</p>
-  <div style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:12px;font-size:12px;color:#5f5e5a">
-    <span style="display:flex;align-items:center;gap:4px"><span style="width:28px;height:2px;background:#185FA5;border-radius:2px"></span>Renda total</span>
-    <span style="display:flex;align-items:center;gap:4px"><span style="width:28px;height:2px;background:#D85A30;border-radius:2px"></span>Custo total mensal</span>
+<div class="bloco">
+  <p style="font-size:11px;font-weight:500;color:#888780;text-transform:uppercase;letter-spacing:.06em;margin:0 0 4px">Renda total vs custo de vida</p>
+  <p style="font-size:11px;color:#888780;margin:0 0 8px">Onde o custo supera a renda, o patrimônio cobre a diferença.</p>
+  <div style="display:flex;gap:14px;margin-bottom:8px;font-size:12px;color:#5f5e5a">
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:22px;height:2px;background:#185FA5;display:inline-block"></span>Renda total</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:22px;height:2px;background:#D85A30;display:inline-block"></span>Custo mensal</span>
   </div>
-  <div style="position:relative;width:100%;height:340px"><canvas id="custo-chart"></canvas></div>
+  <div style="position:relative;width:100%;height:300px"><canvas id="custo-chart"></canvas></div>
 </div>
 
-<!-- CARD STATUS DO PLANO -->
-<div id="plano-status-card" class="sc" style="display:none">
-  <p style="font-size:11px;font-weight:500;color:#534AB7;text-transform:uppercase;letter-spacing:.06em;margin:0 0 10px">Status do plano</p>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
-    <div class="mk"><p class="lb">Planejado para hoje</p><p class="vl" id="pl-esperado-hoje">—</p><p class="sb">segundo o plano original</p></div>
-    <div class="mk" id="pl-status-mk"><p class="lb">Patrimônio real atual</p><p class="vl" id="pl-real-hoje">—</p><p class="sb" id="pl-diff-texto">—</p></div>
-    <div class="mk"><p class="lb">Início do plano</p><p class="vl" id="pl-ini-label">—</p><p class="sb" id="pl-ini-sub">—</p></div>
-  </div>
-</div>
-
-<!-- GRÁFICO 4: PLANO vs REALIDADE -->
-<div id="plano-chart-wrap" class="sc" style="display:none">
+<div id="plano-chart-wrap" class="bloco" style="display:none">
   <p style="font-size:11px;font-weight:500;color:#888780;text-transform:uppercase;letter-spacing:.06em;margin:0 0 4px">Plano vs realidade</p>
-  <p style="font-size:11px;color:#888780;margin:0 0 10px">Crescimento planejado do início do plano até a aposentadoria. Pontos = realizados. Marcador ◆ = hoje.</p>
-  <div style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:12px;font-size:12px;color:#5f5e5a">
-    <span style="display:flex;align-items:center;gap:4px"><span style="width:28px;height:2px;background:#534AB7;border-radius:2px"></span>Planejado original</span>
-    <span style="display:flex;align-items:center;gap:4px"><span style="width:28px;height:2px;background:#1D9E75;border-radius:2px"></span>Projeção a partir de hoje</span>
-    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#C9A84C;display:inline-block"></span>Realizados</span>
-    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#1D9E75;display:inline-block"></span>Atual</span>
+  <p style="font-size:11px;color:#888780;margin:0 0 8px">Crescimento planejado × trajetória real com eventos registrados.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:8px;font-size:12px;color:#5f5e5a">
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:22px;height:2px;background:#534AB7;display:inline-block"></span>Planejado</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:22px;height:2px;background:#1D9E75;display:inline-block"></span>Com eventos</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:#C9A84C;display:inline-block"></span>Realizados</span>
   </div>
-  <div style="position:relative;width:100%;height:320px"><canvas id="plano-chart"></canvas></div>
+  <div style="position:relative;width:100%;height:300px"><canvas id="plano-chart"></canvas></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-// ── VERSÃO ──────────────────────────────────────────────────────────
-// Atualize aqui ao gerar uma nova versão do arquivo
-const VERSION = '1.3';
+// ── VERSÃO ───────────────────────────────────────────────────────────
+// Atualize aqui ao gerar nova versão
+const VERSION = '2.11';
 
-// ── CONSTANTES ──────────────────────────────────────────────────────
-const ANO_ATUAL = new Date().getFullYear();
-const MES_ATUAL = new Date().getMonth() + 1;
-const LS_KEY = 'sim_apos_v1';
-const LS_PLANO_KEY = 'sim_apos_plano_v1';
-const MESES_NOMES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+// ── CONSTANTES ───────────────────────────────────────────────────────
+const ANO_ATUAL  = new Date().getFullYear();
+const MES_ATUAL  = new Date().getMonth() + 1;
+const LS_KEY     = 'sim_apos_v2';
+const LS_EV_KEY  = 'sim_apos_eventos_v2';
+const LS_PR_KEY  = 'sim_apos_patrimonio_real_v2';
+const MESES      = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const N_EVENTOS  = 10;
+let patrimonioReal = []; // [{dia,mes,ano,valor}] — histórico de patrimônio real registrado
 
-// IDs de todos os campos persistíveis (exceto realizados, que são dinâmicos)
+const TIPOS_EVENTO = {
+  'vazio':       { label: '— sem evento —',         campos: [] },
+  'saida':       { label: '💸 Saída pontual',        campos: ['data','valor','desc'] },
+  'entrada':     { label: '💰 Entrada pontual',       campos: ['data','valor','desc'] },
+  'renda-nova':  { label: '📈 Nova renda recorrente', campos: ['data','valor','data-fim','desc'] },
+  'saida-rec':   { label: '🔻 Saída recorrente',      campos: ['data','valor','dur','desc'] },
+};
+
+// IDs dos campos do plano base (sliders + numbers + selects + texts)
 const SLIDER_IDS = [
   's-idade','s-idade-esp','s-filho1','s-filho2','s-filho3',
   's-renda','s-reaj','s-inss','s-inss-reaj','s-inss-ano',
@@ -337,660 +371,798 @@ const SLIDER_IDS = [
   's-viag','s-carr','s-ianos','s-inovo',
   'oi-val','oi-taxa','oi-renda'
 ];
-const NUMBER_IDS = [
-  'nr3','nr5','nr10','iv',
-  'a0','a5','a10','a15','a20',
-  'fc1','fd1','fc2','fd2','fc3',
-  'p5','p10','p15','p20',
-  'it-val','it-dur','it-ano',
-  'pl-pat-ini','pl-pat-atual','pl-ano-ini'
-];
-const TEXT_IDS   = ['oi-nome','it-nome'];
-const SELECT_IDS = ['it-mes','pl-mes-ini'];
-const ALL_IDS    = [...SLIDER_IDS, ...NUMBER_IDS, ...TEXT_IDS, ...SELECT_IDS];
+const NUMBER_IDS = ['iv','fc1','fd1','fc2','fd2','fc3','pl-pat-ini','pl-ano-ini','p15','p20','a0','a5','a10','a15','a20'];
+const TEXT_IDS   = ['oi-nome'];
+const SELECT_IDS = ['pl-mes-ini'];
+const ALL_IDS    = [...SLIDER_IDS,...NUMBER_IDS,...TEXT_IDS,...SELECT_IDS];
 
-// instâncias dos gráficos
 let ci=null, ciBar=null, ciCusto=null, ciPlano=null;
 
-// ── PERSISTÊNCIA ────────────────────────────────────────────────────
+// ── PERSISTÊNCIA ─────────────────────────────────────────────────────
 function salvarParams() {
-  try {
-    const vals = {};
-    ALL_IDS.forEach(id => { const el=document.getElementById(id); if(el) vals[id]=el.value; });
-    localStorage.setItem(LS_KEY, JSON.stringify(vals));
-    const realizados = {};
-    document.querySelectorAll('[id^="pl-real-"]').forEach(el => realizados[el.id] = el.value);
-    localStorage.setItem(LS_PLANO_KEY, JSON.stringify(realizados));
-    const msg = document.getElementById('save-msg');
-    msg.textContent = 'Parâmetros salvos!';
-    msg.style.display = 'inline';
-    setTimeout(() => msg.style.display='none', 3000);
-  } catch(e) { alert('Não foi possível salvar.'); }
+  const vals = {};
+  ALL_IDS.forEach(id => { const el=document.getElementById(id); if(el) vals[id]=el.value; });
+  localStorage.setItem(LS_KEY, JSON.stringify(vals));
+  localStorage.setItem(LS_EV_KEY, JSON.stringify(lerEventosDom()));
+  localStorage.setItem(LS_PR_KEY, JSON.stringify(patrimonioReal));
+  const msg=document.getElementById('save-msg');
+  msg.style.display='inline'; setTimeout(()=>msg.style.display='none',2500);
 }
-
 function limparParams() {
-  try {
-    localStorage.removeItem(LS_KEY);
-    localStorage.removeItem(LS_PLANO_KEY);
-    const msg = document.getElementById('save-msg');
-    msg.textContent = 'Dados removidos.';
-    msg.style.display = 'inline';
-    setTimeout(() => msg.style.display='none', 3000);
-  } catch(e) {}
+  localStorage.removeItem(LS_KEY); localStorage.removeItem(LS_EV_KEY); localStorage.removeItem(LS_PR_KEY);
+  patrimonioReal=[]; renderPatrimonioRealLista();
+  const msg=document.getElementById('save-msg');
+  msg.textContent='Removido.'; msg.style.display='inline';
+  setTimeout(()=>{msg.style.display='none';msg.textContent='Salvo!';},2500);
 }
-
 function carregarParams() {
   try {
-    const raw = localStorage.getItem(LS_KEY);
-    if (!raw) return;
-    const vals = JSON.parse(raw);
-    Object.entries(vals).forEach(([id,v]) => { const el=document.getElementById(id); if(el) el.value=v; });
-  } catch(e) {}
+    const raw=localStorage.getItem(LS_KEY); if(!raw)return;
+    const v=JSON.parse(raw);
+    Object.entries(v).forEach(([id,val])=>{ const el=document.getElementById(id); if(el) el.value=val; });
+  } catch(e){}
 }
-
-function carregarRealizados() {
+function carregarEventos() {
   try {
-    const raw = localStorage.getItem(LS_PLANO_KEY);
-    if (!raw) return;
-    const vals = JSON.parse(raw);
-    Object.entries(vals).forEach(([id,v]) => { const el=document.getElementById(id); if(el) el.value=v; });
-  } catch(e) {}
+    const raw=localStorage.getItem(LS_EV_KEY); if(!raw)return;
+    const evs=JSON.parse(raw);
+    evs.forEach((ev,i)=>{
+      if(i>=N_EVENTOS)return;
+      const tipoEl=document.getElementById('ev-tipo-'+i);
+      if(!tipoEl)return;
+      tipoEl.value=ev.tipo||'vazio';
+      renderEvento(i);
+      ['val','desc','dur','data-ano','data-mes','data-fim-ano','data-fim-mes'].forEach(f=>{
+        const el=document.getElementById('ev-'+f+'-'+i);
+        if(el&&ev[f]!==undefined) el.value=ev[f];
+      });
+    });
+  } catch(e){}
 }
 
-// ── FORMATAÇÃO ──────────────────────────────────────────────────────
-function fi(n) {
-  if (n >= 1e6) return '≈ R$ ' + (n/1e6).toFixed(2).replace('.',',') + 'M';
-  if (n >= 1e3) return '≈ R$ ' + (n/1e3).toFixed(0) + 'k';
-  return n === 0 ? '—' : '≈ R$ ' + n.toLocaleString('pt-BR');
+// ── PATRIMÔNIO REAL REGISTRADO ─────────────────────────────────────────
+function adicionarPatrimonioReal() {
+  const dia  = Math.min(31,Math.max(1,parseInt(document.getElementById('pr-dia').value)||1));
+  const mes  = parseInt(document.getElementById('pr-mes').value)||MES_ATUAL;
+  const ano  = parseInt(document.getElementById('pr-ano').value)||ANO_ATUAL;
+  const valor= parseFloat(document.getElementById('pr-valor').value)||0;
+  if(valor<=0) return;
+  patrimonioReal.push({dia,mes,ano,valor});
+  patrimonioReal.sort((a,b)=>(a.ano-b.ano)||(a.mes-b.mes)||(a.dia-b.dia));
+  document.getElementById('pr-valor').value='';
+  renderPatrimonioRealLista();
+  calc();
 }
-function fm(n) {
-  const a=Math.abs(n), s=n<0?'-':'';
-  if (a >= 1e6) return s+'R$ '+(a/1e6).toFixed(2).replace('.',',')+'M';
-  if (a >= 1e3) return s+'R$ '+(a/1e3).toFixed(1).replace('.',',')+'k';
+function removerPatrimonioReal(i) {
+  patrimonioReal.splice(i,1);
+  renderPatrimonioRealLista();
+  calc();
+}
+function renderPatrimonioRealLista() {
+  const wrap=document.getElementById('patrimonio-real-lista');
+  if(!wrap) return;
+  if(patrimonioReal.length===0){ wrap.innerHTML='<p class="nota" style="margin:6px 0 0">Nenhum registro ainda — adicione o primeiro para começar o histórico.</p>'; return; }
+  wrap.innerHTML = patrimonioReal.map((r,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 2px;border-bottom:.5px solid rgba(0,0,0,0.06);font-size:12px">
+      <span style="min-width:95px;color:#5f5e5a">${String(r.dia).padStart(2,'0')}/${MESES[r.mes-1]}/${r.ano}</span>
+      <span style="flex:1;font-weight:500;color:#1a1a18">${fi(r.valor)}</span>
+      <span style="cursor:pointer;color:#A32D2D;font-size:11px" onclick="removerPatrimonioReal(${i})">remover</span>
+    </div>`).join('');
+}
+function carregarPatrimonioReal() {
+  try {
+    const raw=localStorage.getItem(LS_PR_KEY); if(!raw){renderPatrimonioRealLista();return;}
+    patrimonioReal=JSON.parse(raw)||[];
+    renderPatrimonioRealLista();
+  } catch(e){}
+}
+
+// ── FORMATAÇÃO ────────────────────────────────────────────────────────
+function fi(n){
+  if(n>=1e6) return '≈ R$ '+(n/1e6).toFixed(2).replace('.',',')+'M';
+  if(n>=1e3) return '≈ R$ '+(n/1e3).toFixed(0)+'k';
+  return n===0?'—':'≈ R$ '+n.toLocaleString('pt-BR');
+}
+function fm(n){
+  const a=Math.abs(n),s=n<0?'-':'';
+  if(a>=1e6) return s+'R$ '+(a/1e6).toFixed(2).replace('.',',')+'M';
+  if(a>=1e3) return s+'R$ '+(a/1e3).toFixed(1).replace('.',',')+'k';
   return s+'R$ '+Math.round(a).toLocaleString('pt-BR');
 }
-function novaRendaStatus(valor, anosDeHoje, apos) {
-  if (valor <= 0) return '—';
-  const ac = ANO_ATUAL + anosDeHoje;
-  if (anosDeHoje < apos)  return fi(valor)+'/mês — ativa em '+ac+', persiste na aposentadoria';
-  if (anosDeHoje === apos) return fi(valor)+'/mês — inicia em '+ac+' (na aposentadoria)';
-  const d = anosDeHoje - apos;
-  return fi(valor)+'/mês — inicia em '+ac+' ('+d+' ano'+(d>1?'s':'')+' após aposentadoria)';
+
+// ── EVENTOS DOM ───────────────────────────────────────────────────────
+function selMes(id, val) {
+  return `<select class="mes-sel" id="${id}" onchange="calc()" style="font-size:12px;padding:2px 4px">
+    ${MESES.map((m,i)=>`<option value="${i+1}"${val==i+1?' selected':''}>${m}</option>`).join('')}
+  </select>`;
 }
 
-// ── CÁLCULO PRINCIPAL ───────────────────────────────────────────────
+function renderEvento(i) {
+  const tipo = document.getElementById('ev-tipo-'+i)?.value || 'vazio';
+  const body = document.getElementById('ev-body-'+i);
+  if(!body) return;
+  const cfg = TIPOS_EVENTO[tipo] || TIPOS_EVENTO['vazio'];
+  if(tipo==='vazio'){body.innerHTML='';body.classList.remove('open');return;}
+  body.classList.add('open');
+  let html='';
+  if(cfg.campos.includes('data')) {
+    html+=`<div class="ev-row"><span class="ev-label">Data</span>${selMes('ev-data-mes-'+i,MES_ATUAL)}
+      <input type="number" class="yr-input" id="ev-data-ano-${i}" value="${ANO_ATUAL}" min="2010" max="2060" onchange="calc()" style="font-size:12px"></div>`;
+  }
+  if(cfg.campos.includes('data-fim')) {
+    html+=`<div class="ev-row"><span class="ev-label">Data fim (opcional)</span>${selMes('ev-data-fim-mes-'+i,0)}
+      <input type="number" class="yr-input" id="ev-data-fim-ano-${i}" value="0" min="0" max="2060" onchange="calc()" style="font-size:12px">
+      <span style="font-size:11px;color:#888780">0 = indefinido</span></div>`;
+  }
+  if(cfg.campos.includes('valor')) {
+    const lbl = tipo==='renda-nova'||tipo==='saida-rec' ? 'Valor mensal (R$)' : 'Valor (R$)';
+    html+=`<div class="ev-row"><span class="ev-label">${lbl}</span>
+      <input type="number" class="pi" id="ev-val-${i}" value="0" step="10000" min="0" oninput="calc()" style="width:140px;font-size:12px"></div>`;
+  }
+  if(cfg.campos.includes('dur')) {
+    html+=`<div class="ev-row"><span class="ev-label">Duração (meses)</span>
+      <input type="number" class="pi" id="ev-dur-${i}" value="60" step="6" min="1" max="360" onchange="calc()" style="width:90px;font-size:12px"></div>`;
+  }
+  if(cfg.campos.includes('desc')) {
+    html+=`<div class="ev-row"><span class="ev-label">Descrição</span>
+      <input type="text" class="txt-input" id="ev-desc-${i}" placeholder="Ex: Empréstimo familiar, Aporte Elevah..." maxlength="60" oninput="atualizaResumoEvento(${i})"></div>`;
+  }
+  body.innerHTML=html;
+}
+
+function atualizaResumoEvento(i) {
+  const desc=document.getElementById('ev-desc-'+i)?.value||'';
+  const resumo=document.getElementById('ev-resumo-'+i);
+  if(resumo&&desc) resumo.textContent=desc;
+}
+
+function criarEventosDOM() {
+  const wrap=document.getElementById('eventos-wrap');
+  wrap.innerHTML='';
+  for(let i=0;i<N_EVENTOS;i++){
+    const div=document.createElement('div');
+    div.className='evento-card';
+    div.innerHTML=`
+      <div class="evento-header" onclick="toggleEvento(${i})">
+        <span class="evento-num">${i+1}</span>
+        <select class="evento-tipo-sel" id="ev-tipo-${i}" onclick="event.stopPropagation()" onchange="renderEvento(${i});calc()">
+          ${Object.entries(TIPOS_EVENTO).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('')}
+        </select>
+        <span class="evento-resumo" id="ev-resumo-${i}"></span>
+      </div>
+      <div class="evento-body" id="ev-body-${i}"></div>`;
+    wrap.appendChild(div);
+  }
+}
+
+function toggleEvento(i) {
+  const body=document.getElementById('ev-body-'+i);
+  const tipo=document.getElementById('ev-tipo-'+i)?.value;
+  if(tipo==='vazio') return;
+  body.classList.toggle('open');
+}
+
+function lerEventosDom() {
+  const evs=[];
+  for(let i=0;i<N_EVENTOS;i++){
+    const tipo=document.getElementById('ev-tipo-'+i)?.value||'vazio';
+    const ev={tipo,
+      val:   parseFloat(document.getElementById('ev-val-'+i)?.value)||0,
+      desc:  document.getElementById('ev-desc-'+i)?.value||'',
+      dur:   parseInt(document.getElementById('ev-dur-'+i)?.value)||60,
+      'data-mes':  parseInt(document.getElementById('ev-data-mes-'+i)?.value)||MES_ATUAL,
+      'data-ano':  parseInt(document.getElementById('ev-data-ano-'+i)?.value)||ANO_ATUAL,
+      'data-fim-mes': parseInt(document.getElementById('ev-data-fim-mes-'+i)?.value)||0,
+      'data-fim-ano': parseInt(document.getElementById('ev-data-fim-ano-'+i)?.value)||0,
+    };
+    // meses absolutos desde hoje
+    ev.mesIni = (ev['data-ano']-ANO_ATUAL)*12+(ev['data-mes']-MES_ATUAL);
+    const fimAno=ev['data-fim-ano'], fimMes=ev['data-fim-mes'];
+    ev.mesFim = (fimAno>0) ? (fimAno-ANO_ATUAL)*12+(fimMes-MES_ATUAL) : 99999;
+    evs.push(ev);
+  }
+  return evs;
+}
+
+// ── CÁLCULO PRINCIPAL ─────────────────────────────────────────────────
 function calc() {
-  // leitura dos parâmetros
-  const ANO_INSS   = parseInt(document.getElementById('s-inss-ano').value) || 2050;
-  const idadeAtual = parseInt(document.getElementById('s-idade').value) || 40;
-  const idadeEsp   = parseInt(document.getElementById('s-idade-esp').value) || 40;
-  const f1 = parseInt(document.getElementById('s-filho1').value) || 0;
-  const f2 = parseInt(document.getElementById('s-filho2').value) || 0;
-  const f3 = parseInt(document.getElementById('s-filho3').value) || 0;
-  const renda      = parseFloat(document.getElementById('s-renda').value) * 1e3;
-  const reaj       = parseFloat(document.getElementById('s-reaj').value) / 100;
-  const inssValor  = parseFloat(document.getElementById('s-inss').value) * 1e3;
-  const inssReaj   = parseFloat(document.getElementById('s-inss-reaj').value) / 100;
-  const inv        = parseFloat(document.getElementById('s-inv').value) * 1e6;
-  const patNR      = parseFloat(document.getElementById('s-pat-nr').value) * 1e6;
-  const rm         = parseFloat(document.getElementById('s-rend').value) / 100;
-  const rmTard     = parseFloat(document.getElementById('s-rend-tard').value) / 100;
-  const rmAnoTard  = parseInt(document.getElementById('s-rend-ano').value);
-  const custo      = parseFloat(document.getElementById('s-custo').value) * 1e3;
-  const inf        = parseFloat(document.getElementById('s-inf').value) / 100;
-  const apos       = parseInt(document.getElementById('s-anos').value);
-  const varRend    = parseFloat(document.getElementById('s-var-rend').value) / 100;
-  const varInf     = parseFloat(document.getElementById('s-var-inf').value) / 100;
-  const viag       = parseFloat(document.getElementById('s-viag').value) * 1e3;
-  const carr       = parseFloat(document.getElementById('s-carr').value) * 1e3;
-  const nr3        = parseFloat(document.getElementById('nr3').value) || 0;
-  const nr5        = parseFloat(document.getElementById('nr5').value) || 0;
-  const nr10       = parseFloat(document.getElementById('nr10').value) || 0;
-  const imovelVenda = parseFloat(document.getElementById('iv').value) || 0;
-  const imovelAno  = parseInt(document.getElementById('s-ianos').value);
-  const imovelLiq  = Math.max(0, imovelVenda - parseFloat(document.getElementById('s-inovo').value)*100000);
-  const imovelMes  = imovelAno * 12;
-  const a0  = parseFloat(document.getElementById('a0').value) || 0;
-  const a5  = parseFloat(document.getElementById('a5').value) || 0;
-  const a10 = parseFloat(document.getElementById('a10').value) || 0;
-  const a15 = parseFloat(document.getElementById('a15').value) || 0;
-  const a20 = parseFloat(document.getElementById('a20').value) || 0;
-  const p5  = parseFloat(document.getElementById('p5').value) || 0;
-  const p10 = parseFloat(document.getElementById('p10').value) || 0;
-  const p15 = parseFloat(document.getElementById('p15').value) || 0;
-  const p20 = parseFloat(document.getElementById('p20').value) || 0;
-  const fc1 = parseFloat(document.getElementById('fc1').value) || 0;
-  const fd1 = parseInt(document.getElementById('fd1').value) || 10;
-  const fc2 = parseFloat(document.getElementById('fc2').value) || 0;
-  const fd2 = parseInt(document.getElementById('fd2').value) || 10;
-  const fc3 = parseFloat(document.getElementById('fc3').value) || 0;
-
-  // outro investimento
-  const OI = {
-    val:   parseFloat(document.getElementById('oi-val').value) * 1e6 || 0,
-    taxa:  parseFloat(document.getElementById('oi-taxa').value) / 100 || 0,
-    renda: parseFloat(document.getElementById('oi-renda').value) * 1e3 || 0,
-    nome:  document.getElementById('oi-nome').value || 'Ativo'
+  // leitura dos parâmetros base
+  const idadeAtual= parseInt(document.getElementById('s-idade').value)||40;
+  const idadeEsp  = parseInt(document.getElementById('s-idade-esp').value)||40;
+  const f1=parseInt(document.getElementById('s-filho1').value)||0;
+  const f2=parseInt(document.getElementById('s-filho2').value)||0;
+  const f3=parseInt(document.getElementById('s-filho3').value)||0;
+  const renda   = parseFloat(document.getElementById('s-renda').value)*1e3;
+  const reaj    = parseFloat(document.getElementById('s-reaj').value)/100;
+  const inssVal = parseFloat(document.getElementById('s-inss').value)*1e3;
+  const inssReaj= parseFloat(document.getElementById('s-inss-reaj').value)/100;
+  const ANO_INSS= parseInt(document.getElementById('s-inss-ano').value)||2050;
+  const inv     = parseFloat(document.getElementById('s-inv').value)*1e6;
+  const patNR   = parseFloat(document.getElementById('s-pat-nr').value)*1e6;
+  const rm      = parseFloat(document.getElementById('s-rend').value)/100;
+  const rmTard  = parseFloat(document.getElementById('s-rend-tard').value)/100;
+  const rmAnoTard=parseInt(document.getElementById('s-rend-ano').value);
+  const custo   = parseFloat(document.getElementById('s-custo').value)*1e3;
+  const inf     = parseFloat(document.getElementById('s-inf').value)/100;
+  const apos    = parseInt(document.getElementById('s-anos').value);
+  const varRend = parseFloat(document.getElementById('s-var-rend').value)/100;
+  const varInf  = parseFloat(document.getElementById('s-var-inf').value)/100;
+  const viag    = parseFloat(document.getElementById('s-viag').value)*1e3;
+  const carr    = parseFloat(document.getElementById('s-carr').value)*1e3;
+  const fc1=parseFloat(document.getElementById('fc1').value)||0;
+  const fd1=parseInt(document.getElementById('fd1').value)||10;
+  const fc2=parseFloat(document.getElementById('fc2').value)||0;
+  const fd2=parseInt(document.getElementById('fd2').value)||10;
+  const fc3=parseFloat(document.getElementById('fc3').value)||0;
+  const OI={
+    val:  parseFloat(document.getElementById('oi-val').value)*1e6||0,
+    taxa: parseFloat(document.getElementById('oi-taxa').value)/100||0,
+    renda:parseFloat(document.getElementById('oi-renda').value)*1e3||0,
+    nome: document.getElementById('oi-nome').value||'Ativo'
   };
+  const imovelVenda=parseFloat(document.getElementById('iv').value)||0;
+  const imovelAno  =parseInt(document.getElementById('s-ianos').value);
+  const imovelLiq  =Math.max(0,imovelVenda-parseFloat(document.getElementById('s-inovo').value)*100000);
+  const imovelMes  =imovelAno*12;
+  const p15=parseFloat(document.getElementById('p15').value)||0;
+  const p20=parseFloat(document.getElementById('p20').value)||0;
+  const a0 =parseFloat(document.getElementById('a0').value)||0;
+  const a5 =parseFloat(document.getElementById('a5').value)||0;
+  const a10=parseFloat(document.getElementById('a10').value)||0;
+  const a15=parseFloat(document.getElementById('a15').value)||0;
+  const a20=parseFloat(document.getElementById('a20').value)||0;
+  const plMesIni   =parseInt(document.getElementById('pl-mes-ini').value)||1;
+  const plAnoIni   =parseInt(document.getElementById('pl-ano-ini').value)||ANO_ATUAL;
+  const plPatIni   =parseFloat(document.getElementById('pl-pat-ini').value)||0;
 
-  // aporte temporário
-  const IT = {
-    val:  parseFloat(document.getElementById('it-val').value) || 0,
-    mes:  parseInt(document.getElementById('it-mes').value) || 1,
-    ano:  parseInt(document.getElementById('it-ano').value) || ANO_ATUAL,
-    dur:  parseInt(document.getElementById('it-dur').value) || 60,
-    nome: document.getElementById('it-nome').value || 'Aporte'
-  };
-  IT.mesIni = (IT.ano - ANO_ATUAL) * 12 + (IT.mes - MES_ATUAL);
-  IT.mesFim = IT.mesIni + IT.dur;
+  const evs = lerEventosDom();
 
-  const anoApos = ANO_ATUAL + apos;
-  const anosInssPosApos = Math.max(0, ANO_INSS - anoApos);
-  const mesesInssPosApos = anosInssPosApos * 12;
-  const filhosAtivos = [f1,f2,f3].filter(f => f > 0);
+  const anoApos=ANO_ATUAL+apos;
+  const anosInssPosApos=Math.max(0,ANO_INSS-anoApos);
+  const mesesInssPosApos=anosInssPosApos*12;
+  const filhosAtivos=[f1,f2,f3].filter(f=>f>0);
+  const im    = Math.pow(1+inf,1/12)-1;
+  const ir    = Math.pow(1+reaj,1/12)-1;
+  const iInss = Math.pow(1+inssReaj,1/12)-1;
+  const vm=viag/12, cm2=carr/12;
+  // custos pontuais (valores de hoje) — corrigidos pela inflação de CADA cenário dentro de simPos(), não por uma taxa fixa
+  // aportes pontuais — nominais futuros
+  const ap2={[5*12]:a5,[10*12]:a10,[15*12]:a15,[20*12]:a20};
 
-  // ── atualiza labels de display ──
-  document.getElementById('v-idade').textContent = idadeAtual + ' anos';
-  document.getElementById('v-idade-esp').textContent = idadeEsp + ' anos';
-  document.getElementById('v-filho1').textContent = f1 > 0 ? f1+' anos' : '—';
-  document.getElementById('v-filho2').textContent = f2 > 0 ? f2+' anos' : '—';
-  document.getElementById('v-filho3').textContent = f3 > 0 ? f3+' anos' : '—';
-  document.getElementById('filhos-nota').textContent = filhosAtivos.length === 0
-    ? 'Idades dos filhos hoje — exibidas no card de duração como referência'
-    : 'Filhos hoje: '+filhosAtivos.join(', ')+' anos. Na aposentadoria ('+apos+' anos): '+filhosAtivos.map(f=>f+apos).join(', ')+' anos.';
-  document.getElementById('v-renda').textContent = 'R$ '+document.getElementById('s-renda').value+'k/mês';
-  document.getElementById('v-reaj').textContent = parseFloat(document.getElementById('s-reaj').value).toFixed(1).replace('.',',')+' % a.a.';
-  document.getElementById('v-inss').textContent = 'R$ '+parseFloat(document.getElementById('s-inss').value).toFixed(1).replace('.',',')+'k/mês';
-  document.getElementById('v-inss-reaj').textContent = parseFloat(document.getElementById('s-inss-reaj').value).toFixed(1).replace('.',',')+' % a.a.';
-  document.getElementById('v-inss-ano').textContent = ANO_INSS;
-  document.getElementById('inss-nota').textContent = ANO_INSS <= anoApos
-    ? 'Já ativo no início da aposentadoria'
-    : 'Inicia em '+ANO_INSS+' ('+anosInssPosApos+' anos após aposentadoria)';
-  document.getElementById('ns3').textContent = novaRendaStatus(nr3, 3, apos);
-  document.getElementById('ns5').textContent = novaRendaStatus(nr5, 5, apos);
-  document.getElementById('ns10').textContent = novaRendaStatus(nr10, 10, apos);
-  document.getElementById('v-inv').textContent = 'R$ '+parseFloat(document.getElementById('s-inv').value).toFixed(1).replace('.',',')+'M';
-  document.getElementById('v-pat-nr').textContent = 'R$ '+parseFloat(document.getElementById('s-pat-nr').value).toFixed(1).replace('.',',')+'M';
-  const patNRv = parseFloat(document.getElementById('s-pat-nr').value);
-  document.getElementById('pat-nr-nota').textContent = patNRv === 0
-    ? 'Ex: imóvel parado, reserva em conta corrente. Entra no saldo total mas não rende.'
-    : fi(patNR)+' fora do mercado. Se aplicado a '+parseFloat(document.getElementById('s-rend').value).toFixed(2).replace('.',',')+' %/mês, renderia '+fi(patNR*rm)+'/mês adicionais.';
-  document.getElementById('v-rend').textContent = parseFloat(document.getElementById('s-rend').value).toFixed(2).replace('.',',')+' %';
-  document.getElementById('v-rend-tard').textContent = parseFloat(document.getElementById('s-rend-tard').value).toFixed(2).replace('.',',')+' %';
-  document.getElementById('v-rend-ano').textContent = 'ano '+rmAnoTard;
-  document.getElementById('rend-tard-nota').textContent = 'Após o ano '+rmAnoTard+' da aposentadoria o rendimento cai de '+parseFloat(document.getElementById('s-rend').value).toFixed(2).replace('.',',')+' % para '+parseFloat(document.getElementById('s-rend-tard').value).toFixed(2).replace('.',',')+' % — reflete migração para ativos mais conservadores';
-  document.getElementById('v-var-rend').textContent = '±'+parseFloat(document.getElementById('s-var-rend').value).toFixed(2).replace('.',',')+' %';
-  document.getElementById('v-var-inf').textContent = '±'+parseFloat(document.getElementById('s-var-inf').value).toFixed(1).replace('.',',')+' %';
-  document.getElementById('cenarios-nota').textContent =
-    'Pessimista: rendimento '+(rm-varRend)*100 .toFixed(2).replace('.',',')+' % / inflação '+(inf+varInf)*100 .toFixed(1).replace('.',',')+' %  |  '
-   +'Otimista: rendimento '+(rm+varRend)*100 .toFixed(2).replace('.',',')+' % / inflação '+(inf-varInf)*100 .toFixed(1).replace('.',',')+' %';
-  document.getElementById('v-custo').textContent = 'R$ '+document.getElementById('s-custo').value+'k/mês';
-  document.getElementById('v-inf').textContent = parseFloat(document.getElementById('s-inf').value).toFixed(1).replace('.',',')+' %';
-  document.getElementById('v-anos').textContent = apos+' ano'+(apos>1?'s':'')+' ('+anoApos+')';
-  document.getElementById('v-viag').textContent = 'R$ '+document.getElementById('s-viag').value+'k/ano';
-  document.getElementById('v-carr').textContent = 'R$ '+document.getElementById('s-carr').value+'k/ano';
-  document.getElementById('fase1-label').textContent = 'Fase 1 — até ano '+fd1+' ('+anoApos+'–'+(anoApos+fd1)+')';
-  document.getElementById('fase2-label').textContent = 'Fase 2 — até ano '+(fd1+fd2)+' ('+(anoApos+fd1)+'–'+(anoApos+fd1+fd2)+')';
-  document.getElementById('fase3-label').textContent = 'Fase 3 — a partir de '+(anoApos+fd1+fd2);
-  const anoVenda = ANO_ATUAL + imovelAno;
-  document.getElementById('v-ianos').textContent = 'ano '+imovelAno+' ('+anoVenda+')';
-  document.getElementById('v-inovo').textContent = parseFloat(document.getElementById('s-inovo').value)===0 ? 'R$ 0' : 'R$ '+(parseFloat(document.getElementById('s-inovo').value)*100)+'k';
-  document.getElementById('iv-sub').textContent = imovelVenda > 0 ? fi(imovelVenda)+' bruto' : '—';
-  document.getElementById('imovel-nota').textContent = imovelVenda > 0
-    ? 'Venda em '+anoVenda+(imovelAno<apos?' (pré-aposentadoria)':' (pós-aposentadoria)')+'. Líquido: '+fm(imovelLiq)+'.'
-    : 'Configure o valor de venda para ativar.';
-  // OI display
-  document.getElementById('v-oi-val').textContent = 'R$ '+parseFloat(document.getElementById('oi-val').value).toFixed(1).replace('.',',')+'M';
-  document.getElementById('v-oi-taxa').textContent = parseFloat(document.getElementById('oi-taxa').value).toFixed(1).replace('.',',')+' % a.a.';
-  document.getElementById('v-oi-renda').textContent = 'R$ '+parseFloat(document.getElementById('oi-renda').value).toFixed(1).replace('.',',')+'k/mês';
-  if (OI.val > 0) {
-    const oiValFuturo = OI.val * Math.pow(1+OI.taxa, apos);
-    const oiRendaFutura = OI.renda > 0 ? OI.renda * Math.pow(1+reaj, apos) : 0;
-    document.getElementById('oi-nota').textContent = (OI.nome||'Ativo')+': vale '+fi(OI.val)+' hoje → '+fi(oiValFuturo)+' na aposentadoria'
-      +(OI.renda>0?' · renda: '+fi(OI.renda)+'/mês hoje → '+fi(oiRendaFutura)+'/mês na aposentadoria':'');
-  } else {
-    document.getElementById('oi-nota').textContent = '—';
-  }
-  // IT display
-  if (IT.val > 0) {
-    const mesIniNome = MESES_NOMES[IT.mes-1];
-    const anoFim = IT.ano + Math.floor((IT.mes-1+IT.dur)/12);
-    const mesFimNome = MESES_NOMES[(IT.mes-1+IT.dur)%12];
-    document.getElementById('it-nota').textContent = (IT.nome||'Aporte')+': '+fi(IT.val)+'/mês de '+mesIniNome+'/'+IT.ano+' até '+mesFimNome+'/'+anoFim+' ('+IT.dur+' meses) · total aportado: '+fi(IT.val*IT.dur)+' + rendimentos';
-  } else {
-    document.getElementById('it-nota').textContent = '—';
-  }
-  // pontuais
-  document.getElementById('as0').textContent = a0>0 ? fi(a0)+' — entra em '+anoApos : '—';
-  document.getElementById('as5').textContent = a5>0 ? '+'+fi(a5)+' — em '+(anoApos+5) : '—';
+  // ── display labels ──
+  document.getElementById('v-idade').textContent=idadeAtual+' anos';
+  document.getElementById('v-idade-esp').textContent=idadeEsp+' anos';
+  [f1,f2,f3].forEach((f,i)=>document.getElementById('v-filho'+(i+1)).textContent=f>0?f+' anos':'—');
+  document.getElementById('filhos-nota').textContent=filhosAtivos.length===0
+    ?'Idades dos filhos — usadas como referência no card de duração'
+    :'Filhos hoje: '+filhosAtivos.join(', ')+' anos. Na aposentadoria: '+filhosAtivos.map(f=>f+apos).join(', ')+' anos.';
+  document.getElementById('ps15').textContent = p15>0 ? fi(p15)+' hoje → '+fi(p15*Math.pow(1+inf,apos+15))+' em '+(anoApos+15) : '—';
+  document.getElementById('ps20').textContent = p20>0 ? fi(p20)+' hoje → '+fi(p20*Math.pow(1+inf,apos+20))+' em '+(anoApos+20) : '—';
+  document.getElementById('as0').textContent  = a0>0  ? fi(a0)+' — entra em '+anoApos : '—';
+  document.getElementById('as5').textContent  = a5>0  ? '+'+fi(a5)+' — em '+(anoApos+5)   : '—';
   document.getElementById('as10').textContent = a10>0 ? '+'+fi(a10)+' — em '+(anoApos+10) : '—';
   document.getElementById('as15').textContent = a15>0 ? '+'+fi(a15)+' — em '+(anoApos+15) : '—';
   document.getElementById('as20').textContent = a20>0 ? '+'+fi(a20)+' — em '+(anoApos+20) : '—';
-  document.getElementById('ps5').textContent  = p5>0  ? fi(p5)+' hoje → '+fi(p5*Math.pow(1+inf,apos+5))+' em '+(anoApos+5)   : '—';
-  document.getElementById('ps10').textContent = p10>0 ? fi(p10)+' hoje → '+fi(p10*Math.pow(1+inf,apos+10))+' em '+(anoApos+10) : '—';
-  document.getElementById('ps15').textContent = p15>0 ? fi(p15)+' hoje → '+fi(p15*Math.pow(1+inf,apos+15))+' em '+(anoApos+15) : '—';
-  document.getElementById('ps20').textContent = p20>0 ? fi(p20)+' hoje → '+fi(p20*Math.pow(1+inf,apos+20))+' em '+(anoApos+20) : '—';
+  document.getElementById('v-renda').textContent='R$ '+document.getElementById('s-renda').value+'k/mês';
+  document.getElementById('v-reaj').textContent=parseFloat(document.getElementById('s-reaj').value).toFixed(1).replace('.',',')+'% a.a.';
+  document.getElementById('v-inss').textContent='R$ '+parseFloat(document.getElementById('s-inss').value).toFixed(1).replace('.',',')+'k/mês';
+  document.getElementById('v-inss-reaj').textContent=parseFloat(document.getElementById('s-inss-reaj').value).toFixed(1).replace('.',',')+'% a.a.';
+  document.getElementById('v-inss-ano').textContent=ANO_INSS;
+  document.getElementById('inss-nota').textContent=ANO_INSS<=anoApos?'Já ativo no início da aposentadoria':'Inicia em '+ANO_INSS+' ('+anosInssPosApos+' anos após aposentadoria)';
+  document.getElementById('v-inv').textContent='R$ '+parseFloat(document.getElementById('s-inv').value).toFixed(1).replace('.',',')+'M';
+  document.getElementById('v-pat-nr').textContent='R$ '+parseFloat(document.getElementById('s-pat-nr').value).toFixed(1).replace('.',',')+'M';
+  document.getElementById('pat-nr-nota').textContent=patNR===0?'Ex: imóvel parado, conta corrente. Entra no saldo mas não rende.':fi(patNR)+' fora do mercado — se aplicado a '+parseFloat(document.getElementById('s-rend').value).toFixed(2).replace('.',',')+'%/mês renderia '+fi(patNR*rm)+'/mês adicionais.';
+  document.getElementById('v-rend').textContent=parseFloat(document.getElementById('s-rend').value).toFixed(2).replace('.',',')+'%';
+  document.getElementById('v-rend-tard').textContent=parseFloat(document.getElementById('s-rend-tard').value).toFixed(2).replace('.',',')+'%';
+  document.getElementById('v-rend-ano').textContent='ano '+rmAnoTard;
+  document.getElementById('rend-tard-nota').textContent='Após o ano '+rmAnoTard+' da aposentadoria o rendimento cai de '+parseFloat(document.getElementById('s-rend').value).toFixed(2).replace('.',',')+'% para '+parseFloat(document.getElementById('s-rend-tard').value).toFixed(2).replace('.',',')+'% — migração para ativos mais conservadores';
+  document.getElementById('v-custo').textContent='R$ '+document.getElementById('s-custo').value+'k/mês';
+  document.getElementById('v-inf').textContent=parseFloat(document.getElementById('s-inf').value).toFixed(1).replace('.',',')+'%';
+  document.getElementById('v-anos').textContent=apos+' ano'+(apos>1?'s':'')+' ('+anoApos+')';
+  document.getElementById('v-viag').textContent='R$ '+document.getElementById('s-viag').value+'k/ano';
+  document.getElementById('v-carr').textContent='R$ '+document.getElementById('s-carr').value+'k/ano';
+  document.getElementById('v-var-rend').textContent='±'+parseFloat(document.getElementById('s-var-rend').value).toFixed(2).replace('.',',')+'%';
+  document.getElementById('v-var-inf').textContent='±'+parseFloat(document.getElementById('s-var-inf').value).toFixed(1).replace('.',',')+'%';
+  document.getElementById('cenarios-nota').textContent=
+    'Pessimista: rend. '+((rm-varRend)*100).toFixed(2).replace('.',',')+'% / inf. '+((inf+varInf)*100).toFixed(1).replace('.',',')+'%  |  '
+   +'Otimista: rend. '+((rm+varRend)*100).toFixed(2).replace('.',',')+'% / inf. '+((inf-varInf)*100).toFixed(1).replace('.',',')+'%';
+  document.getElementById('fase1-label').textContent='Fase 1 — até ano '+fd1+' ('+anoApos+'–'+(anoApos+fd1)+')';
+  document.getElementById('fase2-label').textContent='Fase 2 — até ano '+(fd1+fd2)+' ('+(anoApos+fd1)+'–'+(anoApos+fd1+fd2)+')';
+  document.getElementById('fase3-label').textContent='Fase 3 — a partir de '+(anoApos+fd1+fd2);
+  const anoVenda=ANO_ATUAL+imovelAno;
+  document.getElementById('v-ianos').textContent='ano '+imovelAno+' ('+anoVenda+')';
+  document.getElementById('v-inovo').textContent=parseFloat(document.getElementById('s-inovo').value)===0?'R$ 0':'R$ '+(parseFloat(document.getElementById('s-inovo').value)*100)+'k';
+  document.getElementById('iv-sub').textContent=imovelVenda>0?fi(imovelVenda)+' bruto':'—';
+  document.getElementById('imovel-nota').textContent=imovelVenda>0
+    ?'Venda em '+anoVenda+(imovelAno<apos?' (pré-aposentadoria)':' (pós-aposentadoria)')+'. Líquido: '+fm(imovelLiq)+'.'
+    :'Configure o valor de venda para ativar.';
+  if(OI.val>0){
+    const oiVF=OI.val*Math.pow(1+OI.taxa,apos), oiRF=OI.renda>0?OI.renda*Math.pow(1+inf,apos):0;
+    document.getElementById('oi-nota').textContent=(OI.nome||'Ativo')+': '+fi(OI.val)+' hoje → '+fi(oiVF)+' na aposentadoria'+(OI.renda>0?' · renda: '+fi(OI.renda)+'/mês hoje → '+fi(oiRF)+'/mês':'');
+  } else { document.getElementById('oi-nota').textContent='—'; }
+  document.getElementById('v-oi-val').textContent='R$ '+parseFloat(document.getElementById('oi-val').value).toFixed(1).replace('.',',')+'M';
+  document.getElementById('v-oi-taxa').textContent=parseFloat(document.getElementById('oi-taxa').value).toFixed(1).replace('.',',')+'% a.a.';
+  document.getElementById('v-oi-renda').textContent='R$ '+parseFloat(document.getElementById('oi-renda').value).toFixed(1).replace('.',',')+'k/mês';
 
-  const sobra0 = renda - custo;
-  document.getElementById('m-sobra').textContent = fm(sobra0);
-  document.getElementById('m-sobra').style.color = sobra0 >= 0 ? '#1a1a18' : '#A32D2D';
-  document.getElementById('m-sobra-sub').textContent = sobra0 >= 0 ? 'aportado mensalmente' : 'déficit — retira do patrimônio';
+  // resumos de eventos
+  evs.forEach((ev,i)=>{
+    const resumo=document.getElementById('ev-resumo-'+i);
+    if(!resumo)return;
+    if(ev.tipo==='vazio'){resumo.textContent='';return;}
+    const dMes=MESES[(ev['data-mes']||1)-1]+'/'+ev['data-ano'];
+    if(ev.val>0) resumo.textContent=(ev.desc||TIPOS_EVENTO[ev.tipo]?.label||'')+' · '+fi(ev.val)+(ev.tipo==='renda-nova'||ev.tipo==='saida-rec'?'/mês':'')+' · '+dMes;
+    else resumo.textContent=ev.desc||TIPOS_EVENTO[ev.tipo]?.label||'';
+  });
 
-  // ── taxas mensais derivadas ──
-  const im    = Math.pow(1+inf, 1/12) - 1;    // inflação mensal
-  const ir    = Math.pow(1+reaj, 1/12) - 1;   // reajuste de renda mensal
-  const iInss = Math.pow(1+inssReaj, 1/12) - 1;
-  const novasRendas = [{inicio:3,valor:nr3},{inicio:5,valor:nr5},{inicio:10,valor:nr10}].filter(r=>r.valor>0);
-
-  // ── PRÉ-APOSENTADORIA ──
+  // ── PRÉ-APOSENTADORIA (cenário base, com eventos do plano) ──
   let pat=inv, cm=custo, rendaBase=renda;
-  const rendaAtiva = novasRendas.map(() => 0);
   let totalAp=0, totalDef=0, primeiroDeficit=-1;
   const barLabels=[], barPre=[], barPos=[];
 
-  for (let ano=0; ano<apos; ano++) {
-    for (let m=0; m<12; m++) {
-      const mes = ano*12 + m;
-      novasRendas.forEach((r,i) => { if(rendaAtiva[i]===0 && mes===r.inicio*12) rendaAtiva[i]=r.valor; });
-      if (imovelLiq>0 && imovelAno<apos && mes===imovelMes) pat += imovelLiq;
-      if (IT.val>0 && mes>=IT.mesIni && mes<IT.mesFim) pat += IT.val;
-      pat *= (1+rm);
-      const rt = rendaBase + rendaAtiva.reduce((s,v)=>s+v, 0);
-      const sobra = rt - cm;
-      pat += sobra;
-      if (sobra >= 0) totalAp += sobra; else totalDef += Math.abs(sobra);
-      if (sobra < 0 && primeiroDeficit < 0) primeiroDeficit = mes;
-      cm *= (1+im); rendaBase *= (1+ir);
-      rendaAtiva.forEach((_,i) => { if(rendaAtiva[i]>0) rendaAtiva[i]*=(1+ir); });
+  // valor atual de cada evento "renda-nova" ativo — cresce pelo reajuste (ir) de forma independente,
+  // NUNCA é somado dentro de rendaBase (que já cresce por ir sozinha — somar ali causaria juros compostos duplicados)
+  const rendaNovaAtiva = evs.map(()=>0);
+  for(let ano=0;ano<apos;ano++){
+    for(let m=0;m<12;m++){
+      const mes=ano*12+m;
+      if(imovelLiq>0&&imovelAno<apos&&mes===imovelMes) pat+=imovelLiq;
+      // eventos pré-aposentadoria
+      evs.forEach((ev,i)=>{
+        if(ev.tipo==='entrada'&&ev.val>0&&mes===ev.mesIni) pat+=ev.val;
+        if(ev.tipo==='saida'&&ev.val>0&&mes===ev.mesIni) pat=Math.max(0,pat-ev.val);
+        if(ev.tipo==='saida-rec'&&ev.val>0&&mes>=ev.mesIni&&mes<Math.min(ev.mesFim,ev.mesIni+ev.dur)) pat=Math.max(0,pat-ev.val);
+        if(ev.tipo==='renda-nova'&&ev.val>0&&rendaNovaAtiva[i]===0&&mes>=ev.mesIni&&mes<ev.mesFim) rendaNovaAtiva[i]=ev.val;
+      });
+      pat*=(1+rm);
+      const rendaEventosAtivos=evs.reduce((s,ev,i)=>(ev.tipo==='renda-nova'&&mes>=ev.mesIni&&mes<ev.mesFim)?s+rendaNovaAtiva[i]:s,0);
+      const sobra=(rendaBase+rendaEventosAtivos)-cm;
+      pat+=sobra;
+      if(sobra>=0)totalAp+=sobra;else totalDef+=Math.abs(sobra);
+      if(sobra<0&&primeiroDeficit<0)primeiroDeficit=mes;
+      cm*=(1+im); rendaBase*=(1+ir);
+      rendaNovaAtiva.forEach((v,i)=>{ if(v>0) rendaNovaAtiva[i]*=(1+ir); });
     }
-    barLabels.push('' + (ANO_ATUAL+ano+1));
-    barPre.push(Math.round(pat));
-    barPos.push(null);
+    barLabels.push(''+(ANO_ATUAL+ano+1)); barPre.push(Math.round(pat)); barPos.push(null);
   }
 
-  // valor do OI na aposentadoria
-  const oiValApos   = OI.val * Math.pow(1+OI.taxa, apos);
-  const oiRendaApos = OI.renda > 0 ? OI.renda * Math.pow(1+reaj, apos) : 0;
+  // valor de cada "renda-nova" no exato momento da aposentadoria — usado para "entregar" a simPos()
+  // o valor JÁ REAJUSTADO de eventos que atravessam a fronteira pré/pós (sem isso, um evento que já
+  // cresceu vários anos pelo reajuste "voltaria" ao valor nominal original ao entrar na aposentadoria)
+  const rendaNovaNaAposentadoria = rendaNovaAtiva.slice();
 
-  const sA      = Math.max(0, pat) + a0;
-  const sATotal = sA + patNR + oiValApos;
-  const fI      = Math.pow(1+inf, apos);
-  const vm=viag/12, cm2=carr/12;
-  const rendasApos  = novasRendas.map(r => r.inicio>=apos ? 0 : r.valor*Math.pow(1+reaj, apos-r.inicio));
-  const inssInicio  = ANO_INSS <= anoApos ? inssValor : 0;
-  const totalRendaApos = rendasApos.reduce((s,v)=>s+v,0) + inssInicio + oiRendaApos;
-  const retLiq = Math.max(0, (fc1+vm+cm2)*fI - totalRendaApos);
+  const oiValApos=OI.val*Math.pow(1+OI.taxa,apos);
+  const oiRendaApos=OI.renda>0?OI.renda*Math.pow(1+reaj,apos):0;
+  const sA=Math.max(0,pat)+a0;
+  const sATotal=sA+patNR+oiValApos;
+  const fI=Math.pow(1+inf,apos);
+  const inssInicio=ANO_INSS<=anoApos?inssVal:0;
+  const retLiq=Math.max(0,(fc1+vm+cm2)*fI-inssInicio-oiRendaApos);
 
-  // cards
-  document.getElementById('m-saldo').textContent = fm(sATotal);
-  const oiDesc = oiValApos>0 ? ' + '+fi(oiValApos)+' ('+( OI.nome||'outro ativo')+')' : '';
-  document.getElementById('m-saldo-sub').textContent =
-    (patNR>0||oiValApos>0) ? fi(sA)+' investido'+oiDesc+(patNR>0?' + '+fi(patNR)+' s/rend.':'') :
-    a0>0&&totalAp>0 ? 'inclui aporte de '+fm(a0)+' + '+fm(totalAp)+' acumulados' :
-    a0>0 ? 'inclui aporte de '+fm(a0)+' em '+anoApos :
-    totalAp>0&&totalDef===0 ? '+'+fm(totalAp)+' aportados até '+anoApos :
-    totalDef>0&&totalAp===0 ? '−'+fm(totalDef)+' retirados até '+anoApos :
-    totalAp>0&&totalDef>0 ? '+'+fm(totalAp)+' ap. / −'+fm(totalDef)+' ret.' :
-    'sem aportes ou retiradas';
-  document.getElementById('m-ret').textContent = fm(retLiq);
-  document.getElementById('m-ret-sub').textContent =
-    'fase 1: '+fm(fc1)+'/mês → fase 2: '+fm(fc2)+'/mês → fase 3: '+fm(fc3)+'/mês'
-    + (oiRendaApos>0 ? ' | '+( OI.nome||'outro ativo')+': +'+fi(oiRendaApos)+'/mês' : '');
+  const sobra0=renda-custo;
+  document.getElementById('m-sobra').textContent=fm(sobra0);
+  document.getElementById('m-sobra').style.color=sobra0>=0?'#1a1a18':'#A32D2D';
+  document.getElementById('m-sobra-sub').textContent=sobra0>=0?'aportado mensalmente':'déficit — retira do patrimônio';
+  document.getElementById('m-saldo').textContent=fm(sATotal);
+  document.getElementById('m-saldo-sub').textContent=fi(sA)+' investido'+(oiValApos>0?' + '+fi(oiValApos)+' ('+( OI.nome||'outro ativo')+')':'')+(patNR>0?' + '+fi(patNR)+' s/rend.':'');
+  document.getElementById('m-ret').textContent=fm(retLiq);
+  document.getElementById('m-ret-sub').textContent='fase 1: '+fm(fc1)+'/mês → fase 2: '+fm(fc2)+'/mês → fase 3: '+fm(fc3)+'/mês'+(oiRendaApos>0?' | '+(OI.nome||'ativo')+': +'+fi(oiRendaApos)+'/mês':'');
 
-  const ab = document.getElementById('alerta-box');
-  if (primeiroDeficit >= 0) {
-    const yd=Math.floor(primeiroDeficit/12)+1, yc=ANO_ATUAL+yd, yb=apos-yd;
-    ab.style.display = 'block';
-    ab.innerHTML = 'Atenção: daqui <strong>'+yd+' anos</strong> (em '+yc+(yb>0?', <strong>'+yb+' ano'+(yb>1?'s':'')+' antes da aposentadoria</strong>':'')+') a renda fica abaixo do custo de vida. O patrimônio cobrirá a diferença.';
+  const ab=document.getElementById('alerta-box');
+  if(primeiroDeficit>=0){
+    const yd=Math.floor(primeiroDeficit/12)+1,yc=ANO_ATUAL+yd,yb=apos-yd;
+    ab.style.display='block';
+    ab.innerHTML='Atenção: daqui <strong>'+yd+' anos</strong> (em '+yc+(yb>0?', <strong>'+yb+' ano'+(yb>1?'s':'')+' antes da aposentadoria</strong>':'')+') a renda fica abaixo do custo de vida.';
   } else { ab.style.display='none'; }
 
   barLabels.push(anoApos+' ★'); barPre.push(null); barPos.push(Math.round(sATotal));
 
-  // ── PÓS-APOSENTADORIA ──
-  // custos pontuais corrigidos pela inflação
-  const cp  = {
-    [5*12]:  p5  * Math.pow(1+inf, apos+5),
-    [10*12]: p10 * Math.pow(1+inf, apos+10),
-    [15*12]: p15 * Math.pow(1+inf, apos+15),
-    [20*12]: p20 * Math.pow(1+inf, apos+20)
-  };
-  const ap2 = {[5*12]:a5, [10*12]:a10, [15*12]:a15, [20*12]:a20};
-  const MAX = 12 * 200;
-  const mesAposAbs = apos * 12;
-  const imovelMesPosApos = imovelAno >= apos ? (imovelAno-apos)*12 : -1;
-  const oiRmMensal = Math.pow(1+OI.taxa, 1/12) - 1;
+  // ── FUNÇÃO DE SIMULAÇÃO PÓS-APOSENTADORIA ──
+  const MAX=12*200;
+  const mesAposAbs=apos*12;
+  const imovelMesPosApos=imovelAno>=apos?(imovelAno-apos)*12:-1;
+  const oiRm=Math.pow(1+OI.taxa,1/12)-1;
 
-  // função reutilizável: simula o loop pós-aposentadoria com rmBase e infBase configuráveis
-  // retorna dc (meses com saldo positivo) e os arrays de saldo anual
-  function simPos(rmBase, infBase) {
-    const imB  = Math.pow(1+infBase, 1/12) - 1;
-    const fIB  = Math.pow(1+infBase, apos);
-    // custos pontuais recalculados com infBase
-    const cpB = {
-      [5*12]:  p5  * Math.pow(1+infBase, apos+5),
-      [10*12]: p10 * Math.pow(1+infBase, apos+10),
-      [15*12]: p15 * Math.pow(1+infBase, apos+15),
-      [20*12]: p20 * Math.pow(1+infBase, apos+20)
+  function simPos(rmBase,infBase,rmTardBase){
+    const imB=Math.pow(1+infBase,1/12)-1;
+    const fIB=Math.pow(1+infBase,apos);
+    // custos pontuais de saúde corrigidos pela inflação DESTE cenário (antes usava sempre a inflação base)
+    const cpB={
+      [15*12]: p15 * Math.pow(1+infBase,apos+15),
+      [20*12]: p20 * Math.pow(1+infBase,apos+20)
     };
-    let scInv=sA, scNR=patNR, scOI=oiValApos;
-    let dcB=0;
-    const rPA = novasRendas.map((r,i) => rendasApos[i]);
-    let inssAt = inssInicio;
+    let scInv=sA,scNR=patNR,scOI=oiValApos,dc=0;
+    // valor atual de cada evento "renda-nova" ativo — começa do valor já reajustado ao longo do pré-aposentadoria
+    // (rendaNovaNaAposentadoria), não do valor nominal original — senão um evento que atravessa a fronteira
+    // pré/pós perderia todo o reajuste acumulado ao entrar na aposentadoria. Eventos que só começam no pós
+    // (ainda com 0 aqui) continuam ativando normalmente com o valor nominal na primeira vez que entram em vigor.
+    const rPA=rendaNovaNaAposentadoria.slice();
+    const inssAt=[inssInicio];
     const salAnual=[];
 
-    for (let m=0; m<=MAX; m++) {
-      novasRendas.forEach((r,i)=>{ if(rPA[i]===0&&r.inicio>=apos&&m===(r.inicio-apos)*12) rPA[i]=r.valor; });
-      if (inssAt===0 && mesesInssPosApos>0 && m===mesesInssPosApos) inssAt=inssValor;
-      if (imovelLiq>0 && imovelMesPosApos>0 && m===imovelMesPosApos) scInv+=imovelLiq;
-      const mesAbsLoop = mesAposAbs+m;
-      if (IT.val>0 && mesAbsLoop>=IT.mesIni && mesAbsLoop<IT.mesFim) scInv+=IT.val;
+    for(let m=0;m<=MAX;m++){
+      if(document.getElementById('s-inss-ano')&&m===mesesInssPosApos&&inssAt[0]===0) inssAt[0]=inssVal;
+      if(imovelLiq>0&&imovelMesPosApos>0&&m===imovelMesPosApos) scInv+=imovelLiq;
 
-      if (m%12===0) salAnual.push(scInv+scNR+scOI>0?Math.round(scInv+scNR+scOI):0);
+      const mesAbsLoop=mesAposAbs+m;
+      // eventos pós-aposentadoria
+      evs.forEach((ev,i)=>{
+        if(ev.val<=0)return;
+        if(ev.tipo==='entrada'&&mesAbsLoop===ev.mesIni) scInv+=ev.val;
+        if(ev.tipo==='saida'&&mesAbsLoop===ev.mesIni) scInv=Math.max(0,scInv-ev.val);
+        if(ev.tipo==='saida-rec'&&mesAbsLoop>=ev.mesIni&&mesAbsLoop<ev.mesIni+ev.dur) scInv=Math.max(0,scInv-ev.val);
+        if(ev.tipo==='renda-nova'&&rPA[i]===0&&mesAbsLoop>=ev.mesIni&&mesAbsLoop<ev.mesFim) rPA[i]=ev.val;
+      });
+      const rendaEventos=evs.reduce((s,ev,i)=>{
+        if(ev.tipo==='renda-nova'&&mesAbsLoop>=ev.mesIni&&mesAbsLoop<ev.mesFim) return s+rPA[i];
+        return s;
+      },0);
 
-      const apAno = m/12;
-      // rendimento tardio: usa rmTard após o ano configurado
-      const rmEff = apAno >= rmAnoTard ? rmTard : rmBase;
-      const cfb   = apAno<fd1 ? fc1 : apAno<fd1+fd2 ? fc2 : fc3;
-      const cmt   = (cfb+vm+cm2)*fIB*Math.pow(1+imB,m);
-      const trp   = rPA.reduce((s,v)=>s+v, 0);
-      const oiRendaMes = OI.renda > 0 ? OI.renda*Math.pow(1+ir,m) : 0;
+      if(m%12===0) salAnual.push(scInv+scNR+scOI>0?Math.round(scInv+scNR+scOI):0);
 
-      scOI *= (1+oiRmMensal);
-      scInv *= (1+rmEff);
-      scInv = Math.max(0,scInv) + (ap2[m]||0);
-      scInv = Math.max(0,scInv-(cpB[m]||0));
-      let defComp = Math.max(0, cmt-trp-inssAt-oiRendaMes);
-      const useNRc=Math.min(scNR,defComp); scNR-=useNRc; defComp-=useNRc;
-      const useOIc=Math.min(scOI,defComp); scOI-=useOIc; defComp-=useOIc;
-      scInv = Math.max(0, scInv-defComp);
-      if (scInv+scNR+scOI>0) dcB++;
+      const apAno=m/12;
+      const rmEff=apAno>=rmAnoTard?rmTardBase:rmBase;
+      const cfb=apAno<fd1?fc1:apAno<fd1+fd2?fc2:fc3;
+      const cmt=(cfb+vm+cm2)*fIB*Math.pow(1+imB,m);
+      const oiRendaMes=OI.renda>0?OI.renda*Math.pow(1+imB,m):0;
 
-      rPA.forEach((_,i)=>{ if(rPA[i]>0) rPA[i]*=(1+ir); });
-      if (inssAt>0) inssAt*=(1+iInss);
-      if (scInv+scNR+scOI<=0) break;
-    }
-    return {dc:dcB, salAnual};
-  }
-
-  // simulação cenário base — também gera dS (sem rendas) para gráfico de linha
-  const linLabels=[], dS=[], dC=[], dPess=[], dOtim=[];
-  {
-    // cenário base (dC) com taxa variável
-    const resBase = simPos(rm, inf);
-    // cenário sem rendas passivas (dS) para comparação no gráfico
-    const resSemRendas = (function(){
-      let ssInv=sA, ssNR=patNR, ssOI=oiValApos;
-      const imB=Math.pow(1+inf,1/12)-1, fIB=Math.pow(1+inf,apos);
-      const salAnual=[];
-      for(let m=0;m<=MAX;m++){
-        if(imovelLiq>0&&imovelMesPosApos>0&&m===imovelMesPosApos){ssInv+=imovelLiq;}
-        const mesAbsLoop=mesAposAbs+m;
-        if(IT.val>0&&mesAbsLoop>=IT.mesIni&&mesAbsLoop<IT.mesFim) ssInv+=IT.val;
-        if(m%12===0) salAnual.push(ssInv+ssNR+ssOI>0?Math.round(ssInv+ssNR+ssOI):0);
-        const apAno=m/12, rmEff=apAno>=rmAnoTard?rmTard:rm;
-        const cfb=apAno<fd1?fc1:apAno<fd1+fd2?fc2:fc3;
-        const cmt=(cfb+vm+cm2)*fIB*Math.pow(1+imB,m);
-        ssOI*=(1+oiRmMensal); ssInv*=(1+rmEff);
-        const useNRb=Math.min(ssNR,cmt); ssNR-=useNRb;
-        const useOIb=Math.min(ssOI,cmt-useNRb); ssOI-=useOIb;
-        ssInv=Math.max(0,ssInv-(cmt-useNRb-useOIb));
-        if(ssInv+ssNR+ssOI<=0)break;
+      scOI*=(1+oiRm);
+      scInv*=(1+rmEff);
+      scInv=Math.max(0,scInv)+(ap2[m]||0);
+      scInv=Math.max(0,scInv-(cpB[m]||0));
+      const diffMes=cmt-inssAt[0]-oiRendaMes-rendaEventos;
+      if(diffMes<0){
+        scInv+=-diffMes; // sobra de renda passiva/eventos — nunca fica parada, reinveste
+      } else {
+        let defComp=diffMes;
+        const useNR=Math.min(scNR,defComp);scNR-=useNR;defComp-=useNR;
+        const useOI=Math.min(scOI,defComp);scOI-=useOI;defComp-=useOI;
+        scInv=Math.max(0,scInv-defComp);
       }
-      return salAnual;
-    })();
-    const resPess = simPos(Math.max(0.001, rm-varRend), inf+varInf);
-    const resOtim = simPos(rm+varRend, Math.max(0.001, inf-varInf));
+      if(scInv+scNR+scOI>0)dc++;
 
-    const maxLen = Math.max(resBase.salAnual.length, resSemRendas.length, resPess.salAnual.length, resOtim.salAnual.length);
-    for (let i=0; i<maxLen; i++) {
-      linLabels.push(''+(anoApos+i));
-      dS.push(resSemRendas[i] ?? 0);
-      dC.push(resBase.salAnual[i] ?? 0);
-      dPess.push(resPess.salAnual[i] ?? 0);
-      dOtim.push(resOtim.salAnual[i] ?? 0);
-      if (i>=1 && i<=20) { barLabels.push(''+(anoApos+i)); barPre.push(null); barPos.push(resBase.salAnual[i]??0); }
+      rPA.forEach((v,i)=>{ if(v>0) rPA[i]*=(1+ir); });
+      if(inssAt[0]>0)inssAt[0]*=(1+iInss);
+      if(scInv+scNR+scOI<=0)break;
     }
-
-    // helper: monta texto de idades no esgotamento
-    const idadeStr = (anosPos) => {
-      const iE=idadeAtual+apos+anosPos, iEsp=idadeEsp+apos+anosPos;
-      const filhosStr = filhosAtivos.map(f=>f+apos+anosPos+' anos').join(' | ');
-      return 'você ~'+iE+' | cônjuge ~'+iEsp+(filhosStr?' | filhos: '+filhosStr:'');
-    };
-
-    // card base
-    const dc = resBase.dc;
-    const anos=Math.floor(dc/12), mes2=dc%12, eterna=dc>=MAX-1;
-    const dEl=document.getElementById('m-dur'), sEl=document.getElementById('m-dur-sub'), cEl=document.getElementById('dur-card');
-    if (eterna) {
-      dEl.textContent='∞ patrimônio perene'; sEl.textContent='rendimento supera retiradas';
-      dEl.style.color='#085041'; cEl.style.borderColor='#1D9E75'; cEl.style.background='#E1F5EE'; sEl.style.color='#0F6E56';
-    } else {
-      const anoEsgota=anoApos+anos;
-      dEl.textContent = anos+' anos e '+mes2+' meses';
-      sEl.textContent = 'esgota em '+anoEsgota+' — '+idadeStr(anos)+' | rend. '+(rm*100).toFixed(2).replace('.',',')+' % / inf. '+(inf*100).toFixed(1).replace('.',',')+' %';
-      const cor=anos>35?'#085041':anos>20?'#633806':'#791F1F';
-      const bg=anos>35?'#E1F5EE':anos>20?'#FAEEDA':'#FCEBEB';
-      const bd=anos>35?'#1D9E75':anos>20?'#EF9F27':'#E24B4A';
-      dEl.style.color=cor; cEl.style.background=bg; cEl.style.borderColor=bd; sEl.style.color=cor;
-    }
-
-    // card pessimista
-    const dcP=resPess.dc, anosP=Math.floor(dcP/12), m2P=dcP%12, eterP=dcP>=MAX-1;
-    const pEl=document.getElementById('m-dur-pess'), psEl=document.getElementById('m-dur-pess-sub');
-    pEl.textContent = eterP ? '∞ perene' : anosP+' anos e '+m2P+' meses';
-    psEl.textContent = eterP ? 'rendimento supera retiradas'
-      : 'esgota em '+(anoApos+anosP)+' — '+idadeStr(anosP)+' | rend. '+((rm-varRend)*100).toFixed(2).replace('.',',')+' % / inf. '+((inf+varInf)*100).toFixed(1).replace('.',',')+' %';
-
-    // card otimista
-    const dcO=resOtim.dc, anosO=Math.floor(dcO/12), m2O=dcO%12, eterO=dcO>=MAX-1;
-    const oEl=document.getElementById('m-dur-otim'), osEl=document.getElementById('m-dur-otim-sub');
-    oEl.textContent = eterO ? '∞ perene' : anosO+' anos e '+m2O+' meses';
-    osEl.textContent = eterO ? 'rendimento supera retiradas'
-      : 'esgota em '+(anoApos+anosO)+' — '+idadeStr(anosO)+' | rend. '+((rm+varRend)*100).toFixed(2).replace('.',',')+' % / inf. '+((inf-varInf)*100).toFixed(1).replace('.',',')+' %';
+    return{dc,salAnual};
   }
 
-  // ── GRÁFICOS ──
-  // renda vs custo (não muda com cenários — usa parâmetros base)
-  const cvLabels=[], cvCusto=[], cvRenda=[];
-  cvLabels.push(''+ANO_ATUAL); cvCusto.push(Math.round(custo+vm+cm2)); cvRenda.push(Math.round(renda));
-  {
-    let cmCv=custo+vm+cm2, rbCv=renda;
-    const raCv = novasRendas.map(()=>0);
-    for (let ano=0; ano<apos; ano++) {
-      for (let m=0; m<12; m++) {
+  // roda 3 cenários — a variação de rendimento (varRend) agora também desloca a taxa tardia,
+  // senão as 3 curvas convergiam para o mesmo rendimento após o ano de transição
+  const resBase=simPos(rm,inf,rmTard);
+  const resPess=simPos(Math.max(0.001,rm-varRend),inf+varInf,Math.max(0.001,rmTard-varRend));
+  const resOtim=simPos(rm+varRend,Math.max(0.001,inf-varInf),rmTard+varRend);
+
+  // monta arrays de gráfico
+  const linLabels=[],dC=[],dPess=[],dOtim=[];
+  const maxLen=Math.max(resBase.salAnual.length,resPess.salAnual.length,resOtim.salAnual.length);
+  for(let i=0;i<maxLen;i++){
+    linLabels.push(''+(anoApos+i));
+    dC.push(resBase.salAnual[i]??0);
+    dPess.push(resPess.salAnual[i]??0);
+    dOtim.push(resOtim.salAnual[i]??0);
+    if(i>=1&&i<=20){barLabels.push(''+(anoApos+i));barPre.push(null);barPos.push(resBase.salAnual[i]??0);}
+  }
+
+  // helper idades
+  const idadeStr=(ap)=>{
+    const iE=idadeAtual+apos+ap,iEsp=idadeEsp+apos+ap;
+    const fs=filhosAtivos.map(f=>f+apos+ap+' anos').join(' | ');
+    return 'você ~'+iE+' | cônjuge ~'+iEsp+(fs?' | filhos: '+fs:'');
+  };
+
+  // cards de duração
+  const durCard=(dc,rmB,infB,elVal,elSub,card,base)=>{
+    const anos=Math.floor(dc/12),mes2=dc%12,eterna=dc>=MAX-1;
+    elVal.textContent=eterna?'∞ perene':anos+' anos e '+mes2+' meses';
+    if(eterna){elSub.textContent='rendimento supera retiradas';}
+    else{
+      elSub.textContent='esgota em '+(anoApos+anos)+' — '+idadeStr(anos)+' | rend. '+(rmB*100).toFixed(2).replace('.',',')+'% / inf. '+(infB*100).toFixed(1).replace('.',',')+'%';
+    }
+    if(base){
+      const cor=anos>35||eterna?'#085041':anos>20?'#633806':'#791F1F';
+      const bg=anos>35||eterna?'#E1F5EE':anos>20?'#FAEEDA':'#FCEBEB';
+      const bd=anos>35||eterna?'#1D9E75':anos>20?'#EF9F27':'#E24B4A';
+      elVal.style.color=cor;card.style.background=bg;card.style.borderColor=bd;elSub.style.color=cor;
+    }
+  };
+  durCard(resBase.dc,rm,inf,document.getElementById('m-dur'),document.getElementById('m-dur-sub'),document.getElementById('dur-card'),true);
+  durCard(resPess.dc,rm-varRend,inf+varInf,document.getElementById('m-dur-pess'),document.getElementById('m-dur-pess-sub'),document.getElementById('dur-pess-card'),false);
+  durCard(resOtim.dc,rm+varRend,inf-varInf,document.getElementById('m-dur-otim'),document.getElementById('m-dur-otim-sub'),document.getElementById('dur-otim-card'),false);
+
+  // projeta um patrimônio inicial (avaliado hoje) até a aposentadoria, com a mesma mecânica
+  // do cenário base (eventos do plano, renda, custo, rendimento) — usado para comparar "plano"
+  // vs "real" no MESMO ponto no tempo (a aposentadoria). Comparar valores de datas diferentes
+  // (ex.: patrimônio real de hoje vs patrimônio planejado já projetado para a aposentadoria)
+  // gera uma diferença de duração artificial, sem relação com o desempenho real do plano.
+  // retorna { pat, rendaNovaFinal } — o patrimônio na aposentadoria E o valor (já reajustado) de cada
+  // "renda-nova" ativa nesse momento, para que quem for simular o pós-aposentadoria a partir daqui
+  // (ex.: simComPat) não perca a continuidade do reajuste ao cruzar a fronteira pré/pós.
+  // rendaNovaJaAtiva (opcional): valor atual de eventos "renda-nova" que JÁ estavam ativos em patInicial
+  // (mesIni<=0) — usado quando patInicial é o patrimônio real de hoje, que já inclui a parcela do mês
+  // corrente (ver ajuste de "hoje" em calc()). Sem isso, eventos com mesIni<=0 seriam contados 2x: uma
+  // vez no cálculo de patRealUsado e de novo aqui, ao reativá-los em mes===0.
+  function projetarPatrimonioFuturo(patInicial, rendaNovaJaAtiva){
+    let p=patInicial, cmL=custo, rendaL=renda;
+    const rnAtiva=(rendaNovaJaAtiva||evs.map(()=>0)).slice();
+    for(let ano=0;ano<apos;ano++){
+      for(let m=0;m<12;m++){
         const mes=ano*12+m;
-        novasRendas.forEach((r,i)=>{ if(raCv[i]===0&&mes===r.inicio*12) raCv[i]=r.valor; });
-        cmCv*=(1+im); rbCv*=(1+ir); raCv.forEach((_,i)=>{ if(raCv[i]>0) raCv[i]*=(1+ir); });
+        if(imovelLiq>0&&imovelAno<apos&&mes===imovelMes) p+=imovelLiq;
+        evs.forEach((ev,i)=>{
+          // ev.mesIni>0: só eventos pontuais FUTUROS (ainda não aconteceram) entram aqui — os com
+          // mesIni<=0 já foram aplicados a patInicial antes de chamar esta função
+          if(ev.tipo==='entrada'&&ev.val>0&&ev.mesIni>0&&mes===ev.mesIni) p+=ev.val;
+          if(ev.tipo==='saida'&&ev.val>0&&ev.mesIni>0&&mes===ev.mesIni) p=Math.max(0,p-ev.val);
+          if(ev.tipo==='saida-rec'&&ev.val>0&&mes>=Math.max(ev.mesIni,1)&&mes<Math.min(ev.mesFim,ev.mesIni+ev.dur)) p=Math.max(0,p-ev.val);
+          if(ev.tipo==='renda-nova'&&ev.val>0&&ev.mesIni>0&&rnAtiva[i]===0&&mes>=ev.mesIni&&mes<ev.mesFim) rnAtiva[i]=ev.val;
+        });
+        p*=(1+rm);
+        // no mês 0, qualquer "renda-nova" com mesIni<=0 já foi contabilizada em patInicial — só entra
+        // a partir do mês 1 (eventos com mesIni>0 não podem ativar em mes===0 de qualquer forma)
+        const rendaEventosAtivos = mes===0 ? 0 : evs.reduce((s,ev,i)=>(ev.tipo==='renda-nova'&&mes>=ev.mesIni&&mes<ev.mesFim)?s+rnAtiva[i]:s,0);
+        p+=(rendaL+rendaEventosAtivos)-cmL;
+        cmL*=(1+im); rendaL*=(1+ir);
+        rnAtiva.forEach((v,i)=>{ if(v>0) rnAtiva[i]*=(1+ir); });
       }
-      cvLabels.push(''+(ANO_ATUAL+ano+1));
-      cvCusto.push(Math.round(cmCv));
-      cvRenda.push(Math.round(rbCv + raCv.reduce((s,v)=>s+v,0)));
     }
-    let inssCV=inssInicio;
-    const raPCV = novasRendas.map((r,i) => rendasApos[i]);
-    for (let ano=0; ano<=25; ano++) {
-      const anoAbs=anoApos+ano, cfb=ano<fd1?fc1:ano<fd1+fd2?fc2:fc3;
-      const cmt=(cfb+vm+cm2)*fI*Math.pow(1+inf,ano);
-      if(inssCV===0&&anoAbs>=ANO_INSS) inssCV=inssValor*Math.pow(1+inssReaj,anoAbs-ANO_INSS);
-      novasRendas.forEach((r,i)=>{ if(raPCV[i]===0&&r.inicio>=apos){const ad=anoAbs-(ANO_ATUAL+r.inicio);if(ad>=0)raPCV[i]=r.valor*Math.pow(1+reaj,ad);} });
-      cvLabels.push(''+anoAbs+(ano===0?' ★':''));
-      cvCusto.push(Math.round(cmt));
-      cvRenda.push(Math.round(raPCV.reduce((s,v)=>s+v,0)+inssCV));
-      raPCV.forEach((_,i)=>{ if(raPCV[i]>0) raPCV[i]*=(1+reaj); });
-      if(inssCV>0) inssCV*=(1+inssReaj);
-    }
+    return { pat: Math.max(0,p)+a0, rendaNovaFinal: rnAtiva };
   }
 
-  const hE = p5+p10+p15+p20+a0+a5+a10+a15+a20+nr3+nr5+nr10+inssValor+imovelVenda+OI.val+IT.val > 0;
-  document.getElementById('legend').innerHTML =
-    '<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75"></span>Base (com eventos)</span>'
-    + '<span style="display:flex;align-items:center;gap:4px"><span style="width:28px;height:2px;background:#E24B4A;border-radius:2px;border-top:2px dashed #E24B4A"></span>Pessimista</span>'
-    + '<span style="display:flex;align-items:center;gap:4px"><span style="width:28px;height:2px;background:#185FA5;border-radius:2px;border-top:2px dashed #185FA5"></span>Otimista</span>';
+  // projeta um patrimônio inicial até a aposentadoria SEM nenhum evento do Bloco 2 — a trajetória
+  // "pura" do plano original (mesma mecânica de plPatHoje, só que estendida até a aposentadoria).
+  // Usada como referência para o "impacto na duração": comparar o real (COM eventos) contra essa
+  // trajetória sem eventos isola o efeito real dos eventos + da divergência de patrimônio. Comparar
+  // contra sA (que já inclui os mesmos eventos do lado do plano) faz o efeito do evento se cancelar
+  // dos dois lados — por isso um evento de R$10 mil/mês ou R$100 mil/mês mostrava o mesmo "+5 meses".
+  function projetarSemEventos(patInicial){
+    let p=patInicial, cmL=custo, rendaL=renda;
+    for(let ano=0;ano<apos;ano++){
+      for(let m=0;m<12;m++){
+        p*=(1+rm);
+        p+=rendaL-cmL;
+        cmL*=(1+im); rendaL*=(1+ir);
+      }
+    }
+    return Math.max(0,p)+a0;
+  }
 
-  const chartScales = {
+  // ── ACOMPANHAMENTO DO PLANO ──
+  if(plPatIni>0){
+    document.getElementById('pl-impacto').style.display='block';
+    document.getElementById('plano-chart-wrap').style.display='block';
+
+    const mesesDecorridos=(ANO_ATUAL-plAnoIni)*12+(MES_ATUAL-plMesIni);
+    // patrimônio planejado para hoje (sem eventos)
+    let plPatHoje=plPatIni,plCm=custo,plR=renda;
+    for(let m=0;m<Math.max(0,mesesDecorridos);m++){plPatHoje*=(1+rm);plPatHoje+=plR-plCm;plCm*=(1+im);plR*=(1+ir);}
+    plPatHoje=Math.max(0,plPatHoje);
+
+    // patrimônio real hoje (com eventos) — valor de cada "renda-nova" ativa é rastreado à
+    // parte e cresce sozinho pelo reajuste (mesma lógica do cenário base, evita juros
+    // compostos duplicados ao somar a renda recorrente do evento dentro de plRR)
+    let plPatReal=plPatIni,plCmR=custo,plRR=renda;
+    const rnAtivaReal=evs.map(()=>0);
+    for(let m=0;m<Math.max(0,mesesDecorridos);m++){
+      const mesAbs=(plAnoIni-ANO_ATUAL)*12+(plMesIni-MES_ATUAL)+m;
+      evs.forEach((ev,i)=>{
+        if(ev.tipo==='entrada'&&ev.val>0&&mesAbs===ev.mesIni) plPatReal+=ev.val;
+        if(ev.tipo==='saida'&&ev.val>0&&mesAbs===ev.mesIni) plPatReal=Math.max(0,plPatReal-ev.val);
+        if(ev.tipo==='saida-rec'&&ev.val>0&&mesAbs>=ev.mesIni&&mesAbs<ev.mesIni+ev.dur) plPatReal=Math.max(0,plPatReal-ev.val);
+        if(ev.tipo==='renda-nova'&&ev.val>0&&rnAtivaReal[i]===0&&mesAbs>=ev.mesIni&&mesAbs<ev.mesFim) rnAtivaReal[i]=ev.val;
+      });
+      const rendaEventosReal=evs.reduce((s,ev,i)=>(ev.tipo==='renda-nova'&&mesAbs>=ev.mesIni&&mesAbs<ev.mesFim)?s+rnAtivaReal[i]:s,0);
+      plPatReal*=(1+rm); plPatReal+=(plRR+rendaEventosReal)-plCmR; plCmR*=(1+im); plRR*=(1+ir);
+      rnAtivaReal.forEach((v,i)=>{ if(v>0) rnAtivaReal[i]*=(1+ir); });
+    }
+    // eventos referentes ao mês "hoje" (mesAbs===0) — o loop acima só percorre meses JÁ completados
+    // desde o início do plano (mesAbs de -mesesDecorridos até -1), então nunca chega a avaliar mesAbs=0.
+    // Sem este ajuste: (1) um evento pontual datado hoje (a data padrão ao criar um evento novo) nunca
+    // aparecia em "patrimônio real hoje"; (2) uma renda-nova/saída-rec já ativa hoje não tinha a
+    // parcela deste mês contabilizada, mesmo quando meses anteriores dela já tinham sido creditados.
+    evs.forEach((ev,i)=>{
+      if(ev.tipo==='entrada'&&ev.val>0&&ev.mesIni===0) plPatReal+=ev.val;
+      if(ev.tipo==='saida'&&ev.val>0&&ev.mesIni===0) plPatReal=Math.max(0,plPatReal-ev.val);
+      if(ev.tipo==='saida-rec'&&ev.val>0&&0>=ev.mesIni&&0<ev.mesIni+ev.dur) plPatReal=Math.max(0,plPatReal-ev.val);
+      if(ev.tipo==='renda-nova'&&ev.val>0&&0>=ev.mesIni&&0<ev.mesFim){
+        // usa o valor já reajustado se o evento já vinha ativo (rnAtivaReal[i]>0);
+        // se está começando exatamente hoje, usa o valor nominal original
+        plPatReal += rnAtivaReal[i]>0 ? rnAtivaReal[i] : ev.val;
+      }
+    });
+    plPatReal=Math.max(0,plPatReal);
+
+    // valor atual (já reajustado) de cada "renda-nova" que já está ativa hoje — usado para que a
+    // projeção até a aposentadoria (projetarPatrimonioFuturo) NÃO conte de novo a parcela de hoje,
+    // que já foi somada acima. Reaproveitado mesmo quando patRealUsado vem de um registro manual:
+    // assume-se que qualquer valor de patrimônio real "de hoje" já reflete os eventos até hoje.
+    const rendaNovaHojeAtiva = evs.map((ev,i)=>{
+      if(ev.tipo==='renda-nova'&&ev.val>0&&0>=ev.mesIni&&0<ev.mesFim) return rnAtivaReal[i]>0?rnAtivaReal[i]:ev.val;
+      return 0;
+    });
+
+    // registro de patrimônio real mais recente — sobrepõe o calculado
+    const ultimoPR=patrimonioReal.length?patrimonioReal[patrimonioReal.length-1]:null;
+    const patRealUsado=ultimoPR?ultimoPR.valor:plPatReal;
+
+    const diff=patRealUsado-plPatHoje;
+    document.getElementById('pl-esperado').textContent=fi(plPatHoje);
+    document.getElementById('pl-real').textContent=fi(patRealUsado);
+    const diffEl=document.getElementById('pl-diff');
+    diffEl.textContent=(diff>=0?'▲ ':'▼ ')+fi(Math.abs(diff))+' ('+((diff/plPatHoje)*100).toFixed(1)+'%) vs plano';
+    document.getElementById('pl-real-mk').style.background=diff>=0?'#E1F5EE':'#FCEBEB';
+    document.getElementById('pl-real').style.color=diff>=0?'#085041':'#A32D2D';
+
+    // impacto na duração — inclui os eventos do plano que continuam (ou começam) DEPOIS da aposentadoria
+    // (ex.: uma renda-nova que atravessa a fronteira pré/pós), igual ao que simPos() já faz para os
+    // cards principais de duração. rendaNovaInicial preserva a continuidade do reajuste na fronteira.
+    const simComPat=(patInicial,rendaNovaInicial)=>{
+      let scInv=patInicial,scNR=patNR,scOI=oiValApos,dc=0;
+      const inssAt=[inssInicio];
+      const rPA=(rendaNovaInicial||evs.map(()=>0)).slice();
+      for(let m=0;m<=MAX;m++){
+        if(m===mesesInssPosApos&&inssAt[0]===0)inssAt[0]=inssVal;
+        if(imovelLiq>0&&imovelMesPosApos>0&&m===imovelMesPosApos)scInv+=imovelLiq;
+        const mesAbsLoop=mesAposAbs+m;
+        evs.forEach((ev,i)=>{
+          if(ev.val<=0)return;
+          if(ev.tipo==='entrada'&&mesAbsLoop===ev.mesIni) scInv+=ev.val;
+          if(ev.tipo==='saida'&&mesAbsLoop===ev.mesIni) scInv=Math.max(0,scInv-ev.val);
+          if(ev.tipo==='saida-rec'&&mesAbsLoop>=ev.mesIni&&mesAbsLoop<ev.mesIni+ev.dur) scInv=Math.max(0,scInv-ev.val);
+          if(ev.tipo==='renda-nova'&&rPA[i]===0&&mesAbsLoop>=ev.mesIni&&mesAbsLoop<ev.mesFim) rPA[i]=ev.val;
+        });
+        const rendaEventos=evs.reduce((s,ev,i)=>(ev.tipo==='renda-nova'&&mesAbsLoop>=ev.mesIni&&mesAbsLoop<ev.mesFim)?s+rPA[i]:s,0);
+        const apAno=m/12,rmEff=apAno>=rmAnoTard?rmTard:rm;
+        const cfb=apAno<fd1?fc1:apAno<fd1+fd2?fc2:fc3;
+        const cmt=(cfb+vm+cm2)*fI*Math.pow(1+im,m);
+        const oiRM=OI.renda>0?OI.renda*Math.pow(1+im,m):0;
+        scOI*=(1+oiRm);scInv*=(1+rmEff);
+        const diffM=cmt-inssAt[0]-oiRM-rendaEventos;
+        if(diffM<0){
+          scInv+=-diffM; // sobra nunca fica parada, reinveste
+        } else {
+          let d=diffM;
+          const uNR=Math.min(scNR,d);scNR-=uNR;d-=uNR;
+          const uOI=Math.min(scOI,d);scOI-=uOI;d-=uOI;
+          scInv=Math.max(0,scInv-d);
+        }
+        if(scInv+scNR+scOI>0)dc++;
+        rPA.forEach((v,i)=>{ if(v>0) rPA[i]*=(1+ir); });
+        if(inssAt[0]>0)inssAt[0]*=(1+iInss);
+        if(scInv+scNR+scOI<=0)break;
+      }
+      return dc;
+    };
+    // projeta o patrimônio real (avaliado hoje) até a aposentadoria antes de comparar durações —
+    // sem isso, estaríamos comparando sA (já projetado para a aposentadoria) com um valor de hoje,
+    // gerando um "impacto na duração" artificial mesmo quando o plano está em dia
+    const projReal=projetarPatrimonioFuturo(patRealUsado,rendaNovaHojeAtiva);
+    const patRealProjetado=projReal.pat;
+    // dcComPlano usa a trajetória do plano SEM eventos do Bloco 2 (projetarSemEventos), não sA —
+    // sA já inclui os mesmos eventos aplicados no lado "real", o que faria o efeito de qualquer
+    // evento se cancelar da comparação (um evento de R$10 mil ou R$100 mil/mês mostraria o mesmo
+    // impacto, pois aumentaria os dois lados quase igualmente). Comparando contra "sem eventos",
+    // o impacto na duração passa a refletir de fato o efeito dos eventos + da diferença de patrimônio.
+    const dcComPlano=simComPat(projetarSemEventos(plPatHoje),evs.map(()=>0)),dcComReal=simComPat(patRealProjetado,projReal.rendaNovaFinal);
+    const difDur=dcComReal-dcComPlano;
+    const difAnos=Math.abs(Math.floor(difDur/12)),difMes=Math.abs(difDur%12);
+    document.getElementById('pl-impacto-val').textContent=fm(diff);
+    document.getElementById('pl-impacto-dur').textContent=difDur===0?'sem impacto na duração':(difDur>0?'+':'-')+difAnos+' anos e '+difMes+' meses na duração';
+    document.getElementById('pl-impacto-dur').style.color=difDur>=0?'#085041':'#A32D2D';
+    document.getElementById('pl-impacto-val').style.color=diff>=0?'#085041':'#A32D2D';
+
+    // gráfico plano vs realidade
+    const mesIniNome=MESES[plMesIni-1];
+    const totalAnosPlano=anoApos-plAnoIni;
+    const plGLabels=[mesIniNome+'/'+plAnoIni],plGPlan=[plPatIni],plGReal=[null],plGProj=[null];
+    let ppSim=plPatIni,ppCm=custo,ppR=renda;
+    let prSim=plPatIni,prCm=custo,prR=renda;
+    // valor atual de cada "renda-nova" ativa nesta trajetória "com eventos" — rastreado à parte,
+    // mesmo motivo das outras ocorrências: evita juros compostos duplicados ao somar dentro de prR
+    const prRnAtiva=evs.map(()=>0);
+    for(let ano=1;ano<=totalAnosPlano;ano++){
+      for(let m=0;m<12;m++){
+        const mesAbs=(plAnoIni-ANO_ATUAL)*12+(plMesIni-MES_ATUAL)+(ano-1)*12+m;
+        ppSim*=(1+rm);ppSim+=ppR-ppCm;ppCm*=(1+im);ppR*=(1+ir);
+        evs.forEach((ev,i)=>{
+          if(ev.tipo==='entrada'&&ev.val>0&&mesAbs===ev.mesIni)prSim+=ev.val;
+          if(ev.tipo==='saida'&&ev.val>0&&mesAbs===ev.mesIni)prSim=Math.max(0,prSim-ev.val);
+          if(ev.tipo==='saida-rec'&&ev.val>0&&mesAbs>=ev.mesIni&&mesAbs<ev.mesIni+ev.dur)prSim=Math.max(0,prSim-ev.val);
+          if(ev.tipo==='renda-nova'&&ev.val>0&&prRnAtiva[i]===0&&mesAbs>=ev.mesIni&&mesAbs<ev.mesFim)prRnAtiva[i]=ev.val;
+        });
+        const rendaEventosProj=evs.reduce((s,ev,i)=>(ev.tipo==='renda-nova'&&mesAbs>=ev.mesIni&&mesAbs<ev.mesFim)?s+prRnAtiva[i]:s,0);
+        prSim*=(1+rm);prSim+=(prR+rendaEventosProj)-prCm;prCm*=(1+im);prR*=(1+ir);
+        prRnAtiva.forEach((v,i)=>{ if(v>0) prRnAtiva[i]*=(1+ir); });
+      }
+      const anoAlvo=plAnoIni+ano;
+      plGLabels.push('Dez/'+anoAlvo+(anoAlvo===anoApos?' ★':''));
+      plGPlan.push(Math.max(0,Math.round(ppSim)));
+      // ponto real registrado nesse ano (usa o mais recente, se houver mais de um)
+      const regsAno=patrimonioReal.filter(r=>r.ano===anoAlvo);
+      plGReal.push(regsAno.length?regsAno[regsAno.length-1].valor:null);
+      // projeção com eventos até hoje, depois plano base
+      const mesAbsAno=(plAnoIni-ANO_ATUAL)*12+(plMesIni-MES_ATUAL)+ano*12;
+      plGProj.push(mesAbsAno<=0?Math.max(0,Math.round(prSim)):null);
+    }
+
+    if(ciPlano)ciPlano.destroy();
+    ciPlano=new Chart(document.getElementById('plano-chart'),{type:'line',data:{labels:plGLabels,datasets:[
+      {label:'Planejado',data:plGPlan,borderColor:'#534AB7',backgroundColor:'rgba(83,74,183,0.06)',fill:true,tension:0.3,pointRadius:2,pointBackgroundColor:'#534AB7',borderWidth:2,borderDash:[5,4]},
+      {label:'Com eventos',data:plGProj,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.06)',fill:false,tension:0.3,pointRadius:2,pointBackgroundColor:'#1D9E75',borderWidth:2,spanGaps:false},
+      {label:'Realizado',data:plGReal,borderColor:'#C9A84C',backgroundColor:'transparent',fill:false,tension:0,pointRadius:8,pointBackgroundColor:'#C9A84C',pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:0,showLine:false}
+    ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(255,255,255,0.97)',titleColor:'#1a1a18',bodyColor:'#5f5e5a',borderColor:'rgba(0,0,0,0.1)',borderWidth:1,padding:10,callbacks:{label:ctx=>{const v=ctx.raw;if(!v)return'';return ctx.dataset.label+': '+(v>=1e6?'R$ '+(v/1e6).toFixed(2).replace('.',',')+'M':'R$ '+(v/1e3).toFixed(0)+'k');}}}},
+      scales:{x:{ticks:{color:'#888',font:{size:10},maxRotation:45},grid:{color:'rgba(0,0,0,0.06)'}},y:{ticks:{color:'#888',font:{size:10},callback:v=>v>=1e6?'R$'+(v/1e6).toFixed(1)+'M':v>=1e3?'R$'+(v/1e3).toFixed(0)+'k':v},grid:{color:'rgba(0,0,0,0.06)'}}}}});
+
+    const mesIniNome2=MESES[plMesIni-1];
+    document.getElementById('pl-status-texto').textContent='Plano iniciado em '+mesIniNome2+'/'+plAnoIni+'. Patrimônio inicial: '+fi(plPatIni)+'.';
+  } else {
+    document.getElementById('pl-impacto').style.display='none';
+    document.getElementById('plano-chart-wrap').style.display='none';
+    document.getElementById('pl-status-texto').textContent='Preencha a data de início e o patrimônio inicial para ativar o acompanhamento.';
+  }
+
+  // ── GRÁFICOS PRINCIPAIS ──
+  document.getElementById('legend').innerHTML=
+    '<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75;display:inline-block"></span>Base</span>'
+    +'<span style="display:flex;align-items:center;gap:4px"><span style="width:22px;height:2px;background:#E24B4A;display:inline-block"></span>Pessimista</span>'
+    +'<span style="display:flex;align-items:center;gap:4px"><span style="width:22px;height:2px;background:#185FA5;display:inline-block"></span>Otimista</span>';
+
+  const scales={
     x:{ticks:{color:'#888',font:{size:11},maxTicksLimit:14},grid:{color:'rgba(0,0,0,0.07)'}},
-    y:{ticks:{color:'#888',font:{size:11},callback:v=>v>=1e6?'R$ '+(v/1e6).toFixed(0)+'M':v>=1e3?'R$ '+(v/1e3).toFixed(0)+'k':v},grid:{color:'rgba(0,0,0,0.07)'}}
+    y:{ticks:{color:'#888',font:{size:11},callback:v=>v>=1e6?'R$'+(v/1e6).toFixed(0)+'M':v>=1e3?'R$'+(v/1e3).toFixed(0)+'k':v},grid:{color:'rgba(0,0,0,0.07)'}}
   };
-  const tooltipVal = ctx => {
-    const v=ctx.raw; if(v===null||v===0)return'';
-    return ctx.dataset.label+': '+(v>=1e6?'R$ '+(v/1e6).toFixed(2).replace('.',',')+'M':'R$ '+(v/1e3).toFixed(1).replace('.',',')+'k');
-  };
+  const ttVal=ctx=>{const v=ctx.raw;if(!v)return'';return ctx.dataset.label+': '+(v>=1e6?'R$ '+(v/1e6).toFixed(2).replace('.',',')+'M':'R$ '+(v/1e3).toFixed(1).replace('.',',')+'k');};
 
-  if (ci) ci.destroy();
-  ci = new Chart(document.getElementById('chart'), {type:'line',data:{labels:linLabels,datasets:[
+  if(ci)ci.destroy();
+  ci=new Chart(document.getElementById('chart'),{type:'line',data:{labels:linLabels,datasets:[
     {label:'Base',data:dC,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.07)',fill:true,tension:0.3,pointRadius:0,borderWidth:2.5},
     {label:'Pessimista',data:dPess,borderColor:'#E24B4A',backgroundColor:'transparent',fill:false,tension:0.3,pointRadius:0,borderWidth:1.5,borderDash:[4,3]},
     {label:'Otimista',data:dOtim,borderColor:'#185FA5',backgroundColor:'transparent',fill:false,tension:0.3,pointRadius:0,borderWidth:1.5,borderDash:[4,3]}
-  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:tooltipVal}}},scales:chartScales}});
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:ttVal}}},scales}});
 
-  if (ciBar) ciBar.destroy();
-  ciBar = new Chart(document.getElementById('bar-chart'), {type:'line',data:{labels:barLabels,datasets:[
-    {label:'Pré-aposentadoria',data:barPre,borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.07)',fill:true,tension:0.3,pointRadius:2,pointBackgroundColor:'#378ADD',borderWidth:2.5,spanGaps:false},
-    {label:'Pós-aposentadoria',data:barPos,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.07)',fill:true,tension:0.3,pointRadius:2,pointBackgroundColor:'#1D9E75',borderWidth:2.5,spanGaps:false,borderDash:[4,4]}
-  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:tooltipVal}}},scales:{...chartScales,x:{...chartScales.x,ticks:{...chartScales.x.ticks,maxTicksLimit:18,maxRotation:45}}}}});
+  if(ciBar)ciBar.destroy();
+  ciBar=new Chart(document.getElementById('bar-chart'),{type:'line',data:{labels:barLabels,datasets:[
+    {label:'Pré',data:barPre,borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.07)',fill:true,tension:0.3,pointRadius:2,pointBackgroundColor:'#378ADD',borderWidth:2,spanGaps:false},
+    {label:'Pós',data:barPos,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.07)',fill:true,tension:0.3,pointRadius:2,pointBackgroundColor:'#1D9E75',borderWidth:2,spanGaps:false,borderDash:[4,4]}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:ttVal}}},scales:{...scales,x:{...scales.x,ticks:{...scales.x.ticks,maxTicksLimit:18,maxRotation:45}}}}});
 
-  if (ciCusto) ciCusto.destroy();
-  ciCusto = new Chart(document.getElementById('custo-chart'), {type:'line',data:{labels:cvLabels,datasets:[
-    {label:'Renda total',data:cvRenda,borderColor:'#185FA5',fill:false,tension:0.3,pointRadius:2,pointBackgroundColor:'#185FA5',borderWidth:2.5},
-    {label:'Custo total mensal',data:cvCusto,borderColor:'#D85A30',fill:false,tension:0.3,pointRadius:2,pointBackgroundColor:'#D85A30',borderWidth:2.5,borderDash:[4,4]}
-  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const v=ctx.raw,l=ctx.dataset.label;return v>=1e6?l+': R$ '+(v/1e6).toFixed(2).replace('.',',')+'M/mês':l+': R$ '+(v/1e3).toFixed(1).replace('.',',')+'k/mês';}}}},scales:chartScales}});
-
-  // ── PLANO vs REALIDADE ──
-  const plMesIni  = parseInt(document.getElementById('pl-mes-ini').value) || 1;
-  const plAnoIni  = parseInt(document.getElementById('pl-ano-ini').value) || ANO_ATUAL;
-  const plPatIni  = parseFloat(document.getElementById('pl-pat-ini').value) || 0;
-  const plPatAtual= parseFloat(document.getElementById('pl-pat-atual').value) || 0;
-
-  if (plPatIni > 0) {
-    document.getElementById('plano-status-card').style.display = 'block';
-    document.getElementById('plano-chart-wrap').style.display = 'block';
-
-    const mesesDecorridos = (ANO_ATUAL-plAnoIni)*12 + (MES_ATUAL-plMesIni);
-    const totalAnosPlano  = anoApos - plAnoIni;
-
-    // projeta patrimônio planejado mês a mês desde o início
-    const pontosPorAno = [];
-    let plPat=plPatIni, plCm=custo, plRenda=renda;
-    for (let m=0; m<(totalAnosPlano+1)*12; m++) {
-      plPat *= (1+rm); plPat += plRenda - plCm;
-      plCm *= (1+im); plRenda *= (1+ir);
-      if ((m+1)%12===0) pontosPorAno.push({ano: plAnoIni+Math.floor((m+1)/12), val: Math.max(0,Math.round(plPat))});
-    }
-
-    // patrimônio planejado para hoje
-    let plPatHoje=plPatIni, plCmH=custo, plRH=renda;
-    for (let m=0; m<Math.max(0,mesesDecorridos); m++) {
-      plPatHoje*=(1+rm); plPatHoje+=plRH-plCmH;
-      plCmH*=(1+im); plRH*=(1+ir);
-    }
-    plPatHoje = Math.max(0, plPatHoje);
-
-    // grid dinâmico de realizados
-    // mostra um campo por ano desde o início do plano até o ano atual (inclusive)
-    const grid = document.getElementById('pl-realizados-grid');
-    const anosPassados = [];
-    for (let a=plAnoIni; a<=ANO_ATUAL; a++) anosPassados.push(a);
-    const valoresExistentes = {};
-    grid.querySelectorAll('input').forEach(el => valoresExistentes[el.id]=el.value);
-    grid.innerHTML = '';
-    anosPassados.forEach(a => {
-      const id = 'pl-real-'+a;
-      const div = document.createElement('div');
-      div.style.cssText = 'display:flex;align-items:center;gap:6px;margin-bottom:4px';
-      div.innerHTML = `<span style="font-size:12px;color:#5f5e5a;min-width:55px">Dez/${a}</span>
-        <input type="number" id="${id}" placeholder="R$" step="100000" min="0"
-          style="flex:1;padding:4px 8px;font-size:12px;border:.5px solid rgba(0,0,0,0.2);border-radius:6px;background:#fff;color:#1a1a18;text-align:right">`;
-      grid.appendChild(div);
-      const inp = document.getElementById(id);
-      if (valoresExistentes[id]) inp.value = valoresExistentes[id];
-      // 'change' dispara ao sair do campo — evita recriação do grid enquanto digita
-      inp.addEventListener('change', calc);
-    });
-
-    // status card
-    const mesIniNome = MESES_NOMES[plMesIni-1];
-    document.getElementById('pl-ini-label').textContent = mesIniNome+'/'+plAnoIni;
-    document.getElementById('pl-ini-sub').textContent = 'patrimônio inicial: '+fi(plPatIni);
-    document.getElementById('pl-esperado-hoje').textContent = fi(plPatHoje);
-    const mkCard = document.getElementById('pl-status-mk');
-    if (plPatAtual > 0) {
-      const diff = plPatAtual - plPatHoje;
-      const pct  = ((diff/plPatHoje)*100).toFixed(1);
-      document.getElementById('pl-real-hoje').textContent = fi(plPatAtual);
-      document.getElementById('pl-diff-texto').textContent = (diff>=0?'▲ ':'▼ ')+fi(Math.abs(diff))+' ('+pct+'%) vs plano';
-      mkCard.style.background = diff>=0 ? '#E1F5EE' : '#FCEBEB';
-      document.getElementById('pl-real-hoje').style.color = diff>=0 ? '#085041' : '#A32D2D';
-    } else {
-      document.getElementById('pl-real-hoje').textContent = 'não informado';
-      document.getElementById('pl-diff-texto').textContent = 'informe o patrimônio atual';
-      mkCard.style.background = '';
-    }
-
-    // dados do gráfico plano
-    const plGLabels=[mesIniNome+'/'+plAnoIni], plGPlan=[plPatIni], plGReal=[null], plGHoje=[null], plGProj=[null];
-    pontosPorAno.forEach(p => {
-      plGLabels.push('Dez/'+p.ano);
-      plGPlan.push(p.val);
-      const realEl = document.getElementById('pl-real-'+p.ano);
-      plGReal.push(realEl ? (parseFloat(realEl.value)||null) : null);
-      plGHoje.push(null);
-      plGProj.push(null);
-    });
-    if (MES_ATUAL !== 12) {
-      const hojeNome = MESES_NOMES[MES_ATUAL-1];
-      plGLabels.push('◆ '+hojeNome+'/'+ANO_ATUAL);
-      plGPlan.push(Math.round(plPatHoje));
-      plGReal.push(null);
-      plGHoje.push(plPatAtual > 0 ? plPatAtual : null);
-      plGProj.push(plPatAtual > 0 ? plPatAtual : null);
-    }
-
-    // projeção a partir do realizado atual
-    // parte do patAtual (ou plPatHoje se não informado) e projeta até a aposentadoria
-    const patPartida = plPatAtual > 0 ? plPatAtual : plPatHoje;
-    const anosRestantes = anoApos - ANO_ATUAL;
-    if (anosRestantes > 0) {
-      let projPat=patPartida, projCm=custo, projR=renda;
-      // calcula quantos meses até o fim de cada ano restante
-      for (let a=1; a<=anosRestantes; a++) {
-        for (let m=0; m<12; m++) {
-          projPat*=(1+rm); projPat+=projR-projCm;
-          projCm*=(1+im); projR*=(1+ir);
-        }
-        const anoAlvo = ANO_ATUAL+a;
-        if (anoAlvo <= anoApos) {
-          plGLabels.push('Dez/'+anoAlvo+(anoAlvo===anoApos?' ★':''));
-          plGPlan.push(pontosPorAno.find(p=>p.ano===anoAlvo)?.val ?? null);
-          plGReal.push(null);
-          plGHoje.push(null);
-          plGProj.push(Math.max(0,Math.round(projPat)));
-        }
-      }
-    }
-
-    if (ciPlano) ciPlano.destroy();
-    ciPlano = new Chart(document.getElementById('plano-chart'), {type:'line',data:{labels:plGLabels,datasets:[
-      {label:'Planejado',data:plGPlan,borderColor:'#534AB7',backgroundColor:'rgba(83,74,183,0.06)',fill:true,tension:0.3,pointRadius:3,pointBackgroundColor:'#534AB7',borderWidth:2,borderDash:[5,4]},
-      {label:'Projeção atual',data:plGProj,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.06)',fill:false,tension:0.3,pointRadius:2,pointBackgroundColor:'#1D9E75',borderWidth:2,spanGaps:false},
-      {label:'Realizado',data:plGReal,borderColor:'#C9A84C',backgroundColor:'transparent',fill:false,tension:0,pointRadius:7,pointBackgroundColor:'#C9A84C',pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:0,showLine:false},
-      {label:'Atual',data:plGHoje,borderColor:'#1D9E75',backgroundColor:'transparent',fill:false,tension:0,pointRadius:10,pointBackgroundColor:'#1D9E75',pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:0,showLine:false}
-    ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
-      plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(255,255,255,0.97)',titleColor:'#1a1a18',bodyColor:'#5f5e5a',borderColor:'rgba(0,0,0,0.1)',borderWidth:1,padding:10,callbacks:{label:tooltipVal}}},
-      scales:{...chartScales,x:{...chartScales.x,ticks:{...chartScales.x.ticks,maxRotation:45}}}}});
-  } else {
-    document.getElementById('plano-status-card').style.display = 'none';
-    document.getElementById('plano-chart-wrap').style.display = 'none';
+  // renda vs custo
+  const cvL=[],cvC=[],cvR=[];
+  cvL.push(''+ANO_ATUAL);cvC.push(Math.round(custo+vm+cm2));cvR.push(Math.round(renda));
+  {let cmCv=custo+vm+cm2,rbCv=renda;
+  for(let ano=0;ano<apos;ano++){
+    for(let m=0;m<12;m++){cmCv*=(1+im);rbCv*=(1+ir);}
+    cvL.push(''+(ANO_ATUAL+ano+1));cvC.push(Math.round(cmCv));cvR.push(Math.round(rbCv));
   }
+  let inssCV=inssInicio;
+  for(let ano=0;ano<=25;ano++){
+    const anoAbs=anoApos+ano,cfb=ano<fd1?fc1:ano<fd1+fd2?fc2:fc3;
+    const cmt=(cfb+vm+cm2)*fI*Math.pow(1+inf,ano);
+    if(inssCV===0&&anoAbs>=ANO_INSS)inssCV=inssVal*Math.pow(1+inssReaj,anoAbs-ANO_INSS);
+    cvL.push(''+anoAbs+(ano===0?' ★':''));cvC.push(Math.round(cmt));cvR.push(Math.round(inssCV+oiRendaApos));
+    if(inssCV>0)inssCV*=(1+iInss);
+  }}
+
+  if(ciCusto)ciCusto.destroy();
+  ciCusto=new Chart(document.getElementById('custo-chart'),{type:'line',data:{labels:cvL,datasets:[
+    {label:'Renda total',data:cvR,borderColor:'#185FA5',fill:false,tension:0.3,pointRadius:2,pointBackgroundColor:'#185FA5',borderWidth:2.5},
+    {label:'Custo mensal',data:cvC,borderColor:'#D85A30',fill:false,tension:0.3,pointRadius:2,pointBackgroundColor:'#D85A30',borderWidth:2.5,borderDash:[4,4]}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const v=ctx.raw,l=ctx.dataset.label;return v>=1e6?l+': R$'+(v/1e6).toFixed(2).replace('.',',')+'M/mês':l+': R$'+(v/1e3).toFixed(1).replace('.',',')+'k/mês';}}}},scales}});
 }
 
-// ── EVENT LISTENERS & INIT ───────────────────────────────────────────
-ALL_IDS.forEach(id => document.getElementById(id).addEventListener('input', calc));
+// ── INIT ─────────────────────────────────────────────────────────────
+criarEventosDOM();
+ALL_IDS.forEach(id=>document.getElementById(id).addEventListener('input',calc));
+document.getElementById('pr-dia').value=new Date().getDate();
+document.getElementById('pr-mes').value=MES_ATUAL;
+document.getElementById('pr-ano').value=ANO_ATUAL;
 carregarParams();
-calc();              // cria o grid de realizados
-carregarRealizados(); // agora os campos existem no DOM
-calc();              // recalcula com os realizados carregados
-document.getElementById('app-version').textContent = 'v' + VERSION;
+calc();
+carregarEventos();
+carregarPatrimonioReal();
+calc();
+document.getElementById('app-version').textContent='v'+VERSION;
 </script>
 </body>
 </html>
