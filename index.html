@@ -110,6 +110,16 @@ h1{font-size:20px;font-weight:500;margin-bottom:.35rem}
   </div>
 </div>
 
+<!-- META DO PLANO (idade-alvo) -->
+<div id="meta-box" style="display:none;margin-top:1rem;background:#f7f6f1;border-radius:8px;padding:.75rem 1rem;border:.5px solid rgba(0,0,0,0.08)">
+  <div style="font-size:10px;font-weight:600;color:#534AB7;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.75rem" id="meta-titulo">Meta do plano</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px">
+    <div class="mk" id="meta-base-card"><p class="lb">Cenário base</p><p class="vl" id="meta-base-val">—</p><p class="sb" id="meta-base-sub">—</p></div>
+    <div class="mk" id="meta-pess-card"><p class="lb">Pessimista</p><p class="vl" id="meta-pess-val">—</p><p class="sb" id="meta-pess-sub">—</p></div>
+    <div class="mk" id="meta-otim-card"><p class="lb">Otimista</p><p class="vl" id="meta-otim-val">—</p><p class="sb" id="meta-otim-sub">—</p></div>
+  </div>
+</div>
+
 <!-- ═══════════════════════════════════════════════════════
      BLOCO 1 — PLANO BASE
 ═══════════════════════════════════════════════════════ -->
@@ -121,6 +131,8 @@ h1{font-size:20px;font-weight:500;margin-bottom:.35rem}
   <div class="sec blue">Dados pessoais</div>
   <div class="row"><span class="lb">Sua idade atual</span><input type="range" id="s-idade" min="25" max="65" step="1" value="40"><span class="vl" id="v-idade">40 anos</span></div>
   <div class="row"><span class="lb">Idade do cônjuge</span><input type="range" id="s-idade-esp" min="25" max="65" step="1" value="40"><span class="vl" id="v-idade-esp">40 anos</span></div>
+  <div class="row"><span class="lb">Idade alvo do plano</span><input type="range" id="s-idade-alvo" min="0" max="110" step="1" value="0"><span class="vl" id="v-idade-alvo">sem meta</span></div>
+  <p class="nota" id="idade-alvo-nota">Até que idade o patrimônio deve durar. Deixe em 0 para não definir uma meta — o card "Meta do plano" mostra quanto falta ou sobra para chegar lá, em tempo e em R$.</p>
   <div class="row"><span class="lb">Filho 1</span><input type="range" id="s-filho1" min="0" max="30" step="1" value="0"><span class="vl" id="v-filho1">—</span></div>
   <div class="row"><span class="lb">Filho 2</span><input type="range" id="s-filho2" min="0" max="30" step="1" value="0"><span class="vl" id="v-filho2">—</span></div>
   <div class="row"><span class="lb">Filho 3</span><input type="range" id="s-filho3" min="0" max="30" step="1" value="0"><span class="vl" id="v-filho3">—</span></div>
@@ -343,7 +355,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:.35rem}
 <script>
 // ── VERSÃO ───────────────────────────────────────────────────────────
 // Atualize aqui ao gerar nova versão
-const VERSION = '2.13';
+const VERSION = '2.14';
 
 // ── CONSTANTES ───────────────────────────────────────────────────────
 const ANO_ATUAL  = new Date().getFullYear();
@@ -365,7 +377,7 @@ const TIPOS_EVENTO = {
 
 // IDs dos campos do plano base (sliders + numbers + selects + texts)
 const SLIDER_IDS = [
-  's-idade','s-idade-esp','s-filho1','s-filho2','s-filho3',
+  's-idade','s-idade-esp','s-idade-alvo','s-filho1','s-filho2','s-filho3',
   's-renda','s-reaj','s-inss','s-inss-reaj','s-inss-ano',
   's-inv','s-pat-nr','s-rend','s-rend-tard','s-rend-ano',
   's-custo','s-inf','s-anos','s-var-rend','s-var-inf',
@@ -570,6 +582,7 @@ function calc() {
   // leitura dos parâmetros base
   const idadeAtual= parseInt(document.getElementById('s-idade').value)||40;
   const idadeEsp  = parseInt(document.getElementById('s-idade-esp').value)||40;
+  const idadeAlvo = parseInt(document.getElementById('s-idade-alvo').value)||0;
   const f1=parseInt(document.getElementById('s-filho1').value)||0;
   const f2=parseInt(document.getElementById('s-filho2').value)||0;
   const f3=parseInt(document.getElementById('s-filho3').value)||0;
@@ -633,6 +646,7 @@ function calc() {
   // ── display labels ──
   document.getElementById('v-idade').textContent=idadeAtual+' anos';
   document.getElementById('v-idade-esp').textContent=idadeEsp+' anos';
+  document.getElementById('v-idade-alvo').textContent=idadeAlvo>0?idadeAlvo+' anos':'sem meta';
   [f1,f2,f3].forEach((f,i)=>document.getElementById('v-filho'+(i+1)).textContent=f>0?f+' anos':'—');
   document.getElementById('filhos-nota').textContent=filhosAtivos.length===0
     ?'Idades dos filhos — usadas como referência no card de duração'
@@ -763,7 +777,11 @@ function calc() {
   const imovelMesPosApos=imovelAno>=apos?(imovelAno-apos)*12:-1;
   const oiRm=Math.pow(1+OI.taxa,1/12)-1;
 
-  function simPos(rmBase,infBase,rmTardBase){
+  // startInv (opcional): sobrescreve o patrimônio investido inicial (sA) — usado só pelo "goal-seek" da
+  // meta de idade-alvo (acharPatrimonioNecessario), para descobrir quanto seria necessário ter na
+  // aposentadoria para o patrimônio durar até uma idade escolhida, sem alterar nenhuma chamada existente
+  // (que continua omitindo o parâmetro e usando sA, como sempre)
+  function simPos(rmBase,infBase,rmTardBase,startInv){
     const imB=Math.pow(1+infBase,1/12)-1;
     const fIB=Math.pow(1+infBase,apos);
     // custos pontuais de saúde corrigidos pela inflação DESTE cenário (antes usava sempre a inflação base)
@@ -771,7 +789,7 @@ function calc() {
       [15*12]: p15 * Math.pow(1+infBase,apos+15),
       [20*12]: p20 * Math.pow(1+infBase,apos+20)
     };
-    let scInv=sA,scNR=patNR,scOI=oiValApos,dc=0;
+    let scInv=(startInv!==undefined?startInv:sA),scNR=patNR,scOI=oiValApos,dc=0;
     // valor atual de cada evento "renda-nova" ativo — começa do valor já reajustado ao longo do pré-aposentadoria
     // (rendaNovaNaAposentadoria), não do valor nominal original — senão um evento que atravessa a fronteira
     // pré/pós perderia todo o reajuste acumulado ao entrar na aposentadoria. Eventos que só começam no pós
@@ -870,6 +888,75 @@ function calc() {
   durCard(resBase.dc,rm,inf,document.getElementById('m-dur'),document.getElementById('m-dur-sub'),document.getElementById('dur-card'),true);
   durCard(resPess.dc,rm-varRend,inf+varInf,document.getElementById('m-dur-pess'),document.getElementById('m-dur-pess-sub'),document.getElementById('dur-pess-card'),false);
   durCard(resOtim.dc,rm+varRend,inf-varInf,document.getElementById('m-dur-otim'),document.getElementById('m-dur-otim-sub'),document.getElementById('dur-otim-card'),false);
+
+  // ── META DO PLANO (idade-alvo, v2.14) ──
+  // Converte a duração (em meses) numa resposta acionável: "bate a meta de viver até os X anos, ou não,
+  // e por quanto" — em tempo E em R$. Reaproveita simPos() (agora com startInv opcional) numa busca
+  // binária para achar o patrimônio mínimo, na aposentadoria, que faria o plano durar até a idade-alvo
+  // em cada cenário (base/pessimista/otimista) — o mesmo rendimento/inflação de cada um.
+  const metaBox=document.getElementById('meta-box');
+  if(idadeAlvo>0){
+    metaBox.style.display='block';
+    document.getElementById('meta-titulo').textContent='Meta do plano — patrimônio até os '+idadeAlvo+' anos';
+    const idadeNaAposentadoria=idadeAtual+apos;
+    // meses de decumulação necessários após a aposentadoria para chegar na idade-alvo; se a idade-alvo
+    // já é alcançada na própria data da aposentadoria (ou antes), a meta é trivialmente cumprida (0 meses)
+    const mesesAlvoPosApos=Math.max(0,Math.round((idadeAlvo-idadeNaAposentadoria)*12));
+
+    // busca binária: menor patrimônio inicial (na aposentadoria) que sustenta 'mesesAlvo' meses de
+    // decumulação neste cenário. dc(startInv) é monotônico não-decrescente em startInv (mais dinheiro
+    // nunca dura menos, dado o mesmo cronograma de custos/rendas), então a busca binária é válida.
+    const acharPatrimonioNecessario=(mesesAlvo,rmBase,infBase,rmTardBase)=>{
+      if(mesesAlvo<=0) return 0;
+      let hi=Math.max(sA,100000), lo=0, iter=0;
+      while(simPos(rmBase,infBase,rmTardBase,hi).dc<mesesAlvo && iter<60){ hi*=2; iter++; }
+      if(simPos(rmBase,infBase,rmTardBase,hi).dc<mesesAlvo) return Infinity;
+      for(let i=0;i<60;i++){
+        const mid=(lo+hi)/2;
+        if(simPos(rmBase,infBase,rmTardBase,mid).dc>=mesesAlvo) hi=mid; else lo=mid;
+      }
+      return hi;
+    };
+    // aporte mensal ADICIONAL (nominal, constante, a partir de hoje) cujo valor futuro na aposentadoria
+    // fecha o gap em R$ — sempre com o rendimento-base do PRÉ-aposentadoria (rm), pois a fase de
+    // acumulação é a mesma nos 3 cenários (só a decumulação pós-aposentadoria varia entre eles)
+    const aporteNecessario=(rgap)=>{
+      if(rgap<=0||!isFinite(rgap)) return 0;
+      const n=apos*12;
+      if(n<=0) return rgap;
+      return rm>0.00001 ? rgap*rm/(Math.pow(1+rm,n)-1) : rgap/n;
+    };
+
+    const metaCard=(dc,rmBase,infBase,rmTardBase,elVal,elSub,card)=>{
+      const eterna=dc>=MAX-1;
+      if(eterna){
+        elVal.textContent='meta batida';
+        elSub.textContent='patrimônio nunca se esgota neste cenário';
+        elVal.style.color='#085041';card.style.background='#E1F5EE';card.style.borderColor='#1D9E75';elSub.style.color='#0F6E56';
+        return;
+      }
+      const gapMeses=dc-mesesAlvoPosApos, gapAbs=Math.abs(gapMeses);
+      const gapAnos=Math.floor(gapAbs/12), gapMes=gapAbs%12, bate=gapMeses>=0;
+      elVal.textContent=(bate?'sobra ':'faltam ')+gapAnos+' anos e '+gapMes+' meses';
+
+      const sAlvo=acharPatrimonioNecessario(mesesAlvoPosApos,rmBase,infBase,rmTardBase);
+      if(!isFinite(sAlvo)){
+        elSub.textContent='meta muito distante para estimar o valor necessário';
+      } else {
+        const rgap=sAlvo-sA;
+        elSub.textContent = rgap<=0
+          ? 'patrimônio '+fm(Math.abs(rgap))+' acima do necessário para a meta'
+          : 'faltariam '+fm(rgap)+' na aposentadoria — aportar +'+fm(aporteNecessario(rgap))+'/mês fecharia a conta';
+      }
+      const cor=bate?'#085041':'#791F1F', bg=bate?'#E1F5EE':'#FCEBEB', bd=bate?'#1D9E75':'#E24B4A';
+      elVal.style.color=cor;card.style.background=bg;card.style.borderColor=bd;elSub.style.color=cor;
+    };
+    metaCard(resBase.dc,rm,inf,rmTard,document.getElementById('meta-base-val'),document.getElementById('meta-base-sub'),document.getElementById('meta-base-card'));
+    metaCard(resPess.dc,Math.max(0.001,rm-varRend),inf+varInf,Math.max(0.001,rmTard-varRend),document.getElementById('meta-pess-val'),document.getElementById('meta-pess-sub'),document.getElementById('meta-pess-card'));
+    metaCard(resOtim.dc,rm+varRend,Math.max(0.001,inf-varInf),rmTard+varRend,document.getElementById('meta-otim-val'),document.getElementById('meta-otim-sub'),document.getElementById('meta-otim-card'));
+  } else {
+    metaBox.style.display='none';
+  }
 
   // projeta um patrimônio inicial (avaliado hoje) até a aposentadoria, com a mesma mecânica
   // do cenário base (eventos do plano, renda, custo, rendimento) — usado para comparar "plano"
