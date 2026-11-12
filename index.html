@@ -150,7 +150,9 @@ h1{font-size:20px;font-weight:500;margin-bottom:.35rem}
   <div class="sec">Patrimônio inicial do plano</div>
   <div class="row"><span class="lb">Investimento (rende)</span><input type="range" id="s-inv" min="0" max="50" step="0.1" value="0"><span class="vl" id="v-inv">R$ 0,0M</span></div>
   <div class="row"><span class="lb">Patrimônio sem rendimento</span><input type="range" id="s-pat-nr" min="0" max="20" step="0.1" value="0"><span class="vl" id="v-pat-nr">R$ 0,0M</span></div>
-  <p class="nota" id="pat-nr-nota">Ex: imóvel parado, conta corrente. Entra no saldo mas não rende.</p>
+  <p class="nota" id="pat-nr-nota">Ex: dinheiro parado em conta, bens que não valorizam. Valor congelado (não rende nem acompanha a inflação); só é usado quando o dinheiro investido acabar.</p>
+  <div class="row"><span class="lb">Imóveis</span><input type="range" id="s-imoveis" min="0" max="30" step="0.1" value="0"><span class="vl" id="v-imoveis">R$ 0,0M</span></div>
+  <p class="nota" id="imoveis-nota">Valor de hoje dos imóveis. Valorizam pela taxa definida em "Rendimento &amp; inflação", não geram renda e nunca são vendidos para cobrir custos — ficam como patrimônio (herança). Se um deles tem venda prevista, use "Venda de imóvel planejada" e não o inclua aqui.</p>
 
   <!-- RENDIMENTO -->
   <div class="sec">Rendimento &amp; inflação</div>
@@ -158,6 +160,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:.35rem}
   <div class="row"><span class="lb">Rendimento tardio (após ano N)</span><input type="range" id="s-rend-tard" min="0.3" max="1.5" step="0.01" value="0.55"><span class="vl" id="v-rend-tard">0,55%</span></div>
   <div class="row"><span class="lb">A partir do ano da aposentadoria</span><input type="range" id="s-rend-ano" min="1" max="30" step="1" value="10"><span class="vl" id="v-rend-ano">ano 10</span></div>
   <p class="nota" id="rend-tard-nota">Migração para ativos mais conservadores com o envelhecimento</p>
+  <div class="row"><span class="lb">Valorização dos imóveis</span><input type="range" id="s-imoveis-val" min="0" max="15" step="0.1" value="6"><span class="vl" id="v-imoveis-val">6,0% a.a.</span></div>
   <div class="row"><span class="lb">Inflação anual</span><input type="range" id="s-inf" min="2" max="15" step="0.1" value="6"><span class="vl" id="v-inf">6,0%</span></div>
   <div class="row"><span class="lb">Anos até aposentadoria</span><input type="range" id="s-anos" min="1" max="30" step="1" value="10"><span class="vl" id="v-anos">10 anos</span></div>
 
@@ -174,7 +177,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:.35rem}
 
   <!-- INSS -->
   <div class="sec amber">INSS</div>
-  <div class="row"><span class="lb">Valor mensal do INSS</span><input type="range" id="s-inss" min="0" max="30" step="0.5" value="0"><span class="vl" id="v-inss">R$ 0k/mês</span></div>
+  <div class="row"><span class="lb">Valor mensal do INSS (hoje)</span><input type="range" id="s-inss" min="0" max="30" step="0.5" value="0"><span class="vl" id="v-inss">R$ 0k/mês</span></div>
   <div class="row"><span class="lb">Reajuste anual do INSS</span><input type="range" id="s-inss-reaj" min="0" max="10" step="0.1" value="3.5"><span class="vl" id="v-inss-reaj">3,5% a.a.</span></div>
   <div class="row"><span class="lb">Ano de início do INSS</span><input type="range" id="s-inss-ano" min="2025" max="2070" step="1" value="2050"><span class="vl" id="v-inss-ano">2050</span></div>
   <p class="nota" id="inss-nota">Reduz a retirada mensal a partir do ano configurado</p>
@@ -182,7 +185,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:.35rem}
   <!-- CUSTO DE VIDA -->
   <div class="sec coral">Custo de vida</div>
   <div class="row"><span class="lb">Custo mensal atual</span><input type="range" id="s-custo" min="0" max="200" step="1" value="0"><span class="vl" id="v-custo">R$ 0k/mês</span></div>
-  <p class="nota">Tudo: moradia, alimentação, saúde, lazer e manutenção</p>
+  <p class="nota">Moradia, alimentação, saúde, lazer e manutenção — <strong>sem</strong> viagens e outros custos anuais, que são somados à parte (antes e depois da aposentadoria)</p>
   <div class="row"><span class="lb">Viagens (por ano)</span><input type="range" id="s-viag" min="0" max="300" step="5" value="0"><span class="vl" id="v-viag">R$ 0k/ano</span></div>
   <div class="row"><span class="lb">Outros custos anuais</span><input type="range" id="s-carr" min="0" max="150" step="1" value="0"><span class="vl" id="v-carr">R$ 0k/ano</span></div>
 
@@ -369,7 +372,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:.35rem}
 <script>
 // ── VERSÃO ───────────────────────────────────────────────────────────
 // Atualize aqui ao gerar nova versão
-const VERSION = '2.15';
+const VERSION = '2.18';
 
 // ── CONSTANTES ───────────────────────────────────────────────────────
 const ANO_ATUAL  = new Date().getFullYear();
@@ -393,7 +396,7 @@ const TIPOS_EVENTO = {
 const SLIDER_IDS = [
   's-idade','s-idade-esp','s-idade-alvo','s-filho1','s-filho2','s-filho3',
   's-renda','s-reaj','s-inss','s-inss-reaj','s-inss-ano',
-  's-inv','s-pat-nr','s-rend','s-rend-tard','s-rend-ano',
+  's-inv','s-pat-nr','s-imoveis','s-imoveis-val','s-rend','s-rend-tard','s-rend-ano',
   's-custo','s-inf','s-anos','s-var-rend','s-var-inf',
   's-viag','s-carr','s-ianos','s-inovo',
   'oi-val','oi-taxa','oi-renda'
@@ -614,6 +617,11 @@ function calc() {
   const ANO_INSS= parseInt(document.getElementById('s-inss-ano').value)||2050;
   const inv     = parseFloat(document.getElementById('s-inv').value)*1e6;
   const patNR   = parseFloat(document.getElementById('s-pat-nr').value)*1e6;
+  // v2.18 — imóveis: valorizam pela taxa própria (% a.a.), não geram renda e NUNCA são vendidos para cobrir
+  // custos (decisão do Marcos) — não entram na duração do dinheiro; aparecem só como patrimônio deixado
+  const imov    = (parseFloat(document.getElementById('s-imoveis')?.value)||0)*1e6;
+  const imovTx  = (parseFloat(document.getElementById('s-imoveis-val')?.value)||0)/100;
+  const imovValor=(anos)=>imov*Math.pow(1+imovTx,anos); // valor nominal daqui a 'anos' anos
   const rm      = parseFloat(document.getElementById('s-rend').value)/100;
   const rmTard  = parseFloat(document.getElementById('s-rend-tard').value)/100;
   const rmAnoTard=parseInt(document.getElementById('s-rend-ano').value);
@@ -669,6 +677,59 @@ function calc() {
   const ir    = Math.pow(1+reaj,1/12)-1;
   const iInss = Math.pow(1+inssReaj,1/12)-1;
   const vm=viag/12, cm2=carr/12;
+  // v2.16 — custo TOTAL de hoje usado em toda a fase de acumulação: custo mensal + viagens + outros
+  // custos anuais (antes a acumulação descontava só o custo mensal, mas o gráfico e a aposentadoria somavam
+  // viagens/outros por cima — o patrimônio na aposentadoria ficava superestimado em ~(viag+carr) por ano)
+  const custoTotalHoje=custo+vm+cm2;
+
+  // v2.17 — patrimônio REAL de hoje, numa função única (antes vivia só dentro do painel de acompanhamento).
+  // Parte do início do plano (Patrimônio inicial + data) ou, sem plano, do último registro real; aplica a
+  // mecânica do plano (rendimento, salário, custo total, eventos) mês a mês até hoje. O último registro
+  // real "rebaseia" a trajetória no fim do mês dele. Usa SEMPRE o salário do plano (rendaPlano): nos meses
+  // passados você recebeu salário, mesmo quando o modo "aposentar hoje" está marcado.
+  // Retorna: inicioMes = valor no início do mês corrente (antes dos eventos deste mês — é o ponto de partida
+  // do modo "aposentar hoje", em que simPos() processa os eventos do mês 0); hoje = já com os eventos deste
+  // mês (usado no painel de acompanhamento); rnInicioMes / rendaNovaHojeAtiva = valor já reajustado de cada
+  // renda recorrente ativa. Registro do mês corrente (ou futuro) é usado como está nos dois valores.
+  function calcularPatrimonioReal(){
+    const ultimoPR=patrimonioReal.length?patrimonioReal[patrimonioReal.length-1]:null;
+    const regMesAbs=ultimoPR?(ultimoPR.ano-ANO_ATUAL)*12+(ultimoPR.mes-MES_ATUAL):null;
+    let iniMes,p;
+    if(plPatIni>0){ iniMes=(plAnoIni-ANO_ATUAL)*12+(plMesIni-MES_ATUAL); p=plPatIni; }
+    else if(ultimoPR){ iniMes=regMesAbs+1; p=ultimoPR.valor; }
+    else return null;
+    let cmR=custoTotalHoje, rR=rendaPlano;
+    const rn=evs.map(()=>0);
+    for(let mesAbs=iniMes;mesAbs<0;mesAbs++){
+      evs.forEach((ev,i)=>{
+        if(ev.tipo==='entrada'&&ev.val>0&&mesAbs===ev.mesIni) p+=ev.val;
+        if(ev.tipo==='saida'&&ev.val>0&&mesAbs===ev.mesIni) p=Math.max(0,p-ev.val);
+        if(ev.tipo==='saida-rec'&&ev.val>0&&mesAbs>=ev.mesIni&&mesAbs<ev.mesIni+ev.dur) p=Math.max(0,p-ev.val);
+        if(ev.tipo==='renda-nova'&&ev.val>0&&rn[i]===0&&mesAbs>=ev.mesIni&&mesAbs<ev.mesFim) rn[i]=ev.val;
+      });
+      const rEv=evs.reduce((s,ev,i)=>(ev.tipo==='renda-nova'&&mesAbs>=ev.mesIni&&mesAbs<ev.mesFim)?s+rn[i]:s,0);
+      p*=(1+rm); p+=(rR+rEv)-cmR; cmR*=(1+im); rR*=(1+ir);
+      if(regMesAbs!==null&&mesAbs===regMesAbs) p=ultimoPR.valor;
+      rn.forEach((v,i)=>{ if(v>0) rn[i]*=(1+ir); });
+    }
+    const inicioMes=Math.max(0,p);
+    // eventos do mês "hoje" (mesAbs===0) — o loop acima só percorre meses já completados
+    let hoje=p;
+    evs.forEach((ev,i)=>{
+      if(ev.tipo==='entrada'&&ev.val>0&&ev.mesIni===0) hoje+=ev.val;
+      if(ev.tipo==='saida'&&ev.val>0&&ev.mesIni===0) hoje=Math.max(0,hoje-ev.val);
+      if(ev.tipo==='saida-rec'&&ev.val>0&&0>=ev.mesIni&&0<ev.mesIni+ev.dur) hoje=Math.max(0,hoje-ev.val);
+      if(ev.tipo==='renda-nova'&&ev.val>0&&0>=ev.mesIni&&0<ev.mesFim) hoje+=rn[i]>0?rn[i]:ev.val;
+    });
+    hoje=Math.max(0,hoje);
+    const rendaNovaHojeAtiva=evs.map((ev,i)=>(ev.tipo==='renda-nova'&&ev.val>0&&0>=ev.mesIni&&0<ev.mesFim)?(rn[i]>0?rn[i]:ev.val):0);
+    const regAtual=!!(ultimoPR&&regMesAbs>=0);
+    return { hoje: regAtual?ultimoPR.valor:hoje, inicioMes: regAtual?ultimoPR.valor:inicioMes,
+             rnInicioMes: rn.slice(), rendaNovaHojeAtiva, ultimoPR,
+             fonte: ultimoPR&&(plPatIni<=0||regMesAbs>=iniMes) ? 'registro de '+String(ultimoPR.dia).padStart(2,'0')+'/'+MESES[ultimoPR.mes-1]+'/'+ultimoPR.ano
+                                                             : 'patrimônio inicial do plano ('+MESES[plMesIni-1]+'/'+plAnoIni+')' };
+  }
+  const realAgora = modoAgora ? calcularPatrimonioReal() : null;
   // custos pontuais (valores de hoje) — corrigidos pela inflação de CADA cenário dentro de simPos(), não por uma taxa fixa
   // aportes pontuais — nominais futuros
   const ap2={[5*12]:a5,[10*12]:a10,[15*12]:a15,[20*12]:a20};
@@ -693,10 +754,17 @@ function calc() {
   document.getElementById('v-inss').textContent='R$ '+parseFloat(document.getElementById('s-inss').value).toFixed(1).replace('.',',')+'k/mês';
   document.getElementById('v-inss-reaj').textContent=parseFloat(document.getElementById('s-inss-reaj').value).toFixed(1).replace('.',',')+'% a.a.';
   document.getElementById('v-inss-ano').textContent=ANO_INSS;
-  document.getElementById('inss-nota').textContent=ANO_INSS<=anoApos?'Já ativo no início da aposentadoria':'Inicia em '+ANO_INSS+' ('+anosInssPosApos+' anos após aposentadoria)';
+  document.getElementById('inss-nota').textContent=inssVal<=0?'Valor em reais de hoje, reajustado anualmente desde hoje.'
+    :(ANO_INSS<=anoApos?'Já ativo no início da aposentadoria':'Inicia em '+ANO_INSS+' ('+anosInssPosApos+' anos após aposentadoria)')
+     +' — '+fm(inssVal)+'/mês hoje → '+fm(inssVal*Math.pow(1+inssReaj,Math.max(ANO_INSS,anoApos)-ANO_ATUAL))+'/mês em '+Math.max(ANO_INSS,anoApos)+' (reajuste de '+(inssReaj*100).toFixed(1).replace('.',',')+'% a.a. desde hoje)';
   document.getElementById('v-inv').textContent='R$ '+parseFloat(document.getElementById('s-inv').value).toFixed(1).replace('.',',')+'M';
   document.getElementById('v-pat-nr').textContent='R$ '+parseFloat(document.getElementById('s-pat-nr').value).toFixed(1).replace('.',',')+'M';
-  document.getElementById('pat-nr-nota').textContent=patNR===0?'Ex: imóvel parado, conta corrente. Entra no saldo mas não rende.':fi(patNR)+' fora do mercado — se aplicado a '+parseFloat(document.getElementById('s-rend').value).toFixed(2).replace('.',',')+'%/mês renderia '+fi(patNR*rm)+'/mês adicionais.';
+  document.getElementById('v-imoveis').textContent='R$ '+(imov/1e6).toFixed(1).replace('.',',')+'M';
+  document.getElementById('v-imoveis-val').textContent=(imovTx*100).toFixed(1).replace('.',',')+'% a.a.';
+  document.getElementById('imoveis-nota').textContent=imov<=0
+    ?'Valor de hoje dos imóveis. Valorizam pela taxa definida em "Rendimento & inflação", não geram renda e nunca são vendidos para cobrir custos — ficam como patrimônio (herança). Se um deles tem venda prevista, use "Venda de imóvel planejada" e não o inclua aqui.'
+    :fi(imov)+' hoje → '+fi(imovValor(apos))+' em '+anoApos+' ('+(imovTx*100).toFixed(1).replace('.',',')+'% a.a.'+(imovTx<inf-0.0005?', abaixo da inflação de '+(inf*100).toFixed(1).replace('.',',')+'% — perde valor real':imovTx>inf+0.0005?', acima da inflação':', igual à inflação')+'). Não são vendidos para cobrir custos; ficam como patrimônio.';
+  document.getElementById('pat-nr-nota').textContent=patNR===0?'Ex: dinheiro parado em conta, bens que não valorizam. Valor congelado (não rende nem acompanha a inflação); só é usado quando o dinheiro investido acabar.':fi(patNR)+' parado (valor congelado), usado só quando o dinheiro investido acabar — se aplicado a '+parseFloat(document.getElementById('s-rend').value).toFixed(2).replace('.',',')+'%/mês renderia '+fi(patNR*rm)+'/mês.';
   document.getElementById('v-rend').textContent=parseFloat(document.getElementById('s-rend').value).toFixed(2).replace('.',',')+'%';
   document.getElementById('v-rend-tard').textContent=parseFloat(document.getElementById('s-rend-tard').value).toFixed(2).replace('.',',')+'%';
   document.getElementById('v-rend-ano').textContent='ano '+rmAnoTard;
@@ -716,13 +784,13 @@ function calc() {
       document.getElementById('v-renda').textContent='R$ '+document.getElementById('s-renda').value+'k/mês — parada';
       document.getElementById('v-custo').textContent='R$ '+document.getElementById('s-custo').value+'k/mês → Fase 1';
       const temRendaEv=lerEventosDom().some(e=>e.tipo==='renda-nova'&&e.val>0);
-      const ultPR=patrimonioReal.length?patrimonioReal[patrimonioReal.length-1]:null;
       nota.innerHTML='<strong>Simulando aposentadoria hoje</strong> ('+MESES[MES_ATUAL-1]+'/'+ANO_ATUAL+', aos '+idadeAtual+' anos), partindo de '
-        +fm(inv)+' investidos'+(patNR>0?' + '+fm(patNR)+' sem rendimento':'')+'. '
+        +(realAgora?fm(realAgora.inicioMes)+' investidos — patrimônio real estimado hoje, a partir do '+realAgora.fonte
+                   :fm(inv)+' investidos (barra "Investimento"; registre o patrimônio real para partir dele)')
+        +(patNR>0?' + '+fm(patNR)+' sem rendimento':'')+'. '
         +'Custo de vida (valores de hoje, corrigidos pela inflação): Fase 1 '+fm(fc1)+' → Fase 2 '+fm(fc2)+' → Fase 3 '+fm(fc3)+' por mês'
         +((viag+carr)>0?', + '+fm(viag+carr)+'/ano de viagens e outros custos':'')+'. Salário: zero.'
         +(temRendaEv?' Rendas recorrentes cadastradas como eventos continuam valendo.':'')
-        +(ultPR&&Math.abs(ultPR.valor-(inv+patNR))>1000?' <br>Último patrimônio real registrado: '+fm(ultPR.valor)+' ('+String(ultPR.dia).padStart(2,'0')+'/'+MESES[ultPR.mes-1]+'/'+ultPR.ano+') — ajuste "Investimento (rende)" se quiser partir dele.':'')
         +' Desmarque para voltar ao plano.';
     } else {
       nota.innerHTML='Cenário separado — não altera o plano. A renda (salário) para hoje e o <strong>Custo mensal atual</strong> vira o custo da Fase 1 da aposentadoria; Fases 2 e 3 mantêm a mesma proporção definida no plano, tudo corrigido pela inflação. Viagens e outros custos anuais somam por cima. Desmarque para voltar ao plano.';
@@ -764,7 +832,8 @@ function calc() {
   });
 
   // ── PRÉ-APOSENTADORIA (cenário base, com eventos do plano) ──
-  let pat=inv, cm=custo, rendaBase=renda;
+  // v2.17 — no modo "aposentar hoje" parte do patrimônio REAL de hoje (se houver plano/registro), não da barra
+  let pat=realAgora?realAgora.inicioMes:inv, cm=custoTotalHoje, rendaBase=renda;
   let totalAp=0, totalDef=0, primeiroDeficit=-1;
   const barLabels=[], barPre=[], barPos=[];
 
@@ -797,24 +866,37 @@ function calc() {
   // valor de cada "renda-nova" no exato momento da aposentadoria — usado para "entregar" a simPos()
   // o valor JÁ REAJUSTADO de eventos que atravessam a fronteira pré/pós (sem isso, um evento que já
   // cresceu vários anos pelo reajuste "voltaria" ao valor nominal original ao entrar na aposentadoria)
-  const rendaNovaNaAposentadoria = rendaNovaAtiva.slice();
+  const rendaNovaNaAposentadoria = realAgora ? realAgora.rnInicioMes : rendaNovaAtiva.slice();
 
   const oiValApos=OI.val*Math.pow(1+OI.taxa,apos);
-  const oiRendaApos=OI.renda>0?OI.renda*Math.pow(1+reaj,apos):0;
+  // v2.16 — renda do OI é informada em valores de hoje e acompanha a inflação (igual à nota do campo e ao
+  // pós-aposentadoria); antes usava o reajuste da renda pessoal aqui e NENHUMA correção até a aposentadoria em simPos()
+  const oiRendaApos=OI.renda>0?OI.renda*Math.pow(1+inf,apos):0;
   const sA=Math.max(0,pat)+a0;
-  const sATotal=sA+patNR+oiValApos;
+  // v2.16 — imóvel vendido exatamente no ano da aposentadoria entra no patrimônio exibido na aposentadoria
+  const imovelNaApos=(imovelLiq>0&&imovelAno===apos)?imovelLiq:0;
+  // v2.17 — patrimônio sem rendimento (ex.: apartamento parado) não gera renda, mas mantém o valor real:
+  // é corrigido pela inflação. Antes ficava congelado no valor nominal de hoje e, vendido só no fim
+  // (depois do dinheiro investido), valia uma fração do que vale hoje.
   const fI=Math.pow(1+inf,apos);
-  const inssInicio=ANO_INSS<=anoApos?inssVal:0;
-  const retLiq=Math.max(0,(fc1+vm+cm2)*fI-inssInicio-oiRendaApos);
+  const patNRApos=patNR; // v2.18 — valor congelado (imóveis agora têm campo próprio)
+  const sATotal=sA+patNRApos+oiValApos+imovelNaApos;
+  // v2.16 — INSS informado em valores de HOJE e reajustado por inssReaj desde hoje (antes o valor digitado era
+  // tratado como nominal na data de início — R$8k em 2049 valeriam ~R$1,4k de hoje com inflação de 8%)
+  const inssNoMes=(mesAbs)=>inssVal*Math.pow(1+iInss,Math.max(0,mesAbs)); // mesAbs = meses a partir de hoje
+  const inssInicio=ANO_INSS<=anoApos?inssNoMes(apos*12):0;
+  const rendaEvApos=evs.reduce((s,ev,i)=>(ev.tipo==='renda-nova'&&ev.val>0&&apos*12>=ev.mesIni&&apos*12<ev.mesFim)
+    ? s+(rendaNovaNaAposentadoria[i]>0?rendaNovaNaAposentadoria[i]:ev.val) : s,0);
+  const retLiq=Math.max(0,(fc1+vm+cm2)*fI-inssInicio-oiRendaApos-rendaEvApos);
 
-  const sobra0=renda-custo;
+  const sobra0=renda-custoTotalHoje;
   document.getElementById('m-sobra').textContent=fm(sobra0);
   document.getElementById('m-sobra').style.color=sobra0>=0?'#1a1a18':'#A32D2D';
   document.getElementById('m-sobra-sub').textContent=modoAgora?'sem salário — custo sai do patrimônio':(sobra0>=0?'aportado mensalmente':'déficit — retira do patrimônio');
   document.getElementById('m-saldo').textContent=fm(sATotal);
-  document.getElementById('m-saldo-sub').textContent=fi(sA)+' investido'+(oiValApos>0?' + '+fi(oiValApos)+' ('+( OI.nome||'outro ativo')+')':'')+(patNR>0?' + '+fi(patNR)+' s/rend.':'');
+  document.getElementById('m-saldo-sub').textContent=fi(sA)+' investido'+(oiValApos>0?' + '+fi(oiValApos)+' ('+( OI.nome||'outro ativo')+')':'')+(patNR>0?' + '+fi(patNRApos)+' s/rend.':'')+(imovelNaApos>0?' + '+fi(imovelNaApos)+' (imóvel vendido)':'')+(imov>0?' · imóveis (não vendidos, fora da conta): '+fi(imovValor(apos)):'');
   document.getElementById('m-ret').textContent=fm(retLiq);
-  document.getElementById('m-ret-sub').textContent='fase 1: '+fm(fc1)+'/mês → fase 2: '+fm(fc2)+'/mês → fase 3: '+fm(fc3)+'/mês'+(oiRendaApos>0?' | '+(OI.nome||'ativo')+': +'+fi(oiRendaApos)+'/mês':'');
+  document.getElementById('m-ret-sub').textContent='fase 1: '+fm(fc1)+'/mês → fase 2: '+fm(fc2)+'/mês → fase 3: '+fm(fc3)+'/mês'+(oiRendaApos>0?' | '+(OI.nome||'ativo')+': +'+fi(oiRendaApos)+'/mês':'')+(rendaEvApos>0?' | rendas de eventos: +'+fi(rendaEvApos)+'/mês':'');
 
   const ab=document.getElementById('alerta-box');
   if(primeiroDeficit>=0){
@@ -835,7 +917,13 @@ function calc() {
   // meta de idade-alvo (acharPatrimonioNecessario), para descobrir quanto seria necessário ter na
   // aposentadoria para o patrimônio durar até uma idade escolhida, sem alterar nenhuma chamada existente
   // (que continua omitindo o parâmetro e usando sA, como sempre)
-  function simPos(rmBase,infBase,rmTardBase,startInv){
+  // opts (v2.16, opcional): { rendaNova: array com o valor inicial de cada renda-nova na aposentadoria
+  //   (default rendaNovaNaAposentadoria), semEventos: true para ignorar TODOS os eventos do Bloco 2 }.
+  // Usado pelo painel de acompanhamento, que antes tinha uma cópia própria desta função (simComPat) que
+  // tinha divergido: não aplicava custos/aportes pontuais e não conseguia excluir eventos pós-aposentadoria.
+  function simPos(rmBase,infBase,rmTardBase,startInv,opts){
+    const optsPS=opts||{};
+    const evsPS=optsPS.semEventos?[]:evs;
     const imB=Math.pow(1+infBase,1/12)-1;
     const fIB=Math.pow(1+infBase,apos);
     // custos pontuais de saúde corrigidos pela inflação DESTE cenário (antes usava sempre a inflação base)
@@ -843,29 +931,31 @@ function calc() {
       [15*12]: p15 * Math.pow(1+infBase,apos+15),
       [20*12]: p20 * Math.pow(1+infBase,apos+20)
     };
-    let scInv=(startInv!==undefined?startInv:sA),scNR=patNR,scOI=oiValApos,dc=0;
+    let scInv=(startInv!==undefined?startInv:sA),scNR=patNR,scOI=oiValApos,dc=0,dcLiq=null;
     // valor atual de cada evento "renda-nova" ativo — começa do valor já reajustado ao longo do pré-aposentadoria
     // (rendaNovaNaAposentadoria), não do valor nominal original — senão um evento que atravessa a fronteira
     // pré/pós perderia todo o reajuste acumulado ao entrar na aposentadoria. Eventos que só começam no pós
     // (ainda com 0 aqui) continuam ativando normalmente com o valor nominal na primeira vez que entram em vigor.
-    const rPA=rendaNovaNaAposentadoria.slice();
+    const rPA=(optsPS.rendaNova||rendaNovaNaAposentadoria).slice();
     const inssAt=[inssInicio];
+    let oiFrac=1; // fração do outro investimento ainda não vendida — a renda dele cai na mesma proporção
     const salAnual=[];
 
     for(let m=0;m<=MAX;m++){
-      if(document.getElementById('s-inss-ano')&&m===mesesInssPosApos&&inssAt[0]===0) inssAt[0]=inssVal;
-      if(imovelLiq>0&&imovelMesPosApos>0&&m===imovelMesPosApos) scInv+=imovelLiq;
+      if(inssVal>0&&m===mesesInssPosApos&&inssAt[0]===0) inssAt[0]=inssNoMes(mesAposAbs+m);
+      // v2.16: >=0 — venda no exato ano da aposentadoria (imovelAno===apos) era descartada (não caía nem no pré nem no pós)
+      if(imovelLiq>0&&imovelMesPosApos>=0&&m===imovelMesPosApos) scInv+=imovelLiq;
 
       const mesAbsLoop=mesAposAbs+m;
       // eventos pós-aposentadoria
-      evs.forEach((ev,i)=>{
+      evsPS.forEach((ev,i)=>{
         if(ev.val<=0)return;
         if(ev.tipo==='entrada'&&mesAbsLoop===ev.mesIni) scInv+=ev.val;
         if(ev.tipo==='saida'&&mesAbsLoop===ev.mesIni) scInv=Math.max(0,scInv-ev.val);
         if(ev.tipo==='saida-rec'&&mesAbsLoop>=ev.mesIni&&mesAbsLoop<ev.mesIni+ev.dur) scInv=Math.max(0,scInv-ev.val);
         if(ev.tipo==='renda-nova'&&rPA[i]===0&&mesAbsLoop>=ev.mesIni&&mesAbsLoop<ev.mesFim) rPA[i]=ev.val;
       });
-      const rendaEventos=evs.reduce((s,ev,i)=>{
+      const rendaEventos=evsPS.reduce((s,ev,i)=>{
         if(ev.tipo==='renda-nova'&&mesAbsLoop>=ev.mesIni&&mesAbsLoop<ev.mesFim) return s+rPA[i];
         return s;
       },0);
@@ -876,7 +966,7 @@ function calc() {
       const rmEff=apAno>=rmAnoTard?rmTardBase:rmBase;
       const cfb=apAno<fd1?fc1:apAno<fd1+fd2?fc2:fc3;
       const cmt=(cfb+vm+cm2)*fIB*Math.pow(1+imB,m);
-      const oiRendaMes=OI.renda>0?OI.renda*Math.pow(1+imB,m):0;
+      const oiRendaMes=OI.renda>0?OI.renda*fIB*Math.pow(1+imB,m)*oiFrac:0;
 
       scOI*=(1+oiRm);
       scInv*=(1+rmEff);
@@ -886,10 +976,18 @@ function calc() {
       if(diffMes<0){
         scInv+=-diffMes; // sobra de renda passiva/eventos — nunca fica parada, reinveste
       } else {
+        // v2.17 — ordem de consumo no déficit (decisão do Marcos): 1) dinheiro investido; 2) outro investimento
+        // (vende o ativo, a renda dele cai na mesma proporção); 3) patrimônio sem rendimento (ex.: apartamento
+        // parado — só é vendido em último caso). Antes a ordem era sem rendimento → outro investimento → investido.
         let defComp=diffMes;
-        const useNR=Math.min(scNR,defComp);scNR-=useNR;defComp-=useNR;
-        const useOI=Math.min(scOI,defComp);scOI-=useOI;defComp-=useOI;
-        scInv=Math.max(0,scInv-defComp);
+        const useInv=Math.min(scInv,defComp);scInv-=useInv;defComp-=useInv;
+        if(defComp>0&&dcLiq===null) dcLiq=m; // primeiro mês em que o dinheiro investido não cobre o custo
+        const useOI=Math.min(scOI,defComp);if(scOI>0)oiFrac*=(scOI-useOI)/scOI;scOI-=useOI;defComp-=useOI;
+        if(defComp>0&&scNR>0){
+          // bem parado (ex.: apartamento) não se vende aos pedaços: vende INTEIRO, cobre o mês e o resto volta a render
+          scInv+=scNR; scNR=0;
+          const useVenda=Math.min(scInv,defComp);scInv-=useVenda;defComp-=useVenda;
+        }
       }
       if(scInv+scNR+scOI>0)dc++;
 
@@ -897,7 +995,7 @@ function calc() {
       if(inssAt[0]>0)inssAt[0]*=(1+iInss);
       if(scInv+scNR+scOI<=0)break;
     }
-    return{dc,salAnual};
+    return{dc,salAnual,dcLiq};
   }
 
   // roda 3 cenários — a variação de rendimento (varRend) agora também desloca a taxa tardia,
@@ -925,12 +1023,14 @@ function calc() {
   };
 
   // cards de duração
-  const durCard=(dc,rmB,infB,elVal,elSub,card,base)=>{
+  const durCard=(dc,rmB,infB,elVal,elSub,card,base,dcLiq)=>{
     const anos=Math.floor(dc/12),mes2=dc%12,eterna=dc>=MAX-1;
     elVal.textContent=eterna?'∞ perene':anos+' anos e '+mes2+' meses';
     if(eterna){elSub.textContent='rendimento supera retiradas';}
     else{
-      elSub.textContent='esgota em '+(anoApos+anos)+' — '+idadeStr(anos)+' | rend. '+(rmB*100).toFixed(2).replace('.',',')+'% / inf. '+(infB*100).toFixed(1).replace('.',',')+'%';
+      elSub.textContent='esgota em '+(anoApos+anos)+' — '+idadeStr(anos)+' | rend. '+(rmB*100).toFixed(2).replace('.',',')+'% / inf. '+(infB*100).toFixed(1).replace('.',',')+'%'
+        +(dcLiq!=null&&dcLiq<dc?' | dinheiro investido acaba em '+(anoApos+Math.floor(dcLiq/12))+' (aos ~'+(idadeAtual+apos+Math.floor(dcLiq/12))+')'+(OI.val>0?' — a partir daí vende o outro investimento'+(patNR>0?' e, por último, o patrimônio sem rendimento':''):(patNR>0?' e o patrimônio sem rendimento é vendido':'')):'')
+        +(imov>0?' | imóveis (não vendidos) valem '+fi(imovValor(apos+anos))+' em '+(anoApos+anos)+' (≈ '+fi(imovValor(apos+anos)/Math.pow(1+infB,apos+anos)).replace('≈ ','')+' de hoje)':'');
     }
     if(base){
       const cor=anos>35||eterna?'#085041':anos>20?'#633806':'#791F1F';
@@ -939,10 +1039,10 @@ function calc() {
       elVal.style.color=cor;card.style.background=bg;card.style.borderColor=bd;elSub.style.color=cor;
     }
   };
-  durCard(resBase.dc,rm,inf,document.getElementById('m-dur'),document.getElementById('m-dur-sub'),document.getElementById('dur-card'),true);
-  durCard(resPess.dc,rm-varRend,inf+varInf,document.getElementById('m-dur-pess'),document.getElementById('m-dur-pess-sub'),document.getElementById('dur-pess-card'),false);
-  durCard(resOtim.dc,rm+varRend,inf-varInf,document.getElementById('m-dur-otim'),document.getElementById('m-dur-otim-sub'),document.getElementById('dur-otim-card'),false);
-  ultimoResultado={modoAgora,apos,anoApos,idadeAtual,sA,sATotal,retLiq,fc1,fc2,fc3,MAX,
+  durCard(resBase.dc,rm,inf,document.getElementById('m-dur'),document.getElementById('m-dur-sub'),document.getElementById('dur-card'),true,resBase.dcLiq);
+  durCard(resPess.dc,Math.max(0.001,rm-varRend),inf+varInf,document.getElementById('m-dur-pess'),document.getElementById('m-dur-pess-sub'),document.getElementById('dur-pess-card'),false,resPess.dcLiq);
+  durCard(resOtim.dc,rm+varRend,inf-varInf,document.getElementById('m-dur-otim'),document.getElementById('m-dur-otim-sub'),document.getElementById('dur-otim-card'),false,resOtim.dcLiq);
+  ultimoResultado={imovApos:imovValor(apos),fonteAgora:realAgora?realAgora.fonte:null,modoAgora,apos,anoApos,idadeAtual,sA,sATotal,retLiq,fc1,fc2,fc3,MAX,
     dcBase:resBase.dc,dcPess:resPess.dc,dcOtim:resOtim.dc};
 
   // ── META DO PLANO (idade-alvo, v2.14) ──
@@ -1029,7 +1129,7 @@ function calc() {
   // corrente (ver ajuste de "hoje" em calc()). Sem isso, eventos com mesIni<=0 seriam contados 2x: uma
   // vez no cálculo de patRealUsado e de novo aqui, ao reativá-los em mes===0.
   function projetarPatrimonioFuturo(patInicial, rendaNovaJaAtiva){
-    let p=patInicial, cmL=custo, rendaL=renda;
+    let p=patInicial, cmL=custoTotalHoje, rendaL=renda;
     const rnAtiva=(rendaNovaJaAtiva||evs.map(()=>0)).slice();
     for(let ano=0;ano<apos;ano++){
       for(let m=0;m<12;m++){
@@ -1062,9 +1162,12 @@ function calc() {
   // contra sA (que já inclui os mesmos eventos do lado do plano) faz o efeito do evento se cancelar
   // dos dois lados — por isso um evento de R$10 mil/mês ou R$100 mil/mês mostrava o mesmo "+5 meses".
   function projetarSemEventos(patInicial){
-    let p=patInicial, cmL=custo, rendaL=renda;
+    let p=patInicial, cmL=custoTotalHoje, rendaL=renda;
     for(let ano=0;ano<apos;ano++){
       for(let m=0;m<12;m++){
+        // v2.16 — a venda do imóvel é do plano base (Bloco 1), não um evento: entra também na trajetória
+        // "sem eventos" (antes só entrava no lado "real" e aparecia como se fosse impacto dos eventos)
+        if(imovelLiq>0&&imovelAno<apos&&ano*12+m===imovelMes) p+=imovelLiq;
         p*=(1+rm);
         p+=rendaL-cmL;
         cmL*=(1+im); rendaL*=(1+ir);
@@ -1080,56 +1183,15 @@ function calc() {
 
     const mesesDecorridos=(ANO_ATUAL-plAnoIni)*12+(MES_ATUAL-plMesIni);
     // patrimônio planejado para hoje (sem eventos)
-    let plPatHoje=plPatIni,plCm=custo,plR=renda;
+    let plPatHoje=plPatIni,plCm=custoTotalHoje,plR=renda;
     for(let m=0;m<Math.max(0,mesesDecorridos);m++){plPatHoje*=(1+rm);plPatHoje+=plR-plCm;plCm*=(1+im);plR*=(1+ir);}
     plPatHoje=Math.max(0,plPatHoje);
 
-    // patrimônio real hoje (com eventos) — valor de cada "renda-nova" ativa é rastreado à
-    // parte e cresce sozinho pelo reajuste (mesma lógica do cenário base, evita juros
-    // compostos duplicados ao somar a renda recorrente do evento dentro de plRR)
-    let plPatReal=plPatIni,plCmR=custo,plRR=renda;
-    const rnAtivaReal=evs.map(()=>0);
-    for(let m=0;m<Math.max(0,mesesDecorridos);m++){
-      const mesAbs=(plAnoIni-ANO_ATUAL)*12+(plMesIni-MES_ATUAL)+m;
-      evs.forEach((ev,i)=>{
-        if(ev.tipo==='entrada'&&ev.val>0&&mesAbs===ev.mesIni) plPatReal+=ev.val;
-        if(ev.tipo==='saida'&&ev.val>0&&mesAbs===ev.mesIni) plPatReal=Math.max(0,plPatReal-ev.val);
-        if(ev.tipo==='saida-rec'&&ev.val>0&&mesAbs>=ev.mesIni&&mesAbs<ev.mesIni+ev.dur) plPatReal=Math.max(0,plPatReal-ev.val);
-        if(ev.tipo==='renda-nova'&&ev.val>0&&rnAtivaReal[i]===0&&mesAbs>=ev.mesIni&&mesAbs<ev.mesFim) rnAtivaReal[i]=ev.val;
-      });
-      const rendaEventosReal=evs.reduce((s,ev,i)=>(ev.tipo==='renda-nova'&&mesAbs>=ev.mesIni&&mesAbs<ev.mesFim)?s+rnAtivaReal[i]:s,0);
-      plPatReal*=(1+rm); plPatReal+=(plRR+rendaEventosReal)-plCmR; plCmR*=(1+im); plRR*=(1+ir);
-      rnAtivaReal.forEach((v,i)=>{ if(v>0) rnAtivaReal[i]*=(1+ir); });
-    }
-    // eventos referentes ao mês "hoje" (mesAbs===0) — o loop acima só percorre meses JÁ completados
-    // desde o início do plano (mesAbs de -mesesDecorridos até -1), então nunca chega a avaliar mesAbs=0.
-    // Sem este ajuste: (1) um evento pontual datado hoje (a data padrão ao criar um evento novo) nunca
-    // aparecia em "patrimônio real hoje"; (2) uma renda-nova/saída-rec já ativa hoje não tinha a
-    // parcela deste mês contabilizada, mesmo quando meses anteriores dela já tinham sido creditados.
-    evs.forEach((ev,i)=>{
-      if(ev.tipo==='entrada'&&ev.val>0&&ev.mesIni===0) plPatReal+=ev.val;
-      if(ev.tipo==='saida'&&ev.val>0&&ev.mesIni===0) plPatReal=Math.max(0,plPatReal-ev.val);
-      if(ev.tipo==='saida-rec'&&ev.val>0&&0>=ev.mesIni&&0<ev.mesIni+ev.dur) plPatReal=Math.max(0,plPatReal-ev.val);
-      if(ev.tipo==='renda-nova'&&ev.val>0&&0>=ev.mesIni&&0<ev.mesFim){
-        // usa o valor já reajustado se o evento já vinha ativo (rnAtivaReal[i]>0);
-        // se está começando exatamente hoje, usa o valor nominal original
-        plPatReal += rnAtivaReal[i]>0 ? rnAtivaReal[i] : ev.val;
-      }
-    });
-    plPatReal=Math.max(0,plPatReal);
-
-    // valor atual (já reajustado) de cada "renda-nova" que já está ativa hoje — usado para que a
-    // projeção até a aposentadoria (projetarPatrimonioFuturo) NÃO conte de novo a parcela de hoje,
-    // que já foi somada acima. Reaproveitado mesmo quando patRealUsado vem de um registro manual:
-    // assume-se que qualquer valor de patrimônio real "de hoje" já reflete os eventos até hoje.
-    const rendaNovaHojeAtiva = evs.map((ev,i)=>{
-      if(ev.tipo==='renda-nova'&&ev.val>0&&0>=ev.mesIni&&0<ev.mesFim) return rnAtivaReal[i]>0?rnAtivaReal[i]:ev.val;
-      return 0;
-    });
-
-    // registro de patrimônio real mais recente — sobrepõe o calculado
-    const ultimoPR=patrimonioReal.length?patrimonioReal[patrimonioReal.length-1]:null;
-    const patRealUsado=ultimoPR?ultimoPR.valor:plPatReal;
+    // patrimônio real hoje (com eventos, já considerando o último registro real) — v2.17: calculado pela
+    // mesma função usada como ponto de partida do modo "aposentar hoje" (calcularPatrimonioReal)
+    const realHoje=calcularPatrimonioReal();
+    const rendaNovaHojeAtiva=realHoje.rendaNovaHojeAtiva;
+    const patRealUsado=realHoje.hoje;
 
     const diff=patRealUsado-plPatHoje;
     document.getElementById('pl-esperado').textContent=fi(plPatHoje);
@@ -1142,43 +1204,12 @@ function calc() {
     // impacto na duração — inclui os eventos do plano que continuam (ou começam) DEPOIS da aposentadoria
     // (ex.: uma renda-nova que atravessa a fronteira pré/pós), igual ao que simPos() já faz para os
     // cards principais de duração. rendaNovaInicial preserva a continuidade do reajuste na fronteira.
-    const simComPat=(patInicial,rendaNovaInicial)=>{
-      let scInv=patInicial,scNR=patNR,scOI=oiValApos,dc=0;
-      const inssAt=[inssInicio];
-      const rPA=(rendaNovaInicial||evs.map(()=>0)).slice();
-      for(let m=0;m<=MAX;m++){
-        if(m===mesesInssPosApos&&inssAt[0]===0)inssAt[0]=inssVal;
-        if(imovelLiq>0&&imovelMesPosApos>0&&m===imovelMesPosApos)scInv+=imovelLiq;
-        const mesAbsLoop=mesAposAbs+m;
-        evs.forEach((ev,i)=>{
-          if(ev.val<=0)return;
-          if(ev.tipo==='entrada'&&mesAbsLoop===ev.mesIni) scInv+=ev.val;
-          if(ev.tipo==='saida'&&mesAbsLoop===ev.mesIni) scInv=Math.max(0,scInv-ev.val);
-          if(ev.tipo==='saida-rec'&&mesAbsLoop>=ev.mesIni&&mesAbsLoop<ev.mesIni+ev.dur) scInv=Math.max(0,scInv-ev.val);
-          if(ev.tipo==='renda-nova'&&rPA[i]===0&&mesAbsLoop>=ev.mesIni&&mesAbsLoop<ev.mesFim) rPA[i]=ev.val;
-        });
-        const rendaEventos=evs.reduce((s,ev,i)=>(ev.tipo==='renda-nova'&&mesAbsLoop>=ev.mesIni&&mesAbsLoop<ev.mesFim)?s+rPA[i]:s,0);
-        const apAno=m/12,rmEff=apAno>=rmAnoTard?rmTard:rm;
-        const cfb=apAno<fd1?fc1:apAno<fd1+fd2?fc2:fc3;
-        const cmt=(cfb+vm+cm2)*fI*Math.pow(1+im,m);
-        const oiRM=OI.renda>0?OI.renda*Math.pow(1+im,m):0;
-        scOI*=(1+oiRm);scInv*=(1+rmEff);
-        const diffM=cmt-inssAt[0]-oiRM-rendaEventos;
-        if(diffM<0){
-          scInv+=-diffM; // sobra nunca fica parada, reinveste
-        } else {
-          let d=diffM;
-          const uNR=Math.min(scNR,d);scNR-=uNR;d-=uNR;
-          const uOI=Math.min(scOI,d);scOI-=uOI;d-=uOI;
-          scInv=Math.max(0,scInv-d);
-        }
-        if(scInv+scNR+scOI>0)dc++;
-        rPA.forEach((v,i)=>{ if(v>0) rPA[i]*=(1+ir); });
-        if(inssAt[0]>0)inssAt[0]*=(1+iInss);
-        if(scInv+scNR+scOI<=0)break;
-      }
-      return dc;
-    };
+    // v2.16 — reaproveita simPos() em vez de uma cópia própria. O lado "plano" roda SEM nenhum evento
+    // (inclusive os pós-aposentadoria) — antes os eventos pós-aposentadoria entravam nos dois lados e se
+    // cancelavam (mesmo padrão do bug v2.10), e uma renda-nova que atravessa a fronteira aparecia no lado
+    // "plano" a partir da aposentadoria. O lado "real" mantém todos os eventos e a continuidade do reajuste.
+    const simComPat=(patInicial,rendaNovaInicial,semEventos)=>
+      simPos(rm,inf,rmTard,patInicial,{rendaNova:rendaNovaInicial||evs.map(()=>0),semEventos:!!semEventos}).dc;
     // projeta o patrimônio real (avaliado hoje) até a aposentadoria antes de comparar durações —
     // sem isso, estaríamos comparando sA (já projetado para a aposentadoria) com um valor de hoje,
     // gerando um "impacto na duração" artificial mesmo quando o plano está em dia
@@ -1190,7 +1221,7 @@ function calc() {
     // impacto, pois aumentaria os dois lados quase igualmente). Comparando contra "sem eventos",
     // o impacto na duração passa a refletir de fato o efeito dos eventos + da diferença de patrimônio.
     const patSemEventosProjetado=projetarSemEventos(plPatHoje);
-    const dcComPlano=simComPat(patSemEventosProjetado,evs.map(()=>0)),dcComReal=simComPat(patRealProjetado,projReal.rendaNovaFinal);
+    const dcComPlano=simComPat(patSemEventosProjetado,evs.map(()=>0),true),dcComReal=simComPat(patRealProjetado,projReal.rendaNovaFinal);
     const difDur=dcComReal-dcComPlano;
     // v2.12 fix: usar o valor absoluto ANTES de floor/módulo — Math.floor(-2/12) retorna -1 (arredonda
     // para -infinito), não 0, então a versão anterior "Math.abs(Math.floor(difDur/12))" inflava em 1 ano
@@ -1217,14 +1248,15 @@ function calc() {
     const mesIniNome=MESES[plMesIni-1];
     const totalAnosPlano=anoApos-plAnoIni;
     const plGLabels=[mesIniNome+'/'+plAnoIni],plGPlan=[plPatIni],plGReal=[null],plGProj=[null];
-    let ppSim=plPatIni,ppCm=custo,ppR=renda;
-    let prSim=plPatIni,prCm=custo,prR=renda;
+    let ppSim=plPatIni,ppCm=custoTotalHoje,ppR=renda;
+    let prSim=plPatIni,prCm=custoTotalHoje,prR=renda;
     // valor atual de cada "renda-nova" ativa nesta trajetória "com eventos" — rastreado à parte,
     // mesmo motivo das outras ocorrências: evita juros compostos duplicados ao somar dentro de prR
     const prRnAtiva=evs.map(()=>0);
     for(let ano=1;ano<=totalAnosPlano;ano++){
       for(let m=0;m<12;m++){
         const mesAbs=(plAnoIni-ANO_ATUAL)*12+(plMesIni-MES_ATUAL)+(ano-1)*12+m;
+        if(imovelLiq>0&&mesAbs===imovelMes){ppSim+=imovelLiq;prSim+=imovelLiq;} // v2.16 — imóvel do plano base
         ppSim*=(1+rm);ppSim+=ppR-ppCm;ppCm*=(1+im);ppR*=(1+ir);
         evs.forEach((ev,i)=>{
           if(ev.tipo==='entrada'&&ev.val>0&&mesAbs===ev.mesIni)prSim+=ev.val;
@@ -1291,22 +1323,27 @@ function calc() {
     {label:'Pós',data:barPos,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.07)',fill:true,tension:0.3,pointRadius:2,pointBackgroundColor:'#1D9E75',borderWidth:2,spanGaps:false,borderDash:[4,4]}
   ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:ttVal}}},scales:{...scales,x:{...scales.x,ticks:{...scales.x.ticks,maxTicksLimit:18,maxRotation:45}}}}});
 
-  // renda vs custo
+  // renda vs custo — v2.16: INSS em valores de hoje (antes crescia pela taxa MENSAL a cada ano no gráfico),
+  // renda do OI corrigida pela inflação, rendas recorrentes de eventos incluídas, sem ponto duplicado com apos=0
+  const rendaEvNoMes=(t)=>evs.reduce((s,ev)=>(ev.tipo==='renda-nova'&&ev.val>0&&t>=ev.mesIni&&t<ev.mesFim)
+    ? s+ev.val*Math.pow(1+reaj,(t-Math.max(ev.mesIni,0))/12) : s,0);
   const cvL=[],cvC=[],cvR=[];
-  cvL.push(''+ANO_ATUAL);cvC.push(Math.round(custo+vm+cm2));cvR.push(Math.round(renda));
-  {let cmCv=custo+vm+cm2,rbCv=renda;
-  for(let ano=0;ano<apos;ano++){
-    for(let m=0;m<12;m++){cmCv*=(1+im);rbCv*=(1+ir);}
-    cvL.push(''+(ANO_ATUAL+ano+1));cvC.push(Math.round(cmCv));cvR.push(Math.round(rbCv));
+  if(apos>0){
+    cvL.push(''+ANO_ATUAL);cvC.push(Math.round(custoTotalHoje));cvR.push(Math.round(renda+rendaEvNoMes(0)));
+    let cmCv=custoTotalHoje,rbCv=renda;
+    for(let ano=0;ano<apos;ano++){
+      for(let m=0;m<12;m++){cmCv*=(1+im);rbCv*=(1+ir);}
+      if(ano===apos-1) break; // o ponto do ano da aposentadoria é desenhado abaixo, já com o custo da Fase 1
+      cvL.push(''+(ANO_ATUAL+ano+1));cvC.push(Math.round(cmCv));cvR.push(Math.round(rbCv+rendaEvNoMes((ano+1)*12)));
+    }
   }
-  let inssCV=inssInicio;
   for(let ano=0;ano<=25;ano++){
-    const anoAbs=anoApos+ano,cfb=ano<fd1?fc1:ano<fd1+fd2?fc2:fc3;
+    const anoAbs=anoApos+ano,cfb=ano<fd1?fc1:ano<fd1+fd2?fc2:fc3, t=(apos+ano)*12;
     const cmt=(cfb+vm+cm2)*fI*Math.pow(1+inf,ano);
-    if(inssCV===0&&anoAbs>=ANO_INSS)inssCV=inssVal*Math.pow(1+inssReaj,anoAbs-ANO_INSS);
-    cvL.push(''+anoAbs+(ano===0?' ★':''));cvC.push(Math.round(cmt));cvR.push(Math.round(inssCV+oiRendaApos));
-    if(inssCV>0)inssCV*=(1+iInss);
-  }}
+    const inssCV=(inssVal>0&&anoAbs>=ANO_INSS)?inssNoMes(t):0;
+    const oiCV=OI.renda>0?OI.renda*Math.pow(1+inf,apos+ano):0;
+    cvL.push(''+anoAbs+(ano===0?' ★':''));cvC.push(Math.round(cmt));cvR.push(Math.round(inssCV+oiCV+rendaEvNoMes(t)));
+  }
 
   if(ciCusto)ciCusto.destroy();
   ciCusto=new Chart(document.getElementById('custo-chart'),{type:'line',data:{labels:cvL,datasets:[
@@ -1323,13 +1360,13 @@ const SECOES_PARAMS = [
   ['Dados pessoais', [['s-idade','Sua idade atual (anos)'],['s-idade-esp','Idade do cônjuge (anos)'],['s-idade-alvo','Idade alvo do plano (0 = sem meta)'],
     ['s-filho1','Filho 1 (anos, 0 = não usa)'],['s-filho2','Filho 2 (anos)'],['s-filho3','Filho 3 (anos)']]],
   ['Modo de simulação', [['modo-agora','Simular aposentadoria hoje']]],
-  ['Patrimônio', [['s-inv','Investimento que rende (R$ milhões)'],['s-pat-nr','Patrimônio sem rendimento (R$ milhões)']]],
-  ['Rendimento & inflação', [['s-rend','Rendimento líquido mensal (%)'],['s-rend-tard','Rendimento tardio (% ao mês)'],['s-rend-ano','Rendimento tardio a partir do ano N da aposentadoria'],
+  ['Patrimônio', [['s-inv','Investimento que rende (R$ milhões)'],['s-pat-nr','Patrimônio sem rendimento, valor congelado (R$ milhões)'],['s-imoveis','Imóveis, nunca vendidos (R$ milhões, valor de hoje)']]],
+  ['Rendimento & inflação', [['s-rend','Rendimento líquido mensal (%)'],['s-imoveis-val','Valorização dos imóveis (% a.a.)'],['s-rend-tard','Rendimento tardio (% ao mês)'],['s-rend-ano','Rendimento tardio a partir do ano N da aposentadoria'],
     ['s-inf','Inflação anual (%)'],['s-anos','Anos até aposentadoria']]],
   ['Cenários de sensibilidade', [['s-var-rend','Variação do rendimento (± p.p. ao mês)'],['s-var-inf','Variação da inflação (± p.p. ao ano)']]],
   ['Renda', [['s-renda','Renda líquida hoje (R$ mil/mês)'],['s-reaj','Reajuste anual da renda (% a.a.)']]],
-  ['INSS', [['s-inss','INSS (R$ mil/mês)'],['s-inss-reaj','Reajuste do INSS (% a.a.)'],['s-inss-ano','Ano de início do INSS']]],
-  ['Custo de vida', [['s-custo','Custo mensal atual (R$ mil/mês)'],['s-viag','Viagens (R$ mil/ano)'],['s-carr','Outros custos anuais (R$ mil/ano)'],
+  ['INSS', [['s-inss','INSS em valores de hoje (R$ mil/mês)'],['s-inss-reaj','Reajuste do INSS (% a.a.)'],['s-inss-ano','Ano de início do INSS']]],
+  ['Custo de vida', [['s-custo','Custo mensal atual, sem viagens/outros (R$ mil/mês)'],['s-viag','Viagens (R$ mil/ano)'],['s-carr','Outros custos anuais (R$ mil/ano)'],
     ['fc1','Fase 1 — custo (R$/mês, valores de hoje)'],['fd1','Fase 1 — duração (anos)'],['fc2','Fase 2 — custo (R$/mês)'],['fd2','Fase 2 — duração (anos)'],['fc3','Fase 3 — custo (R$/mês, indefinido)']]],
   ['Outro investimento', [['oi-nome','Nome'],['oi-val','Valor atual (R$ milhões)'],['oi-taxa','Valorização anual (% a.a.)'],['oi-renda','Renda mensal gerada (R$ mil/mês)']]],
   ['Venda de imóvel', [['iv','Valor de venda (R$)'],['s-ianos','Ano da venda (a partir de hoje)'],['s-inovo','Custo do novo imóvel (× R$ 100k)']]],
@@ -1358,7 +1395,8 @@ function montarTextoParams(){
     const dur=dc=>dc>=r.MAX-1?'∞ perene':Math.floor(dc/12)+' anos e '+(dc%12)+' meses (esgota em '+(r.anoApos+Math.floor(dc/12))+', aos ~'+(r.idadeAtual+r.apos+Math.floor(dc/12))+' anos)';
     L.push('== RESULTADOS ATUAIS ==');
     L.push('Modo: '+(r.modoAgora?'SIMULAR APOSENTADORIA HOJE (salário zerado, custo atual = Fase 1)':'plano (aposentadoria em '+r.anoApos+')'));
-    L.push('Patrimônio na aposentadoria: '+brl(r.sATotal)+' (investido: '+brl(r.sA)+')');
+    L.push('Patrimônio na aposentadoria: '+brl(r.sATotal)+' (investido: '+brl(r.sA)+')'+(r.modoAgora?' — partida: '+(r.fonteAgora||'barra Investimento'):''));
+    if(r.imovApos>0) L.push('Imóveis na aposentadoria (não vendidos, fora da conta): '+brl(r.imovApos));
     L.push('Fases efetivas usadas no cálculo (R$/mês, valores de hoje): '+brl(r.fc1)+' / '+brl(r.fc2)+' / '+brl(r.fc3));
     L.push('Retirada líquida inicial: '+brl(r.retLiq)+'/mês');
     L.push('Duração — base: '+dur(r.dcBase));
