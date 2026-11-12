@@ -83,6 +83,14 @@ h1{font-size:20px;font-weight:500;margin-bottom:.35rem}
 <h1>Simulador de aposentadoria <span id="app-version" style="font-size:12px;font-weight:400;color:#888780;margin-left:6px"></span></h1>
 <p class="desc">Defina o plano base uma vez. Registre eventos que afetam o plano ao longo do tempo. O simulador calcula o impacto de cada desvio.</p>
 
+<!-- MODO "APOSENTAR HOJE" (v2.15) -->
+<div id="modo-agora-box" style="margin:0 0 1rem;padding:.7rem 1rem;border-radius:10px;border:.5px solid #EF9F27;background:#FFF8EC">
+  <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:#633806;cursor:pointer;font-weight:500">
+    <input type="checkbox" id="modo-agora" style="width:16px;height:16px;cursor:pointer"> Simular aposentadoria hoje
+  </label>
+  <p class="nota" id="modo-agora-nota" style="margin:4px 0 0;color:#854F0B">Cenário separado — não altera o plano. A renda (salário) para hoje e o <strong>Custo mensal atual</strong> vira o custo da Fase 1 da aposentadoria; Fases 2 e 3 mantêm a mesma proporção definida no plano, tudo corrigido pela inflação. Viagens e outros custos anuais somam por cima. Desmarque para voltar ao plano.</p>
+</div>
+
 <!-- CARDS RESUMO -->
 <div class="sm">
   <div class="mk"><p class="lb">Patrimônio na aposentadoria</p><p class="vl" id="m-saldo">—</p><p class="sb" id="m-saldo-sub">—</p></div>
@@ -310,7 +318,13 @@ h1{font-size:20px;font-weight:500;margin-bottom:.35rem}
 <div style="display:flex;gap:12px;margin-bottom:1.25rem;align-items:center;flex-wrap:wrap">
   <button class="btn-primary" onclick="salvarParams()">Salvar parâmetros</button>
   <button class="btn-secondary" onclick="limparParams()">Limpar dados salvos</button>
+  <button class="btn-secondary" style="color:#534AB7;border-color:#AFA9EC" onclick="copiarParams()">📋 Copiar parâmetros</button>
   <span id="save-msg" style="font-size:12px;color:#0F6E56;display:none">Salvo!</span>
+  <span id="copy-msg" style="font-size:12px;color:#534AB7;display:none">Parâmetros copiados — é só colar no chat.</span>
+</div>
+<div id="copy-fallback" style="display:none;margin:-.5rem 0 1.25rem">
+  <p class="nota" style="margin:0 0 4px">Não consegui copiar automaticamente — selecione o texto abaixo (Cmd+A dentro da caixa) e copie:</p>
+  <textarea id="copy-fallback-txt" readonly style="width:100%;height:220px;font-family:ui-monospace,Menlo,monospace;font-size:11px;border:.5px solid rgba(0,0,0,0.2);border-radius:8px;padding:8px;box-sizing:border-box"></textarea>
 </div>
 
 <!-- GRÁFICOS -->
@@ -355,7 +369,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:.35rem}
 <script>
 // ── VERSÃO ───────────────────────────────────────────────────────────
 // Atualize aqui ao gerar nova versão
-const VERSION = '2.14';
+const VERSION = '2.15';
 
 // ── CONSTANTES ───────────────────────────────────────────────────────
 const ANO_ATUAL  = new Date().getFullYear();
@@ -387,14 +401,16 @@ const SLIDER_IDS = [
 const NUMBER_IDS = ['iv','fc1','fd1','fc2','fd2','fc3','pl-pat-ini','pl-ano-ini','p15','p20','a0','a5','a10','a15','a20'];
 const TEXT_IDS   = ['oi-nome'];
 const SELECT_IDS = ['pl-mes-ini'];
-const ALL_IDS    = [...SLIDER_IDS,...NUMBER_IDS,...TEXT_IDS,...SELECT_IDS];
+const CHECK_IDS  = ['modo-agora']; // checkboxes — salvos por .checked, não .value
+const ALL_IDS    = [...SLIDER_IDS,...NUMBER_IDS,...TEXT_IDS,...SELECT_IDS,...CHECK_IDS];
 
 let ci=null, ciBar=null, ciCusto=null, ciPlano=null;
+let ultimoResultado=null; // v2.15 — últimos resultados de calc(), usados por copiarParams()
 
 // ── PERSISTÊNCIA ─────────────────────────────────────────────────────
 function salvarParams() {
   const vals = {};
-  ALL_IDS.forEach(id => { const el=document.getElementById(id); if(el) vals[id]=el.value; });
+  ALL_IDS.forEach(id => { const el=document.getElementById(id); if(el) vals[id]=CHECK_IDS.includes(id)?el.checked:el.value; });
   localStorage.setItem(LS_KEY, JSON.stringify(vals));
   localStorage.setItem(LS_EV_KEY, JSON.stringify(lerEventosDom()));
   localStorage.setItem(LS_PR_KEY, JSON.stringify(patrimonioReal));
@@ -412,7 +428,7 @@ function carregarParams() {
   try {
     const raw=localStorage.getItem(LS_KEY); if(!raw)return;
     const v=JSON.parse(raw);
-    Object.entries(v).forEach(([id,val])=>{ const el=document.getElementById(id); if(el) el.value=val; });
+    Object.entries(v).forEach(([id,val])=>{ const el=document.getElementById(id); if(!el) return; if(CHECK_IDS.includes(id)) el.checked=(val===true||val==='true'); else el.value=val; });
   } catch(e){}
 }
 function carregarEventos() {
@@ -586,7 +602,12 @@ function calc() {
   const f1=parseInt(document.getElementById('s-filho1').value)||0;
   const f2=parseInt(document.getElementById('s-filho2').value)||0;
   const f3=parseInt(document.getElementById('s-filho3').value)||0;
-  const renda   = parseFloat(document.getElementById('s-renda').value)*1e3;
+  // v2.15 — modo "aposentar hoje": cenário separado que zera os anos até a aposentadoria e a renda
+  // (salário), e usa o Custo mensal atual como custo da Fase 1 (Fases 2/3 na mesma proporção do plano).
+  // Os sliders do plano NÃO são alterados — só os valores efetivos usados no cálculo abaixo.
+  const modoAgora = !!document.getElementById('modo-agora')?.checked;
+  const rendaPlano= parseFloat(document.getElementById('s-renda').value)*1e3;
+  const renda   = modoAgora ? 0 : rendaPlano;
   const reaj    = parseFloat(document.getElementById('s-reaj').value)/100;
   const inssVal = parseFloat(document.getElementById('s-inss').value)*1e3;
   const inssReaj= parseFloat(document.getElementById('s-inss-reaj').value)/100;
@@ -598,16 +619,25 @@ function calc() {
   const rmAnoTard=parseInt(document.getElementById('s-rend-ano').value);
   const custo   = parseFloat(document.getElementById('s-custo').value)*1e3;
   const inf     = parseFloat(document.getElementById('s-inf').value)/100;
-  const apos    = parseInt(document.getElementById('s-anos').value);
+  const aposPlano= parseInt(document.getElementById('s-anos').value);
+  const apos    = modoAgora ? 0 : aposPlano;
   const varRend = parseFloat(document.getElementById('s-var-rend').value)/100;
   const varInf  = parseFloat(document.getElementById('s-var-inf').value)/100;
   const viag    = parseFloat(document.getElementById('s-viag').value)*1e3;
   const carr    = parseFloat(document.getElementById('s-carr').value)*1e3;
-  const fc1=parseFloat(document.getElementById('fc1').value)||0;
+  const fc1Plano=parseFloat(document.getElementById('fc1').value)||0;
   const fd1=parseInt(document.getElementById('fd1').value)||10;
-  const fc2=parseFloat(document.getElementById('fc2').value)||0;
+  const fc2Plano=parseFloat(document.getElementById('fc2').value)||0;
   const fd2=parseInt(document.getElementById('fd2').value)||10;
-  const fc3=parseFloat(document.getElementById('fc3').value)||0;
+  const fc3Plano=parseFloat(document.getElementById('fc3').value)||0;
+  // no modo "aposentar hoje" as fases seguem o Custo mensal atual, preservando a proporção entre as
+  // fases do plano (ex.: 52k/42k/38k com custo 80k → 80k/64,6k/58,5k). Se a Fase 1 do plano for 0,
+  // não há proporção para preservar — as 3 fases usam o custo informado.
+  const propF2 = fc1Plano>0 ? fc2Plano/fc1Plano : 1;
+  const propF3 = fc1Plano>0 ? fc3Plano/fc1Plano : 1;
+  const fc1 = modoAgora ? custo        : fc1Plano;
+  const fc2 = modoAgora ? custo*propF2 : fc2Plano;
+  const fc3 = modoAgora ? custo*propF3 : fc3Plano;
   const OI={
     val:  parseFloat(document.getElementById('oi-val').value)*1e6||0,
     taxa: parseFloat(document.getElementById('oi-taxa').value)/100||0,
@@ -673,7 +703,31 @@ function calc() {
   document.getElementById('rend-tard-nota').textContent='Após o ano '+rmAnoTard+' da aposentadoria o rendimento cai de '+parseFloat(document.getElementById('s-rend').value).toFixed(2).replace('.',',')+'% para '+parseFloat(document.getElementById('s-rend-tard').value).toFixed(2).replace('.',',')+'% — migração para ativos mais conservadores';
   document.getElementById('v-custo').textContent='R$ '+document.getElementById('s-custo').value+'k/mês';
   document.getElementById('v-inf').textContent=parseFloat(document.getElementById('s-inf').value).toFixed(1).replace('.',',')+'%';
-  document.getElementById('v-anos').textContent=apos+' ano'+(apos>1?'s':'')+' ('+anoApos+')';
+  document.getElementById('v-anos').textContent=modoAgora
+    ? 'hoje (simulação)'
+    : apos+' ano'+(apos>1?'s':'')+' ('+anoApos+')';
+  // v2.15 — feedback visual do modo "aposentar hoje"
+  {
+    ['s-anos','s-renda','s-reaj'].forEach(id=>{ const r=document.getElementById(id)?.closest('.row'); if(r) r.style.opacity=modoAgora?'0.4':''; });
+    const box=document.getElementById('modo-agora-box'), nota=document.getElementById('modo-agora-nota');
+    box.style.background=modoAgora?'#FDEBD0':'#FFF8EC';
+    box.style.borderWidth=modoAgora?'1.5px':'.5px';
+    if(modoAgora){
+      document.getElementById('v-renda').textContent='R$ '+document.getElementById('s-renda').value+'k/mês — parada';
+      document.getElementById('v-custo').textContent='R$ '+document.getElementById('s-custo').value+'k/mês → Fase 1';
+      const temRendaEv=lerEventosDom().some(e=>e.tipo==='renda-nova'&&e.val>0);
+      const ultPR=patrimonioReal.length?patrimonioReal[patrimonioReal.length-1]:null;
+      nota.innerHTML='<strong>Simulando aposentadoria hoje</strong> ('+MESES[MES_ATUAL-1]+'/'+ANO_ATUAL+', aos '+idadeAtual+' anos), partindo de '
+        +fm(inv)+' investidos'+(patNR>0?' + '+fm(patNR)+' sem rendimento':'')+'. '
+        +'Custo de vida (valores de hoje, corrigidos pela inflação): Fase 1 '+fm(fc1)+' → Fase 2 '+fm(fc2)+' → Fase 3 '+fm(fc3)+' por mês'
+        +((viag+carr)>0?', + '+fm(viag+carr)+'/ano de viagens e outros custos':'')+'. Salário: zero.'
+        +(temRendaEv?' Rendas recorrentes cadastradas como eventos continuam valendo.':'')
+        +(ultPR&&Math.abs(ultPR.valor-(inv+patNR))>1000?' <br>Último patrimônio real registrado: '+fm(ultPR.valor)+' ('+String(ultPR.dia).padStart(2,'0')+'/'+MESES[ultPR.mes-1]+'/'+ultPR.ano+') — ajuste "Investimento (rende)" se quiser partir dele.':'')
+        +' Desmarque para voltar ao plano.';
+    } else {
+      nota.innerHTML='Cenário separado — não altera o plano. A renda (salário) para hoje e o <strong>Custo mensal atual</strong> vira o custo da Fase 1 da aposentadoria; Fases 2 e 3 mantêm a mesma proporção definida no plano, tudo corrigido pela inflação. Viagens e outros custos anuais somam por cima. Desmarque para voltar ao plano.';
+    }
+  }
   document.getElementById('v-viag').textContent='R$ '+document.getElementById('s-viag').value+'k/ano';
   document.getElementById('v-carr').textContent='R$ '+document.getElementById('s-carr').value+'k/ano';
   document.getElementById('v-var-rend').textContent='±'+parseFloat(document.getElementById('s-var-rend').value).toFixed(2).replace('.',',')+'%';
@@ -756,7 +810,7 @@ function calc() {
   const sobra0=renda-custo;
   document.getElementById('m-sobra').textContent=fm(sobra0);
   document.getElementById('m-sobra').style.color=sobra0>=0?'#1a1a18':'#A32D2D';
-  document.getElementById('m-sobra-sub').textContent=sobra0>=0?'aportado mensalmente':'déficit — retira do patrimônio';
+  document.getElementById('m-sobra-sub').textContent=modoAgora?'sem salário — custo sai do patrimônio':(sobra0>=0?'aportado mensalmente':'déficit — retira do patrimônio');
   document.getElementById('m-saldo').textContent=fm(sATotal);
   document.getElementById('m-saldo-sub').textContent=fi(sA)+' investido'+(oiValApos>0?' + '+fi(oiValApos)+' ('+( OI.nome||'outro ativo')+')':'')+(patNR>0?' + '+fi(patNR)+' s/rend.':'');
   document.getElementById('m-ret').textContent=fm(retLiq);
@@ -888,6 +942,8 @@ function calc() {
   durCard(resBase.dc,rm,inf,document.getElementById('m-dur'),document.getElementById('m-dur-sub'),document.getElementById('dur-card'),true);
   durCard(resPess.dc,rm-varRend,inf+varInf,document.getElementById('m-dur-pess'),document.getElementById('m-dur-pess-sub'),document.getElementById('dur-pess-card'),false);
   durCard(resOtim.dc,rm+varRend,inf-varInf,document.getElementById('m-dur-otim'),document.getElementById('m-dur-otim-sub'),document.getElementById('dur-otim-card'),false);
+  ultimoResultado={modoAgora,apos,anoApos,idadeAtual,sA,sATotal,retLiq,fc1,fc2,fc3,MAX,
+    dcBase:resBase.dc,dcPess:resPess.dc,dcOtim:resOtim.dc};
 
   // ── META DO PLANO (idade-alvo, v2.14) ──
   // Converte a duração (em meses) numa resposta acionável: "bate a meta de viver até os X anos, ou não,
@@ -946,7 +1002,9 @@ function calc() {
         const rgap=sAlvo-sA;
         elSub.textContent = rgap<=0
           ? 'patrimônio '+fm(Math.abs(rgap))+' acima do necessário para a meta'
-          : 'faltariam '+fm(rgap)+' na aposentadoria — aportar +'+fm(aporteNecessario(rgap))+'/mês fecharia a conta';
+          : (apos===0
+              ? 'faltariam '+fm(rgap)+' de patrimônio hoje para bater a meta'
+              : 'faltariam '+fm(rgap)+' na aposentadoria — aportar +'+fm(aporteNecessario(rgap))+'/mês fecharia a conta');
       }
       const cor=bate?'#085041':'#791F1F', bg=bate?'#E1F5EE':'#FCEBEB', bd=bate?'#1D9E75':'#E24B4A';
       elVal.style.color=cor;card.style.background=bg;card.style.borderColor=bd;elSub.style.color=cor;
@@ -1016,7 +1074,7 @@ function calc() {
   }
 
   // ── ACOMPANHAMENTO DO PLANO ──
-  if(plPatIni>0){
+  if(plPatIni>0&&!modoAgora){
     document.getElementById('pl-impacto').style.display='block';
     document.getElementById('plano-chart-wrap').style.display='block';
 
@@ -1203,7 +1261,9 @@ function calc() {
   } else {
     document.getElementById('pl-impacto').style.display='none';
     document.getElementById('plano-chart-wrap').style.display='none';
-    document.getElementById('pl-status-texto').textContent='Preencha a data de início e o patrimônio inicial para ativar o acompanhamento.';
+    document.getElementById('pl-status-texto').textContent=modoAgora&&plPatIni>0
+      ? 'Acompanhamento do plano pausado enquanto "Simular aposentadoria hoje" estiver marcado.'
+      : 'Preencha a data de início e o patrimônio inicial para ativar o acompanhamento.';
   }
 
   // ── GRÁFICOS PRINCIPAIS ──
@@ -1255,9 +1315,119 @@ function calc() {
   ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const v=ctx.raw,l=ctx.dataset.label;return v>=1e6?l+': R$'+(v/1e6).toFixed(2).replace('.',',')+'M/mês':l+': R$'+(v/1e3).toFixed(1).replace('.',',')+'k/mês';}}}},scales}});
 }
 
+// ── COPIAR PARÂMETROS (v2.15) ─────────────────────────────────────────
+// Monta um texto com TODOS os parâmetros do plano, eventos do Bloco 2, patrimônio real registrado e os
+// resultados atuais — legível para humanos + um bloco JSON no mesmo formato do localStorage, para que o
+// cenário possa ser reproduzido exatamente (ex.: colado num chat com o Claude).
+const SECOES_PARAMS = [
+  ['Dados pessoais', [['s-idade','Sua idade atual (anos)'],['s-idade-esp','Idade do cônjuge (anos)'],['s-idade-alvo','Idade alvo do plano (0 = sem meta)'],
+    ['s-filho1','Filho 1 (anos, 0 = não usa)'],['s-filho2','Filho 2 (anos)'],['s-filho3','Filho 3 (anos)']]],
+  ['Modo de simulação', [['modo-agora','Simular aposentadoria hoje']]],
+  ['Patrimônio', [['s-inv','Investimento que rende (R$ milhões)'],['s-pat-nr','Patrimônio sem rendimento (R$ milhões)']]],
+  ['Rendimento & inflação', [['s-rend','Rendimento líquido mensal (%)'],['s-rend-tard','Rendimento tardio (% ao mês)'],['s-rend-ano','Rendimento tardio a partir do ano N da aposentadoria'],
+    ['s-inf','Inflação anual (%)'],['s-anos','Anos até aposentadoria']]],
+  ['Cenários de sensibilidade', [['s-var-rend','Variação do rendimento (± p.p. ao mês)'],['s-var-inf','Variação da inflação (± p.p. ao ano)']]],
+  ['Renda', [['s-renda','Renda líquida hoje (R$ mil/mês)'],['s-reaj','Reajuste anual da renda (% a.a.)']]],
+  ['INSS', [['s-inss','INSS (R$ mil/mês)'],['s-inss-reaj','Reajuste do INSS (% a.a.)'],['s-inss-ano','Ano de início do INSS']]],
+  ['Custo de vida', [['s-custo','Custo mensal atual (R$ mil/mês)'],['s-viag','Viagens (R$ mil/ano)'],['s-carr','Outros custos anuais (R$ mil/ano)'],
+    ['fc1','Fase 1 — custo (R$/mês, valores de hoje)'],['fd1','Fase 1 — duração (anos)'],['fc2','Fase 2 — custo (R$/mês)'],['fd2','Fase 2 — duração (anos)'],['fc3','Fase 3 — custo (R$/mês, indefinido)']]],
+  ['Outro investimento', [['oi-nome','Nome'],['oi-val','Valor atual (R$ milhões)'],['oi-taxa','Valorização anual (% a.a.)'],['oi-renda','Renda mensal gerada (R$ mil/mês)']]],
+  ['Venda de imóvel', [['iv','Valor de venda (R$)'],['s-ianos','Ano da venda (a partir de hoje)'],['s-inovo','Custo do novo imóvel (× R$ 100k)']]],
+  ['Custos pontuais pós-aposentadoria (R$ de hoje)', [['p15','No ano 15 da aposentadoria'],['p20','No ano 20 da aposentadoria']]],
+  ['Aportes pontuais pós-aposentadoria (R$ nominais)', [['a0','No momento da aposentadoria'],['a5','No ano 5'],['a10','No ano 10'],['a15','No ano 15'],['a20','No ano 20']]],
+  ['Início do plano (acompanhamento)', [['pl-mes-ini','Mês'],['pl-ano-ini','Ano'],['pl-pat-ini','Patrimônio inicial do plano (R$)']]],
+];
+
+function montarTextoParams(){
+  const hoje=new Date();
+  const dataHoje=String(hoje.getDate()).padStart(2,'0')+'/'+String(hoje.getMonth()+1).padStart(2,'0')+'/'+hoje.getFullYear();
+  const brl=n=>'R$ '+Math.round(n).toLocaleString('pt-BR');
+  const valorDe=id=>{
+    const el=document.getElementById(id); if(!el) return '—';
+    if(CHECK_IDS.includes(id)) return el.checked?'SIM':'não';
+    if(id==='pl-mes-ini') return MESES[(parseInt(el.value)||1)-1];
+    return el.value===''?'—':el.value;
+  };
+  const L=[];
+  L.push('SIMULADOR DE APOSENTADORIA v'+VERSION+' — parâmetros em '+dataHoje);
+  L.push('');
+
+  // resultados atuais
+  const r=ultimoResultado;
+  if(r){
+    const dur=dc=>dc>=r.MAX-1?'∞ perene':Math.floor(dc/12)+' anos e '+(dc%12)+' meses (esgota em '+(r.anoApos+Math.floor(dc/12))+', aos ~'+(r.idadeAtual+r.apos+Math.floor(dc/12))+' anos)';
+    L.push('== RESULTADOS ATUAIS ==');
+    L.push('Modo: '+(r.modoAgora?'SIMULAR APOSENTADORIA HOJE (salário zerado, custo atual = Fase 1)':'plano (aposentadoria em '+r.anoApos+')'));
+    L.push('Patrimônio na aposentadoria: '+brl(r.sATotal)+' (investido: '+brl(r.sA)+')');
+    L.push('Fases efetivas usadas no cálculo (R$/mês, valores de hoje): '+brl(r.fc1)+' / '+brl(r.fc2)+' / '+brl(r.fc3));
+    L.push('Retirada líquida inicial: '+brl(r.retLiq)+'/mês');
+    L.push('Duração — base: '+dur(r.dcBase));
+    L.push('Duração — pessimista: '+dur(r.dcPess));
+    L.push('Duração — otimista: '+dur(r.dcOtim));
+    L.push('');
+  }
+
+  SECOES_PARAMS.forEach(([titulo,campos])=>{
+    L.push('== '+titulo.toUpperCase()+' ==');
+    campos.forEach(([id,lbl])=>L.push(lbl+': '+valorDe(id)));
+    L.push('');
+  });
+
+  // eventos do Bloco 2
+  const evs=lerEventosDom();
+  const ativos=evs.map((ev,i)=>({ev,i})).filter(o=>o.ev.tipo!=='vazio');
+  L.push('== EVENTOS DO PLANO ('+ativos.length+') ==');
+  if(!ativos.length) L.push('nenhum');
+  ativos.forEach(({ev,i})=>{
+    const lbl=(TIPOS_EVENTO[ev.tipo]?.label||ev.tipo).replace(/^\S+\s/,'');
+    const ini=MESES[ev['data-mes']-1]+'/'+ev['data-ano'];
+    let t=(i+1)+'. '+lbl+' — '+brl(ev.val)+((ev.tipo==='renda-nova'||ev.tipo==='saida-rec')?'/mês':'')+' — início '+ini;
+    if(ev.tipo==='renda-nova') t+=' — fim '+(ev['data-fim-ano']>0?MESES[(ev['data-fim-mes']||1)-1]+'/'+ev['data-fim-ano']:'indefinido');
+    if(ev.tipo==='saida-rec') t+=' — duração '+ev.dur+' meses';
+    if(ev.desc) t+=' — "'+ev.desc+'"';
+    L.push(t);
+  });
+  L.push('');
+
+  // patrimônio real registrado
+  L.push('== PATRIMÔNIO REAL REGISTRADO ('+patrimonioReal.length+') ==');
+  if(!patrimonioReal.length) L.push('nenhum');
+  patrimonioReal.forEach(p=>L.push(String(p.dia).padStart(2,'0')+'/'+MESES[p.mes-1]+'/'+p.ano+': '+brl(p.valor)));
+  L.push('');
+
+  // bloco JSON — mesmo formato do localStorage, para reproduzir o cenário exatamente
+  const vals={};
+  ALL_IDS.forEach(id=>{ const el=document.getElementById(id); if(el) vals[id]=CHECK_IDS.includes(id)?el.checked:el.value; });
+  const evsRaw=evs.map((e,i)=>({slot:i+1,tipo:e.tipo,val:e.val,desc:e.desc,dur:e.dur,'data-mes':e['data-mes'],'data-ano':e['data-ano'],'data-fim-mes':e['data-fim-mes'],'data-fim-ano':e['data-fim-ano']})).filter(e=>e.tipo!=='vazio'); // só slots usados (slot = posição no Bloco 2)
+  L.push('== JSON (para reproduzir exatamente) ==');
+  L.push(JSON.stringify({versao:VERSION,geradoEm:hoje.toISOString(),params:vals,eventos:evsRaw,patrimonioReal}));
+  return L.join('\n');
+}
+
+async function copiarParams(){
+  const txt=montarTextoParams();
+  let ok=false;
+  try{ if(navigator.clipboard&&navigator.clipboard.writeText){ await navigator.clipboard.writeText(txt); ok=true; } }catch(e){}
+  if(!ok){
+    try{
+      const ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select(); ok=document.execCommand('copy'); document.body.removeChild(ta);
+    }catch(e){}
+  }
+  const fb=document.getElementById('copy-fallback');
+  if(ok){
+    fb.style.display='none';
+    const msg=document.getElementById('copy-msg'); msg.style.display='inline'; setTimeout(()=>msg.style.display='none',3500);
+  } else {
+    fb.style.display='block';
+    const ta=document.getElementById('copy-fallback-txt'); ta.value=txt; ta.focus(); ta.select();
+  }
+}
+
 // ── INIT ─────────────────────────────────────────────────────────────
 criarEventosDOM();
 ALL_IDS.forEach(id=>document.getElementById(id).addEventListener('input',calc));
+CHECK_IDS.forEach(id=>document.getElementById(id).addEventListener('change',calc)); // Safari não dispara 'input' em checkbox
 document.getElementById('pr-dia').value=new Date().getDate();
 document.getElementById('pr-mes').value=MES_ATUAL;
 document.getElementById('pr-ano').value=ANO_ATUAL;
