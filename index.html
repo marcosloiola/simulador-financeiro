@@ -372,7 +372,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:.35rem}
 <script>
 // ── VERSÃO ───────────────────────────────────────────────────────────
 // Atualize aqui ao gerar nova versão
-const VERSION = '2.18';
+const VERSION = '2.19';
 
 // ── CONSTANTES ───────────────────────────────────────────────────────
 const ANO_ATUAL  = new Date().getFullYear();
@@ -860,7 +860,10 @@ function calc() {
       cm*=(1+im); rendaBase*=(1+ir);
       rendaNovaAtiva.forEach((v,i)=>{ if(v>0) rendaNovaAtiva[i]*=(1+ir); });
     }
-    barLabels.push(''+(ANO_ATUAL+ano+1)); barPre.push(Math.round(pat)); barPos.push(null);
+    // v2.19 — o último ano do pré É o momento da aposentadoria: não vira um ponto próprio, é desenhado no ★
+    // (antes havia "2031" no pré e "2031 ★" no pós, o mesmo instante em dois pontos, e as linhas não se ligavam).
+    // Pontos do pré incluem patrimônio sem rendimento e outro investimento, na mesma base do ★ (sATotal).
+    if(ano<apos-1){ barLabels.push(''+(ANO_ATUAL+ano+1)); barPre.push(Math.round(Math.max(0,pat)+patNR+OI.val*Math.pow(1+OI.taxa,ano+1))); barPos.push(null); }
   }
 
   // valor de cada "renda-nova" no exato momento da aposentadoria — usado para "entregar" a simPos()
@@ -905,7 +908,9 @@ function calc() {
     ab.innerHTML='Atenção: daqui <strong>'+yd+' anos</strong> (em '+yc+(yb>0?', <strong>'+yb+' ano'+(yb>1?'s':'')+' antes da aposentadoria</strong>':'')+') a renda fica abaixo do custo de vida.';
   } else { ab.style.display='none'; }
 
-  barLabels.push(anoApos+' ★'); barPre.push(null); barPos.push(Math.round(sATotal));
+  // ★ = aposentadoria: ponto compartilhado pelas duas linhas (o pré termina e o pós começa aqui)
+  const idxBarApos=barLabels.length;
+  barLabels.push(anoApos+' ★'); barPre.push(apos>0?Math.round(sATotal):null); barPos.push(Math.round(sATotal));
 
   // ── FUNÇÃO DE SIMULAÇÃO PÓS-APOSENTADORIA ──
   const MAX=12*200;
@@ -1321,7 +1326,7 @@ function calc() {
   ciBar=new Chart(document.getElementById('bar-chart'),{type:'line',data:{labels:barLabels,datasets:[
     {label:'Pré',data:barPre,borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.07)',fill:true,tension:0.3,pointRadius:2,pointBackgroundColor:'#378ADD',borderWidth:2,spanGaps:false},
     {label:'Pós',data:barPos,borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.07)',fill:true,tension:0.3,pointRadius:2,pointBackgroundColor:'#1D9E75',borderWidth:2,spanGaps:false,borderDash:[4,4]}
-  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:ttVal}}},scales:{...scales,x:{...scales.x,ticks:{...scales.x.ticks,maxTicksLimit:18,maxRotation:45}}}}});
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{filter:it=>!(it.datasetIndex===0&&it.dataIndex===idxBarApos),callbacks:{label:ttVal}}},scales:{...scales,x:{...scales.x,ticks:{...scales.x.ticks,maxTicksLimit:18,maxRotation:45}}}}});
 
   // renda vs custo — v2.16: INSS em valores de hoje (antes crescia pela taxa MENSAL a cada ano no gráfico),
   // renda do OI corrigida pela inflação, rendas recorrentes de eventos incluídas, sem ponto duplicado com apos=0
