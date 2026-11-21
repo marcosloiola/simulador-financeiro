@@ -372,7 +372,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:.35rem}
 <script>
 // ── VERSÃO ───────────────────────────────────────────────────────────
 // Atualize aqui ao gerar nova versão
-const VERSION = '2.19';
+const VERSION = '2.20';
 
 // ── CONSTANTES ───────────────────────────────────────────────────────
 const ANO_ATUAL  = new Date().getFullYear();
@@ -835,6 +835,7 @@ function calc() {
   // v2.17 — no modo "aposentar hoje" parte do patrimônio REAL de hoje (se houver plano/registro), não da barra
   let pat=realAgora?realAgora.inicioMes:inv, cm=custoTotalHoje, rendaBase=renda;
   let totalAp=0, totalDef=0, primeiroDeficit=-1;
+  const sobraEm={}; // v2.20 — sobra (renda + rendas de eventos − custo total) nos meses 0, 12 e 24, para o card
   const barLabels=[], barPre=[], barPos=[];
 
   // valor atual de cada evento "renda-nova" ativo — cresce pelo reajuste (ir) de forma independente,
@@ -854,6 +855,7 @@ function calc() {
       pat*=(1+rm);
       const rendaEventosAtivos=evs.reduce((s,ev,i)=>(ev.tipo==='renda-nova'&&mes>=ev.mesIni&&mes<ev.mesFim)?s+rendaNovaAtiva[i]:s,0);
       const sobra=(rendaBase+rendaEventosAtivos)-cm;
+      if(mes===0||mes===12||mes===24) sobraEm[mes]={sobra,rendaEv:rendaEventosAtivos};
       pat+=sobra;
       if(sobra>=0)totalAp+=sobra;else totalDef+=Math.abs(sobra);
       if(sobra<0&&primeiroDeficit<0)primeiroDeficit=mes;
@@ -892,10 +894,23 @@ function calc() {
     ? s+(rendaNovaNaAposentadoria[i]>0?rendaNovaNaAposentadoria[i]:ev.val) : s,0);
   const retLiq=Math.max(0,(fc1+vm+cm2)*fI-inssInicio-oiRendaApos-rendaEvApos);
 
-  const sobra0=renda-custoTotalHoje;
+  // v2.20 — o card agora inclui as rendas recorrentes de eventos (o cálculo já incluía, o card não) e mostra a
+  // conta completa: renda − custo mensal − viagens/outros (anuais ÷ 12) + rendas de eventos; e a sobra em 1 e 2 anos
+  const rendaEvHoje = sobraEm[0] ? sobraEm[0].rendaEv
+    : evs.reduce((s,ev,i)=>(ev.tipo==='renda-nova'&&ev.val>0&&0>=ev.mesIni&&0<ev.mesFim)?s+(rendaNovaNaAposentadoria[i]>0?rendaNovaNaAposentadoria[i]:ev.val):s,0);
+  const sobra0 = renda+rendaEvHoje-custoTotalHoje;
   document.getElementById('m-sobra').textContent=fm(sobra0);
   document.getElementById('m-sobra').style.color=sobra0>=0?'#1a1a18':'#A32D2D';
-  document.getElementById('m-sobra-sub').textContent=modoAgora?'sem salário — custo sai do patrimônio':(sobra0>=0?'aportado mensalmente':'déficit — retira do patrimônio');
+  {
+    const conta=fm(renda)+' renda − '+fm(custo)+' custo = '+fm(renda-custo)
+      +((vm+cm2)>0?'; − '+fm(vm+cm2)+' viagens/outros (anuais ÷ 12)':'')
+      +(rendaEvHoje>0?'; + '+fm(rendaEvHoje)+' rendas de eventos':'');
+    const futuro=[12,24].filter(m=>sobraEm[m]).map(m=>'em '+(m/12)+' ano'+(m>12?'s':'')+': '+fm(sobraEm[m].sobra)).join(' · ');
+    const inicioDef = primeiroDeficit>0 ? ' · negativa a partir de '+MESES[(MES_ATUAL-1+primeiroDeficit)%12]+'/'+(ANO_ATUAL+Math.floor((MES_ATUAL-1+primeiroDeficit)/12)) : '';
+    document.getElementById('m-sobra-sub').textContent = modoAgora
+      ? 'sem salário — '+(rendaEvHoje>0?'rendas de eventos ('+fm(rendaEvHoje)+') abatem o custo, ':'')+'o resto sai do patrimônio'
+      : (sobra0>=0?'aportado mensalmente':'déficit — retira do patrimônio')+' ('+conta+')'+(futuro?' · '+futuro:'')+inicioDef;
+  }
   document.getElementById('m-saldo').textContent=fm(sATotal);
   document.getElementById('m-saldo-sub').textContent=fi(sA)+' investido'+(oiValApos>0?' + '+fi(oiValApos)+' ('+( OI.nome||'outro ativo')+')':'')+(patNR>0?' + '+fi(patNRApos)+' s/rend.':'')+(imovelNaApos>0?' + '+fi(imovelNaApos)+' (imóvel vendido)':'')+(imov>0?' · imóveis (não vendidos, fora da conta): '+fi(imovValor(apos)):'');
   document.getElementById('m-ret').textContent=fm(retLiq);
@@ -905,7 +920,11 @@ function calc() {
   if(primeiroDeficit>=0){
     const yd=Math.floor(primeiroDeficit/12)+1,yc=ANO_ATUAL+yd,yb=apos-yd;
     ab.style.display='block';
-    ab.innerHTML='Atenção: daqui <strong>'+yd+' anos</strong> (em '+yc+(yb>0?', <strong>'+yb+' ano'+(yb>1?'s':'')+' antes da aposentadoria</strong>':'')+') a renda fica abaixo do custo de vida.';
+    // v2.20 — mês exato e caso "já hoje" (antes: déficit desde hoje aparecia como "daqui 1 anos")
+    const mdAbs=MES_ATUAL-1+primeiroDeficit, mesDef=MESES[mdAbs%12]+'/'+(ANO_ATUAL+Math.floor(mdAbs/12));
+    ab.innerHTML = primeiroDeficit===0
+      ? 'Atenção: <strong>já hoje</strong> a renda (salário + rendas de eventos) não cobre o custo de vida com viagens e outros custos — a diferença sai do patrimônio até a aposentadoria.'
+      : 'Atenção: a partir de <strong>'+mesDef+'</strong>'+(yb>0?' (<strong>'+yb+' ano'+(yb>1?'s':'')+' antes da aposentadoria</strong>)':'')+' a renda fica abaixo do custo de vida — a diferença sai do patrimônio.';
   } else { ab.style.display='none'; }
 
   // ★ = aposentadoria: ponto compartilhado pelas duas linhas (o pré termina e o pós começa aqui)
